@@ -34,16 +34,16 @@ const styles = StyleSheet.create({
     },
     searchButton: {
         backgroundColor: '#fff',
-        height: 60,
+        height: 50,
         width: Dimensions.get('screen').width - 60,
         marginHorizontal: 30,
-        borderRadius: 30,
+        borderRadius: 25,
         justifyContent: 'center',
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'row',
         position: 'absolute',
-        top: 20,
+        top: 25,
         left: 0,
         zIndex: 100,
         elevation: (Platform.OS === 'android') ? 50 : 0
@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
     searchButtonText: {
         color: '#000',
         fontSize: 16,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginLeft: 10
     }
 });
 
