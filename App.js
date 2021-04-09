@@ -7,26 +7,14 @@
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar
-} from 'react-native';
-import HomeScreen from './src/screens/Home';
-import SearchResultScreen from './src/screens/SearchResults';
-import DestinationSearchScreen from './src/screens/DestinationSearch';
-import Guest from './src/screens/Guests';
-
-
+import {SafeAreaView, StatusBar} from 'react-native';
+import Router from './src/navigation/Router';
+import 'react-native-gesture-handler';
 const App = () => {
   return (
     <>
-    <StatusBar barStyle="dark-content"/>
-    <SafeAreaView>
-      {/* <HomeScreen /> */}
-      {/* <SearchResultScreen /> */}
-      {/* <DestinationSearchScreen /> */}
-      <Guest/>
-    </SafeAreaView>
+      <StatusBar barStyle="dark-content" />
+      <Router />
     </>
   );
 };
