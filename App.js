@@ -12,16 +12,14 @@ import {
   StatusBar
 } from 'react-native';
 import HomeScreen from './src/screens/Home';
-import PostComponent from './src/components/Post'
-import feed from './assets/data/feed'
+import SearchResultScreen from './src/screens/SearchResults';
 const App = () => {
-  const post1 = feed[0];
   return (
     <>
     <StatusBar barStyle="dark-content"/>
     <SafeAreaView>
       {/* <HomeScreen /> */}
-      <PostComponent post={post1}/>
+      <SearchResultScreen />
     </SafeAreaView>
     </>
   );
