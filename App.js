@@ -14,6 +14,8 @@ import {
 import HomeScreen from './src/screens/Home';
 import SearchResultScreen from './src/screens/SearchResults';
 import DestinationSearchScreen from './src/screens/DestinationSearch';
+import Guest from './src/screens/Guests';
+
 
 const App = () => {
   return (
@@ -22,7 +24,8 @@ const App = () => {
     <SafeAreaView>
       {/* <HomeScreen /> */}
       {/* <SearchResultScreen /> */}
-      <DestinationSearchScreen />
+      {/* <DestinationSearchScreen /> */}
+      <Guest/>
     </SafeAreaView>
     </>
   );
