@@ -13,13 +13,16 @@ import {
 } from 'react-native';
 import HomeScreen from './src/screens/Home';
 import SearchResultScreen from './src/screens/SearchResults';
+import DestinationSearchScreen from './src/screens/DestinationSearch';
+
 const App = () => {
   return (
     <>
     <StatusBar barStyle="dark-content"/>
     <SafeAreaView>
       {/* <HomeScreen /> */}
-      <SearchResultScreen />
+      {/* <SearchResultScreen /> */}
+      <DestinationSearchScreen />
     </SafeAreaView>
     </>
   );
