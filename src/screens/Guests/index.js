@@ -73,7 +73,14 @@ const GuestsScreen = () => {
         </View>
       </View>
       <View>
-        <Pressable onPress={() => navigation.navigate('Search Result')} style={styles.searchButton}>
+        <Pressable onPress={() => navigation.navigate('HomeTabnavigator',
+        {
+          screen: 'Explore',
+          params: {
+            screen: 'SearchResults'
+          }
+          
+        })} style={styles.searchButton}>
           <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold'}}>Search</Text>
         </Pressable>
       </View>
