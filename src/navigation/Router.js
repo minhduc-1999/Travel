@@ -2,10 +2,9 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import DestinationSearchScreen from '../screens/DestinationSearch';
-import SearchResult from '../screens/SearchResults';
 import GuestsScreen from '../screens/Guests';
 import HomeTabNavigator from '../navigation/HomeTabNavigator';
-import SearchResultScreen from '../screens/SearchResults';
+import DetailedPostScreen from '../screens/DetailedPostScreen';
 const Stack = createStackNavigator();
 const Router = props => {
   return (
@@ -25,6 +24,11 @@ const Router = props => {
           name={'Destination Search'}
           component={DestinationSearchScreen}
           options={{title: 'Search your destination?'}}
+        />
+        <Stack.Screen
+          name={'Detailed Post'}
+          component={DetailedPostScreen}
+          options={{title: 'Accommodation'}}
         />
       </Stack.Navigator>
     </NavigationContainer>

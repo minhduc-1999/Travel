@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {View, Text, Pressable} from 'react-native';
 import styles from './styles';
-import {useNavigation} from '@react-navigation/native';
+// import {useNavigation} from '@react-navigation/native';
 
-const GuestsScreen = () => {
+const GuestsScreen = ({navigation}) => {
   const [adults, setAdults] = useState(0);
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -78,8 +78,7 @@ const GuestsScreen = () => {
           screen: 'Explore',
           params: {
             screen: 'SearchResults'
-          }
-          
+          }          
         })} style={styles.searchButton}>
           <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold'}}>Search</Text>
         </Pressable>
