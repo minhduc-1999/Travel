@@ -1,17 +1,28 @@
 import React from 'react'
-import { View, Text } from 'react-native';
+import { View, Text, FlatList, useWindowDimensions } from 'react-native';
 import styles from './styles';
 import PostCarousel from '../../components/PostCarouselItem';
 import places from '../../../assets/data/feed';
 
+
 const SearchResultMap = () => {
+    const itemWidth = useWindowDimensions().width;
     return (
         <View style={styles.container}>
             {/* Map here */}
             <Text>Map Result</Text>
 
             <View style={styles.carouselList}>
-                <PostCarousel post={places[0]} />
+                <FlatList 
+                data={places}
+                renderItem={({item}) => <PostCarousel post={item}/>}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                snapToInterval={itemWidth - 40}
+                snapToAlignment={'center'}
+                decelerationRate={'fast'}
+                pagingEnabled={true}
+                />
             </View>
         </View>
     )
