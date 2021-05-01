@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Image, Pressable} from 'react-native';
+import {Text, Image, Pressable} from 'react-native';
 import styles from './styles.js';
 import {useNavigation} from '@react-navigation/native';
 
@@ -12,7 +12,7 @@ const Post = props => {
       style={styles.container}>
       <Image
         style={styles.image}
-        source={require('../../../assets/images/wallpaper.jpg')}
+        source={{uri: post.image}}
       />
       <Text style={styles.bedrooms}>
         {post.bed} bedroome - {post.bedroom} bathroom

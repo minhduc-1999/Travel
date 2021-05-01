@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
     backgroundColor: 'white',
-
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -19,7 +18,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.43,
     shadowRadius: 9.51,
 
-    elevation: 15
+    elevation: 15,
   },
   image: {
     height: '100%',
@@ -41,7 +40,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   detailContainer: {
-      marginLeft: 10
+    marginLeft: 10,
   },
 });
 

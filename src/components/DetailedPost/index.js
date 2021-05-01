@@ -6,7 +6,7 @@ const Post = (props) => {
     return (
         <View style={styles.container}>
             <Image style={styles.image}
-                source={require('../../../assets/images/wallpaper.jpg')}
+                source={{uri: post.image}}
             />
             <Text style={styles.bedrooms}>{post.bed} bedroome - {post.bedroom} bathroom</Text>
             <Text style={styles.description} numberOfLines={2}>{post.type}. {post.title}</Text>

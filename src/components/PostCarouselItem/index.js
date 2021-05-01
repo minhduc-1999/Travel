@@ -14,7 +14,7 @@ const Post = props => {
       <View style={styles.innerContainer}>
         <Image
           style={styles.image}
-          source={require('../../../assets/images/wallpaper.jpg')}
+          source={{uri: post.image}}
         />
         <View style={styles.detailContainer}>
           <Text style={styles.bedrooms}>
