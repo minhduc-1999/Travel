@@ -1,5 +1,5 @@
 {
-  "name": "vietnamtravel",
+  "name": "Travelad",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-firebase/app": "^11.4.1",
+    "@react-native-firebase/auth": "^11.4.1",
     "@react-navigation/bottom-tabs": "^5.11.9",
     "@react-navigation/material-top-tabs": "^5.3.15",
     "@react-navigation/native": "^5.9.4",

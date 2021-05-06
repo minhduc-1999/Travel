@@ -7,14 +7,14 @@
  */
 
 import React from 'react';
-import {SafeAreaView, StatusBar} from 'react-native';
-import Router from './src/navigation/Router';
+import {StatusBar} from 'react-native';
+import Providers from './src/navigation/index';
 import 'react-native-gesture-handler';
 const App = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <Router />
+      <Providers />
     </>
   );
 };

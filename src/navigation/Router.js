@@ -1,36 +1,29 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import DestinationSearchScreen from '../screens/DestinationSearch';
-import GuestsScreen from '../screens/Guests';
-import HomeTabNavigator from '../navigation/HomeTabNavigator';
-import DetailedPostScreen from '../screens/DetailedPostScreen';
-const Stack = createStackNavigator();
+import AppStack from './AppStack';
+import AuthStack from './AuthStack';
+
+import auth from '@react-native-firebase/auth';
+
 const Router = props => {
+  const [user, setUser] = useState(null);
+  const [initializing, setInitializing] = useState(true);
+
+  const onAuthStateChanged = user => {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  };
+
+  useEffect(() => {
+    const subcriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subcriber;
+  }, []);
+
+  if (initializing) return null; //flash screen
+
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name={'HomeTabnavigator'}
-          component={HomeTabNavigator}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name={'GuestsScreen'}
-          component={GuestsScreen}
-          options={{title: 'How many people?'}}
-        />
-        <Stack.Screen
-          name={'Destination Search'}
-          component={DestinationSearchScreen}
-          options={{title: 'Search your destination?'}}
-        />
-        <Stack.Screen
-          name={'Detailed Post'}
-          component={DetailedPostScreen}
-          options={{title: 'Accommodation'}}
-        />
-      </Stack.Navigator>
+      {user ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };
