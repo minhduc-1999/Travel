@@ -25,6 +25,8 @@ const styles = StyleSheet.create({
   groupText: {
     fontSize: 18,
     marginVertical: 10,
+    color: '#998988',
+    fontWeight: 'bold',
   },
 });
 

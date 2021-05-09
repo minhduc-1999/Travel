@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
-import {} from 'react-native';
-import {ListItem, Icon, Switch} from 'react-native-elements';
+import {ListItem, Switch} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const SwitchListItem = ({
   iconName,
-  iconType,
   title,
   onSwitchStateChange,
   initState,
@@ -14,7 +13,7 @@ const SwitchListItem = ({
   const [switchState, setSwitchState] = useState(initState);
   return (
     <ListItem bottomDivider>
-      <Icon name={iconName} type={iconType} color={iconColor} />
+      <Icon name={iconName} size={25} color={iconColor} />
       <ListItem.Content>
         <ListItem.Title>{title}</ListItem.Title>
       </ListItem.Content>

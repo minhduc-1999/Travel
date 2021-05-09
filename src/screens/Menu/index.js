@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {View, ScrollView, Text, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import {Avatar} from 'react-native-elements';
-import CustomListItem from '../../components/CustomListItem/GroupListItem';
+import GroupListItem from '../../components/CustomListItem/GroupListItem';
 import SwitchListItem from '../../components/CustomListItem/SwitchListItem';
 import {AuthContext} from '../../navigation/AuthProvider';
 const MenuScreen = ({navigation}) => {
@@ -20,11 +20,11 @@ const MenuScreen = ({navigation}) => {
           </View>
         </TouchableOpacity>
         <View>
-          <Text style={{fontSize: 16}}>Name Will Come Here</Text>
+          <Text style={{fontSize: 20}}>Name Will Come Here</Text>
           <Text
             style={{
               color: 'gray',
-              fontSize: 16,
+              fontSize: 18,
             }}>
             Email Will Come here
           </Text>
@@ -32,41 +32,38 @@ const MenuScreen = ({navigation}) => {
       </View>
       <Text style={styles.groupText}>Account</Text>
       <View>
-        <CustomListItem title="Profile" iconName="person" iconType="material" />
-        <CustomListItem
+        <GroupListItem
+          title="Profile"
+          iconName="user-o"
+          onPress={() => navigation.navigate('Profile')}
+        />
+        <GroupListItem
           title="Change Password"
-          iconName="lock"
-          iconType="material"
+          iconName="key"
+          onPress={() => navigation.navigate('Change Password')}
         />
       </View>
       <Text style={styles.groupText}>More</Text>
       <View>
         <SwitchListItem
           title="Push Notifications"
-          iconName="notifications"
-          iconType="material"
+          iconName="bell-o"
           onSwitchStateChange={value => {}}
           initState={true}
           switchColor={'#f15454'}
         />
         <SwitchListItem
           title="Dark Mode"
-          iconName="dark"
-          iconType="material"
+          iconName="moon-o"
           onSwitchStateChange={value => {}}
           initState={false}
           switchColor={'#f15454'}
         />
-        <CustomListItem
-          title="Send feedbacks"
-          iconName="feedback"
-          iconType="material"
-        />
-        <CustomListItem
+        <GroupListItem title="Send feedbacks" iconName="comments-o" />
+        <GroupListItem
           onPress={() => logout()}
           title="Log Out"
-          iconName="logout"
-          iconType="material"
+          iconName="sign-out"
         />
       </View>
     </ScrollView>

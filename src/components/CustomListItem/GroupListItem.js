@@ -1,11 +1,12 @@
 import React from 'react';
-import {ListItem, Icon} from 'react-native-elements';
+import {ListItem} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const CustomListItem = props => {
-  const {showChervon, iconName, iconType, title, onPress, ...rest} = props;
+  const {showChervon, iconName, title, onPress, ...rest} = props;
   return (
     <ListItem bottomDivider onPress={onPress}>
-      <Icon name={iconName} type={iconType} />
+      <Icon name={iconName} size={25} />
       <ListItem.Content>
         <ListItem.Title>{title}</ListItem.Title>
       </ListItem.Content>
