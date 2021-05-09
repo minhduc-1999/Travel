@@ -11,7 +11,16 @@ const SavedNavigator = () => {
       <Stack.Screen
         name={'SavedList'}
         component={WishlistScreen}
-        options={{title: 'Wishlists'}}
+        options={{
+          title: 'Wishlists',
+          headerStyle: {
+            backgroundColor: '#f2f2f2',
+            height: 80,
+          },
+          headerTitleStyle: {
+            fontSize: 30,
+          }
+        }}
       />
       <Stack.Screen
         name={'SavedDetail'}

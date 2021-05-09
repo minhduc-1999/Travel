@@ -1,6 +1,6 @@
 export default [
     {
-        name: 'Hue',
+        name: 'Long An',
         postIdArray: [0, 1]
     },
     {
