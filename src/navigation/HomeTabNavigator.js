@@ -3,13 +3,12 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ExploreNavigator from '../navigation/ExploreNavigator';
 import HomeScreen from '../screens/Home';
 import SavedNavigator from '../navigation/SavedNavigator';
-
+import MenuScreen from '../screens/Menu';
 
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Feather from 'react-native-vector-icons/Feather';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Material from 'react-native-vector-icons/MaterialIcons';
 
 const Tab = createBottomTabNavigator();
 const HomeTabNavigator = props => {
@@ -23,7 +22,8 @@ const HomeTabNavigator = props => {
         component={ExploreNavigator}
         options={{
           tabBarIcon: ({color}) => (
-            <Fontisto name="search" size={25} color={color} />
+            // <Fontisto name="search" size={25} color={color} />
+            <Material name="explore" size={25} color={color} />
           ),
         }}
       />
@@ -32,7 +32,8 @@ const HomeTabNavigator = props => {
         component={SavedNavigator}
         options={{
           tabBarIcon: ({color}) => (
-            <FontAwesome name="heart-o" size={25} color={color} />
+            // <FontAwesome name="heart-o" size={25} color={color} />
+            <Material name="favorite" size={25} color={color} />
           ),
         }}
       />
@@ -46,20 +47,20 @@ const HomeTabNavigator = props => {
         }}
       />
       <Tab.Screen
-        name={'Messages'}
+        name={'Notifications'}
         component={HomeScreen}
         options={{
           tabBarIcon: ({color}) => (
-            <Feather name="message-square" size={25} color={color} />
+            <Material name="notifications" size={25} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name={'Profile'}
-        component={HomeScreen}
+        name={'Menu'}
+        component={MenuScreen}
         options={{
           tabBarIcon: ({color}) => (
-            <EvilIcons name="user" size={25} color={color} />
+            <Material name="menu" size={25} color={color} />
           ),
         }}
       />
