@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {View, Text, TouchableOpacity, Platform, StyleSheet} from 'react-native';
-import FormInput from '../../components/FormInput/FormInput';
-import FormButton from '../../components/FormInput/FormButton';
+import FormInput from '../../components/Utils/FormInput';
+import FormButton from '../../components/Utils/FormButton';
 // import SocialButton from '../../components/FormInput/SocialButton';
 import {AuthContext} from '../../navigation/AuthProvider';
 import styles from './styles';
@@ -19,7 +19,7 @@ const RegisterScreen = ({navigation}) => {
         labelValue={email}
         onChangeText={userEmail => setEmail(userEmail)}
         placeholderText="Email"
-        iconType="user"
+        iconType="mail"
         keyboardType="email-address"
         autoCapitalize="none"
         autoCorrect={false}

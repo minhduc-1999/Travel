@@ -3,13 +3,10 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ExploreNavigator from '../navigation/ExploreNavigator';
 import HomeScreen from '../screens/Home';
 import SavedNavigator from '../navigation/SavedNavigator';
+import MenuScreen from '../screens/Menu';
+import Notification from '../screens/NotificationScreen';
 
-
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Feather from 'react-native-vector-icons/Feather';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 const Tab = createBottomTabNavigator();
 const HomeTabNavigator = props => {
@@ -23,7 +20,7 @@ const HomeTabNavigator = props => {
         component={ExploreNavigator}
         options={{
           tabBarIcon: ({color}) => (
-            <Fontisto name="search" size={25} color={color} />
+            <FontAwesome name="globe" size={25} color={color} />
           ),
         }}
       />
@@ -37,29 +34,29 @@ const HomeTabNavigator = props => {
         }}
       />
       <Tab.Screen
-        name={'Airbnb'}
+        name={'Plan'}
         component={HomeScreen}
         options={{
           tabBarIcon: ({color}) => (
-            <FontAwesome5 name="airbnb" size={25} color={color} />
+            <FontAwesome name="paper-plane-o" size={25} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name={'Messages'}
-        component={HomeScreen}
+        name={'Notifications'}
+        component={Notification}
         options={{
           tabBarIcon: ({color}) => (
-            <Feather name="message-square" size={25} color={color} />
+            <FontAwesome name="bell-o" size={25} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name={'Profile'}
-        component={HomeScreen}
+        name={'Menu'}
+        component={MenuScreen}
         options={{
           tabBarIcon: ({color}) => (
-            <EvilIcons name="user" size={25} color={color} />
+            <FontAwesome name="bars" size={25} color={color} />
           ),
         }}
       />
