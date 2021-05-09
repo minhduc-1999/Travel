@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {Text, TouchableOpacity, Image, ScrollView} from 'react-native';
-import FormInput from '../../components/FormInput/FormInput';
-import FormButton from '../../components/FormInput/FormButton';
+import FormInput from '../../components/Utils/FormInput';
+import FormButton from '../../components/Utils/FormButton';
 // import SocialButton from '../../components/FormInput/SocialButton';
 import {AuthContext} from '../../navigation/AuthProvider';
 import styles from './styles';
@@ -24,7 +24,7 @@ const LoginScreen = ({navigation}) => {
         labelValue={email}
         onChangeText={userEmail => setEmail(userEmail)}
         placeholderText="Email"
-        iconType="user"
+        iconType="person"
         keyboardType="email-address"
         autoCapitalize="none"
         autoCorrect={false}
@@ -42,10 +42,6 @@ const LoginScreen = ({navigation}) => {
         buttonTitle="Sign In"
         onPress={() => login(email, password)}
       />
-
-      <TouchableOpacity style={styles.forgotButton} onPress={() => {}}>
-        <Text style={styles.navButtonText}>Forgot Password?</Text>
-      </TouchableOpacity>
 
       {/* {Platform.OS === 'android' ? (
         <View>
@@ -73,6 +69,12 @@ const LoginScreen = ({navigation}) => {
         <Text style={styles.navButtonText}>
           Don't have an acount? Create here
         </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.forgotButton}
+        onPress={() => navigation.navigate('ForgotPassword')}>
+        <Text style={styles.navButtonText}>Forgot Password?</Text>
       </TouchableOpacity>
     </ScrollView>
   );

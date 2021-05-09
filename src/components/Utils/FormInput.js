@@ -2,13 +2,14 @@ import React from 'react';
 import {View, TextInput, StyleSheet} from 'react-native';
 import {windowHeight, windowWidth} from '../../Utils/Dimention';
 
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const FormInput = ({labelValue, placeholderText, iconType, ...rest}) => {
   return (
     <View style={styles.inputContainer}>
       <View style={styles.iconStyle}>
-        <AntDesign name={iconType} size={25} color="#666" />
+        {/* <AntDesign name={iconType} size={25} color="#666" /> */}
+        <Icon name={iconType} size={25} color="#666" />
       </View>
       <TextInput
         value={labelValue}
@@ -29,21 +30,20 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 10,
     width: '100%',
-    height: windowHeight / 15,
+    height: windowHeight / 14,
     borderColor: '#ccc',
-    borderRadius: 3,
+    borderRadius: windowHeight / 7,
     borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
   },
   iconStyle: {
-    padding: 10,
+    paddingVertical: 10,
+    paddingLeft: 10,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRightColor: '#ccc',
-    borderRightWidth: 1,
     width: 50,
   },
   input: {
