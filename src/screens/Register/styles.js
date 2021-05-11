@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 30,
   },
   text: {
     // fontFamily: 'Kufam-SemiBoldItalic',
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   navButtonText: {
     fontSize: 18,
     fontWeight: '500',
-    color: '#2e64e5',
+    color: '#f15454',
     // fontFamily: 'Lato-Regular',
   },
   textPrivate: {

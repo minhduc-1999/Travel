@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Text, Image} from 'react-native';
+import { View, Text, Image, Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import places from '../../../assets/data/feed';
 
@@ -10,8 +11,11 @@ const WishlistItem = ({item}) => {
   const post = item.postIdArray.map(item =>
     places.find(place => place.id === item)
   );
+  const navigation = useNavigation();
   return (
-    <View style={styles.container}>
+    <Pressable
+      style={styles.container}
+      onPress={() => navigation.navigate('SavedDetail')}>
       <View style={styles.imageGroup}>
         <Image style={styles.mainImage} source={{uri: post.image}} />
         <Image style={styles.image1} source={{uri: post.image}} />
@@ -21,7 +25,7 @@ const WishlistItem = ({item}) => {
       <Text numberOfLines={2} style={styles.name}>
         {item.name}
       </Text>
-    </View>
+    </Pressable>
   );
 };
 

@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 30,
     paddingTop: 50,
   },
   logo: {
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   navButtonText: {
     fontSize: 18,
     fontWeight: '500',
-    color: '#2e64e5',
+    color: '#f15454',
     // fontFamily: 'Lato-Regular',
   },
 });

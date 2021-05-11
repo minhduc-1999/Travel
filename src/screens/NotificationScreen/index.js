@@ -1,12 +1,21 @@
 import React from 'react';
-import {ScrollView, Text} from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import styles from './styles';
-const ProfileScreen = ({navigation}) => {
+import noti from '../../../assets/data/noti';
+import NotificationItem from '../../components/NotificationItem';
+
+const NotificationScreen = ({navigation}) => {
   return (
-    <ScrollView style={styles.container}>
-      <Text>Notification Screen</Text>
-    </ScrollView>
+    <View style={styles.container}>
+      <Text style={styles.title}>Notifications</Text>
+      <FlatList
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        data={noti}
+        renderItem={({item}) => <NotificationItem item={item} />}
+      />
+    </View>
   );
 };
 
-export default ProfileScreen;
+export default NotificationScreen;

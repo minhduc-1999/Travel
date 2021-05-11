@@ -2,11 +2,12 @@ import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    width: '90%',
+    marginHorizontal: 20,
     backgroundColor: 'white',
-    height: 300,
+    height: 270,
     borderRadius: 20,
-    margin: 20,
+    marginTop: 0,
+    marginBottom: 30,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: {

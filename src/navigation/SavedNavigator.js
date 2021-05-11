@@ -19,13 +19,20 @@ const SavedNavigator = () => {
           },
           headerTitleStyle: {
             fontSize: 30,
+            fontWeight: 'bold',
           }
         }}
       />
       <Stack.Screen
         name={'SavedDetail'}
         component={WishlistDetail}
-        options={{headerShown: false}}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: '#f2f2f2',
+            height: 80,
+          },
+        }}
       />
     </Stack.Navigator>
   );
