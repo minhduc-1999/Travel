@@ -33,11 +33,13 @@ const MenuScreen = ({navigation}) => {
       <Text style={styles.groupText}>Account</Text>
       <View>
         <GroupListItem
+          showChervon
           title="Profile"
           iconName="user-o"
           onPress={() => navigation.navigate('Profile')}
         />
         <GroupListItem
+          showChervon
           title="Change Password"
           iconName="key"
           onPress={() => navigation.navigate('Change Password')}
@@ -59,8 +61,13 @@ const MenuScreen = ({navigation}) => {
           initState={false}
           switchColor={'#f15454'}
         />
-        <GroupListItem title="Send feedbacks" iconName="comments-o" />
         <GroupListItem
+          showChervon
+          title="Send feedbacks"
+          iconName="comments-o"
+        />
+        <GroupListItem
+          showChervon
           onPress={() => logout()}
           title="Log Out"
           iconName="sign-out"

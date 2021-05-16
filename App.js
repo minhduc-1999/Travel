@@ -13,7 +13,7 @@ import 'react-native-gesture-handler';
 const App = () => {
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" />
       <Providers />
     </>
   );
