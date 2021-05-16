@@ -6,27 +6,25 @@ import GroupListItem from '../../components/CustomListItem/GroupListItem';
 import SwitchListItem from '../../components/CustomListItem/SwitchListItem';
 import {AuthContext} from '../../navigation/AuthProvider';
 const MenuScreen = ({navigation}) => {
-  const {logout} = useContext(AuthContext);
+  const {logout, user} = useContext(AuthContext);
   return (
     <ScrollView style={styles.scroll}>
       <View style={styles.userRow}>
         <TouchableOpacity>
           <View style={styles.userImage}>
-            <Avatar
-              rounded
-              size="large"
-              source={require('../../../assets/images/wallpaper.jpg')}
-            />
+            <Avatar rounded size="large" source={{uri: user.imageUrl}} />
           </View>
         </TouchableOpacity>
         <View>
-          <Text style={{fontSize: 20}}>Name Will Come Here</Text>
+          <Text style={{fontSize: 20}}>
+            {user.firstName + ' ' + user.lastName}
+          </Text>
           <Text
             style={{
               color: 'gray',
               fontSize: 18,
             }}>
-            Email Will Come here
+            {user.email}
           </Text>
         </View>
       </View>
@@ -36,7 +34,7 @@ const MenuScreen = ({navigation}) => {
           showChervon
           title="Profile"
           iconName="user-o"
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() => navigation.navigate('Profile', {user})}
         />
         <GroupListItem
           showChervon

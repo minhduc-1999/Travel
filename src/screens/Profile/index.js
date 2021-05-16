@@ -8,17 +8,18 @@ import {
 } from 'react-native';
 import {Avatar} from 'react-native-elements';
 import styles from './styles';
-import user from '../../../assets/data/user';
+// import user from '../../../assets/data/user';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import firestore from '@react-native-firebase/firestore';
+// import DbService from '../../services/DbService';
+
 // import TextEditListItem from '../../components/CustomListItem/TextEditListItem';
-const ProfileScreen = ({navigation}) => {
+const ProfileScreen = ({navigation, route}) => {
+  const {user} = route.params;
   return (
     <ScrollView style={styles.container}>
       <View style={styles.userImage}>
-        <Avatar
-          rounded
-          size="xlarge"
-          source={require('../../../assets/images/wallpaper.jpg')}>
+        <Avatar rounded size="xlarge" source={{uri: user.imageUrl}}>
           <View style={styles.badgeContainer}>
             <TouchableOpacity
               style={styles.badgeStyle}
@@ -57,7 +58,9 @@ const ProfileScreen = ({navigation}) => {
         <View style={styles.divider} />
         <View>
           <Text style={styles.field}>Date Of Birth</Text>
-          <TextInput style={styles.fieldValue}>{user.dateOB}</TextInput>
+          <TextInput style={styles.fieldValue}>
+            {user.dateOB.toDate().toLocaleDateString('vi-VI')}
+          </TextInput>
         </View>
         <View style={styles.divider} />
         <View>
