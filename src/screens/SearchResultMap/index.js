@@ -4,11 +4,12 @@ import styles from './styles';
 import PostCarousel from '../../components/PostCarouselItem';
 import places from '../../../assets/data/feed';
 import CustomMarker from '../../components/CustomMarker';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
 
 const SearchResultMap = () => {
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
 
-  const flatlist = useRef();
+  // const flatlist = useRef();
 
   useEffect(() => {
     if (!selectedPlaceId || !flatlist) return;
@@ -33,7 +34,16 @@ const SearchResultMap = () => {
   return (
     <View style={styles.container}>
       {/* Map here */}
-      <View>
+      <MapView
+        provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+        style={styles.map}
+        region={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.015,
+          longitudeDelta: 0.0121,
+        }}></MapView>
+      {/* <View>
         {places.map(place => (
           <CustomMarker
             key={place.id}
@@ -42,9 +52,9 @@ const SearchResultMap = () => {
             isSelected={place.id === selectedPlaceId}
           />
         ))}
-      </View>
+      </View> */}
 
-      <View style={styles.carouselList}>
+      {/* <View style={styles.carouselList}>
         <FlatList
           ref={flatlist}
           data={places}
@@ -58,7 +68,7 @@ const SearchResultMap = () => {
           viewabilityConfig={viewConfig.current}
           onViewableItemsChanged={onViewChange.current}
         />
-      </View>
+      </View> */}
     </View>
   );
 };
