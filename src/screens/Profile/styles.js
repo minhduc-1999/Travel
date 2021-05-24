@@ -26,11 +26,7 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
   },
   divider: {
-    backgroundColor: '#5b5b5b',
-    marginVertical: 10,
-    height: 1,
-    borderWidth: 1,
-    borderColor: '#cfccc6',
+    marginVertical: 8,
   },
   badgeContainer: {
     width: 40,
@@ -50,6 +46,9 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  headerRight: {
+    marginRight: 20,
   },
 });
 
