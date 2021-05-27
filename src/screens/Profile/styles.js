@@ -50,6 +50,69 @@ const styles = StyleSheet.create({
   headerRight: {
     marginRight: 20,
   },
+
+  panel: {
+    paddingVertical: 10,
+    paddingHorizontal: 50,
+    backgroundColor: '#fff',
+    height: '100%',
+    // borderTopLeftRadius: 20,
+    // borderTopRightRadius: 20,
+    // shadowColor: '#000000',
+    // shadowOffset: {width: 0, height: 0},
+    // shadowRadius: 5,
+    // shadowOpacity: 0.4,
+  },
+  header: {
+    backgroundColor: '#fff',
+    // shadowColor: '#333333',
+    // shadowOffset: {width: -1, height: -12},
+    // shadowRadius: 12,
+    // shadowOpacity: 0.4,
+    // elevation: 10,
+    paddingTop: 20,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    width: '100%',
+  },
+  sheetDivider: {
+    backgroundColor: 'red',
+    marginVertical: 10,
+    marginHorizontal: 50,
+  },
+  panelHeader: {
+    alignItems: 'center',
+  },
+  panelHandle: {
+    width: 40,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#00000040',
+    marginBottom: 10,
+  },
+  panelTitle: {
+    paddingTop: 10,
+    fontSize: 27,
+    lineHeight: 25,
+  },
+  panelSubtitle: {
+    fontSize: 16,
+    color: 'gray',
+    lineHeight: 25,
+    marginBottom: 10,
+  },
+  panelButton: {
+    padding: 13,
+    borderRadius: 10,
+    backgroundColor: '#f15454',
+    alignItems: 'center',
+    marginVertical: 7,
+  },
+  panelButtonTitle: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: 'white',
+  },
 });
 
 export default styles;

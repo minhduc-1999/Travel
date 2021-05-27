@@ -5,29 +5,35 @@ import {Avatar} from 'react-native-elements';
 import GroupListItem from '../../components/CustomListItem/GroupListItem';
 import SwitchListItem from '../../components/CustomListItem/SwitchListItem';
 import {AuthContext} from '../../navigation/AuthProvider';
-import firestore from '@react-native-firebase/firestore';
+import {DbContext} from '../../Services/DbProvider';
 
 const MenuScreen = ({navigation}) => {
   const {logout, userAcc} = useContext(AuthContext);
+  const {loadUserData, onUserProfileChange} = useContext(DbContext);
+
   const [user, setUser] = useState(null);
 
   useEffect(async () => {
-    loadUserData();
+    fetchUserData();
   }, []);
 
-  const loadUserData = async () => {
-    console.log(Date.now() + ': load data');
-    firestore()
-      .collection('User')
-      .where('accountId', '==', userAcc.uid)
-      .limit(1)
-      .get()
-      .then(querySnapshot => {
-        if (querySnapshot.size == 1) {
-          const _user = querySnapshot.docs[0].data();
-          const _refId = querySnapshot.docs[0].ref.id;
-          setUser({info: _user, refId: _refId});
-        }
+  useEffect(() => {
+    const unsub = onUserProfileChange(data => {
+      setUser({
+        refId: user.refId,
+        info: {
+          ...user.info,
+          ...data,
+        },
+      });
+    });
+    return unsub;
+  });
+
+  const fetchUserData = async () => {
+    loadUserData(userAcc.uid)
+      .then(value => {
+        setUser(value);
       })
       .catch(err => console.error(err));
   };
