@@ -43,6 +43,16 @@ const AuthProvider = ({children}) => {
             console.error(error);
           }
         },
+        changePassword: (currentPassword, newPassword) => {
+          var user = auth().currentUser;
+          var cred = auth.EmailAuthProvider.credential(user.email, currentPassword);
+          user.reauthenticateWithCredential(cred).then(() => {
+            user.updatePassword(newPassword).then(() => {
+              alert('Password was changed. You need to sign in again.');
+              auth().signOut();
+            }).catch((error) => console.log(error.message));
+          }).catch((error) => console.log(error.message));
+        },
       }}>
       {children}
     </AuthContext.Provider>

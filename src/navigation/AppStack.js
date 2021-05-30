@@ -6,6 +6,7 @@ import HomeTabNavigator from '../navigation/HomeTabNavigator';
 import DetailedPostScreen from '../screens/DetailedPostScreen';
 import ProfileScreen from '../screens/Profile';
 import ChangePassword from '../screens/ChangePassword';
+import ForgotPasswordScreen from '../screens/ForgotPassword';
 import DbProvider from '../Services/DbProvider';
 
 const Stack = createStackNavigator();
@@ -45,6 +46,11 @@ const AppStack = props => {
           name={'Change Password'}
           component={ChangePassword}
           options={{title: 'Change Password', headerTitleAlign: 'center'}}
+        />
+        <Stack.Screen
+          name={'Forgot Password'}
+          component={ForgotPasswordScreen}
+          options={{title: ''}}
         />
       </Stack.Navigator>
     </DbProvider>
