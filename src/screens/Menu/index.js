@@ -19,13 +19,14 @@ const MenuScreen = ({navigation}) => {
 
   useEffect(() => {
     const unsub = onUserProfileChange(data => {
-      setUser({
-        refId: user.refId,
-        info: {
-          ...user.info,
-          ...data,
-        },
-      });
+      if (!user)
+        setUser({
+          refId: user.refId,
+          info: {
+            ...user.info,
+            ...data,
+          },
+        });
     });
     return unsub;
   });
@@ -33,7 +34,7 @@ const MenuScreen = ({navigation}) => {
   const fetchUserData = async () => {
     loadUserData(userAcc.uid)
       .then(value => {
-        setUser(value);
+        if (value) setUser(value);
       })
       .catch(err => console.error(err));
   };

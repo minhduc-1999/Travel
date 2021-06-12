@@ -9,7 +9,7 @@ import MapView, {PROVIDER_GOOGLE} from 'react-native-maps'; // remove PROVIDER_G
 const SearchResultMap = () => {
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
 
-  // const flatlist = useRef();
+  const flatlist = useRef();
 
   useEffect(() => {
     if (!selectedPlaceId || !flatlist) return;
@@ -34,7 +34,7 @@ const SearchResultMap = () => {
   return (
     <View style={styles.container}>
       {/* Map here */}
-      <MapView
+      {/* <MapView
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         style={styles.map}
         region={{
@@ -42,7 +42,7 @@ const SearchResultMap = () => {
           longitude: -122.4324,
           latitudeDelta: 0.015,
           longitudeDelta: 0.0121,
-        }}></MapView>
+        }}></MapView> */}
       {/* <View>
         {places.map(place => (
           <CustomMarker
@@ -54,7 +54,7 @@ const SearchResultMap = () => {
         ))}
       </View> */}
 
-      {/* <View style={styles.carouselList}>
+      <View style={styles.carouselList}>
         <FlatList
           ref={flatlist}
           data={places}
@@ -68,7 +68,7 @@ const SearchResultMap = () => {
           viewabilityConfig={viewConfig.current}
           onViewableItemsChanged={onViewChange.current}
         />
-      </View> */}
+      </View>
     </View>
   );
 };
