@@ -73,6 +73,19 @@ const DbProvider = ({children}) => {
           const listener = observer.subscribe('infoChange', handler);
           return listener.unsubscribe;
         },
+        loadTags: async () => {
+          console.log(Date.now() + ' - Load all tags');
+          return firestore()
+            .collection('tags')
+            .limit(10)
+            .get()
+            .then(querySnapshot => {
+              return querySnapshot.docs.map(doc => doc.data());
+            })
+            .catch(err => {
+              throw new Error(err);
+            });
+        },
       }}>
       {children}
     </DbContext.Provider>

@@ -23,8 +23,19 @@ const index = props => {
       style={[containerStyle, {width: width, height: height}]}>
       <ImageBackground
         source={{uri: imageSrc}}
+        // source={require('../../../assets/images/history.jpg')}
         style={[styles.image, {opacity: opacity}]}>
-        <Text style={titleStyle}>{title}</Text>
+        <Text
+          style={[
+            titleStyle,
+            {
+              textShadowOffset: {width: 3, height: 3},
+              textShadowRadius: 10,
+              textShadowColor: '#000',
+            },
+          ]}>
+          {title}
+        </Text>
       </ImageBackground>
     </TouchableOpacity>
   );
