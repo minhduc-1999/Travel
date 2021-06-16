@@ -50,7 +50,6 @@ const HomeScreen = ({navigation}) => {
             data={tags}
             renderItem={({item, index}) => (
               <Tile
-                key={index}
                 width={(windowWidth * 70) / 100}
                 height={(windowWidth * 70) / 100}
                 containerStyle={{
@@ -71,6 +70,7 @@ const HomeScreen = ({navigation}) => {
                 onPress={() => console.warn(item.name)}
               />
             )}
+            keyExtractor={(item, index) => index.toString()}
             horizontal
             showsHorizontalScrollIndicator={false}
           />

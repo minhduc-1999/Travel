@@ -86,6 +86,37 @@ const DbProvider = ({children}) => {
               throw new Error(err);
             });
         },
+        loadDestinations: async (long, lat, limit) => {
+          console.log(Date.now() + ' - Load Destinations');
+          return firestore()
+            .collection('destinations')
+            .orderBy('coordinate.latitude', 'asc')
+            .limit(limit)
+            .get()
+            .then(querySnapshot => {
+              console.log(querySnapshot.size);
+              return querySnapshot.docs.map(doc => doc.data());
+            })
+            .catch(err => {
+              throw new Error(err);
+            });
+        },
+        loadMoreDestinations: async (long, lat, limit, last) => {
+          console.log(Date.now() + ' - Load Destinations');
+          return firestore()
+            .collection('destinations')
+            .orderBy('coordinate.latitude', 'asc')
+            .startAfter(last)
+            .limit(limit)
+            .get()
+            .then(querySnapshot => {
+              console.log(querySnapshot.size);
+              return querySnapshot.docs.map(doc => doc.data());
+            })
+            .catch(err => {
+              throw new Error(err);
+            });
+        },
       }}>
       {children}
     </DbContext.Provider>
