@@ -102,7 +102,7 @@ const DbProvider = ({children}) => {
             });
         },
         loadMoreDestinations: async (long, lat, limit, last) => {
-          console.log(Date.now() + ' - Load Destinations');
+          console.log(Date.now() + ' - Load More Destinations');
           return firestore()
             .collection('destinations')
             .orderBy('coordinate.latitude', 'asc')
@@ -111,7 +111,9 @@ const DbProvider = ({children}) => {
             .get()
             .then(querySnapshot => {
               console.log(querySnapshot.size);
-              return querySnapshot.docs.map(doc => doc.data());
+              return querySnapshot.docs.map(doc => {
+                return {...doc.data(), id: doc.ref.id};
+              });
             })
             .catch(err => {
               throw new Error(err);

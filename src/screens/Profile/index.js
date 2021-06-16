@@ -9,8 +9,11 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
-import {Avatar, Divider} from 'react-native-elements';
+import {Avatar} from 'react-native-elements';
+import Divider from '../../components/Divider';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Animated from 'react-native-reanimated';
@@ -187,103 +190,106 @@ const ProfileScreen = ({navigation, route}) => {
         .catch(err => console.error(err));
     }
   };
-
+  console.log('Profile screen render');
   return (
-    <View>
-      <BottomSheet
-        ref={sheetRef}
-        snapPoints={[330, 0]}
-        initialSnap={1}
-        borderRadius={10}
-        renderContent={renderContent}
-        renderHeader={renderHeader}
-        callbackNode={fall}
-      />
-      <Animated.View
-        style={{
-          opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)),
-        }}>
-        <ScrollView
-          style={styles.container}
-          showsVerticalScrollIndicator={false}>
-          <View style={styles.userImage}>
-            <Avatar rounded size="xlarge" source={{uri: user.info.imageUrl}}>
-              <View style={styles.badgeContainer}>
-                <TouchableOpacity
-                  style={styles.badgeStyle}
-                  onPress={() => sheetRef.current.snapTo(0)}>
-                  <Icon name="camera" size={18} />
-                </TouchableOpacity>
+    <SafeAreaView>
+      <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
+      <View>
+        <BottomSheet
+          ref={sheetRef}
+          snapPoints={[330, 0]}
+          initialSnap={1}
+          borderRadius={10}
+          renderContent={renderContent}
+          renderHeader={renderHeader}
+          callbackNode={fall}
+        />
+        <Animated.View
+          style={{
+            opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)),
+          }}>
+          <ScrollView
+            style={styles.container}
+            showsVerticalScrollIndicator={false}>
+            <View style={styles.userImage}>
+              <Avatar rounded size="xlarge" source={{uri: user.info.imageUrl}}>
+                <View style={styles.badgeContainer}>
+                  <TouchableOpacity
+                    style={styles.badgeStyle}
+                    onPress={() => sheetRef.current.snapTo(0)}>
+                    <Icon name="camera" size={18} />
+                  </TouchableOpacity>
+                </View>
+              </Avatar>
+            </View>
+            <View style={styles.userInfo}>
+              <View>
+                <Text style={styles.field}>First Name</Text>
+                <TextInput
+                  editable={editable}
+                  onChangeText={text => onInfoChange('firstName', text)}
+                  textContentType={'name'}
+                  style={styles.fieldValue}>
+                  {user.info.firstName}
+                </TextInput>
               </View>
-            </Avatar>
-          </View>
-          <View style={styles.userInfo}>
-            <View>
-              <Text style={styles.field}>First Name</Text>
-              <TextInput
-                editable={editable}
-                onChangeText={text => onInfoChange('firstName', text)}
-                textContentType={'name'}
-                style={styles.fieldValue}>
-                {user.info.firstName}
-              </TextInput>
+              <Divider style={styles.divider} />
+              <View>
+                <Text style={styles.field}>Last Name</Text>
+                <TextInput
+                  editable={editable}
+                  onChangeText={text => onInfoChange('lastName', text)}
+                  textContentType={'familyName'}
+                  style={styles.fieldValue}>
+                  {user.info.lastName}
+                </TextInput>
+              </View>
+              <Divider style={styles.divider} />
+              <View>
+                <Text style={styles.field}>Email</Text>
+                <TextInput
+                  onChangeText={text => onInfoChange('email', text)}
+                  editable={editable}
+                  style={styles.fieldValue}>
+                  {user.info.email}
+                </TextInput>
+              </View>
+              <Divider style={styles.divider} />
+              <View>
+                <Text style={styles.field}>Sex</Text>
+                <TextInput
+                  onChangeText={text => onInfoChange('sex', text)}
+                  editable={editable}
+                  style={styles.fieldValue}>
+                  {user.info.sex}
+                </TextInput>
+              </View>
+              <Divider style={styles.divider} />
+              <View>
+                <Text style={styles.field}>Date Of Birth</Text>
+                <TextInput
+                  onChangeText={text => onInfoChange('dateOB', text)}
+                  editable={editable}
+                  style={styles.fieldValue}>
+                  {new Date(user.info.dateOB).toLocaleDateString('vi-VI')}
+                </TextInput>
+              </View>
+              <Divider style={styles.divider} />
+              <View>
+                <Text style={styles.field}>About</Text>
+                <TextInput
+                  onChangeText={text => onInfoChange('about', text)}
+                  editable={editable}
+                  style={styles.fieldValue}
+                  multiline={true}>
+                  {user.info.about}
+                </TextInput>
+              </View>
             </View>
-            <Divider style={styles.divider} />
-            <View>
-              <Text style={styles.field}>Last Name</Text>
-              <TextInput
-                editable={editable}
-                onChangeText={text => onInfoChange('lastName', text)}
-                textContentType={'familyName'}
-                style={styles.fieldValue}>
-                {user.info.lastName}
-              </TextInput>
-            </View>
-            <Divider style={styles.divider} />
-            <View>
-              <Text style={styles.field}>Email</Text>
-              <TextInput
-                onChangeText={text => onInfoChange('email', text)}
-                editable={editable}
-                style={styles.fieldValue}>
-                {user.info.email}
-              </TextInput>
-            </View>
-            <Divider style={styles.divider} />
-            <View>
-              <Text style={styles.field}>Sex</Text>
-              <TextInput
-                onChangeText={text => onInfoChange('sex', text)}
-                editable={editable}
-                style={styles.fieldValue}>
-                {user.info.sex}
-              </TextInput>
-            </View>
-            <Divider style={styles.divider} />
-            <View>
-              <Text style={styles.field}>Date Of Birth</Text>
-              <TextInput
-                onChangeText={text => onInfoChange('dateOB', text)}
-                editable={editable}
-                style={styles.fieldValue}>
-                {new Date(user.info.dateOB).toLocaleDateString('vi-VI')}
-              </TextInput>
-            </View>
-            <Divider style={styles.divider} />
-            <View>
-              <Text style={styles.field}>About</Text>
-              <TextInput
-                onChangeText={text => onInfoChange('about', text)}
-                editable={editable}
-                style={styles.fieldValue}
-                multiline={true}>
-                {user.info.about}
-              </TextInput>
-            </View>
-          </View>
-        </ScrollView>
-      </Animated.View>
-    </View>
+          </ScrollView>
+        </Animated.View>
+      </View>
+    </SafeAreaView>
   );
 };
 

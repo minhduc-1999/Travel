@@ -1,7 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import DestinationSearchScreen from '../screens/DestinationSearch';
-import GuestsScreen from '../screens/Guests';
 import HomeTabNavigator from '../navigation/HomeTabNavigator';
 import DetailedPostScreen from '../screens/DetailedPostScreen';
 import ProfileScreen from '../screens/Profile';
@@ -20,11 +19,6 @@ const AppStack = props => {
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name={'GuestsScreen'}
-          component={GuestsScreen}
-          options={{title: 'How many people?', headerTitleAlign: 'center'}}
-        />
-        <Stack.Screen
           name={'Destination Search'}
           component={DestinationSearchScreen}
           options={{
@@ -35,7 +29,7 @@ const AppStack = props => {
         <Stack.Screen
           name={'Detailed Post'}
           component={DetailedPostScreen}
-          options={{title: 'Accommodation', headerTitleAlign: 'center'}}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name={'Profile'}

@@ -1,5 +1,11 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, FlatList, useWindowDimensions} from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  StatusBar,
+  FlatList,
+  useWindowDimensions,
+} from 'react-native';
 import styles from './styles';
 import PostCarousel from '../../components/PostCarouselItem';
 import places from '../../../assets/data/feed';
@@ -30,11 +36,13 @@ const SearchResultMap = () => {
       setSelectedPlaceId(place.id);
     }
   });
-
+  console.log('search result map screen render');
   return (
-    <View style={styles.container}>
-      {/* Map here */}
-      {/* <MapView
+    <SafeAreaView>
+      <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
+      <View style={styles.container}>
+        {/* Map here */}
+        {/* <MapView
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         style={styles.map}
         region={{
@@ -43,7 +51,7 @@ const SearchResultMap = () => {
           latitudeDelta: 0.015,
           longitudeDelta: 0.0121,
         }}></MapView> */}
-      {/* <View>
+        {/* <View>
         {places.map(place => (
           <CustomMarker
             key={place.id}
@@ -54,22 +62,23 @@ const SearchResultMap = () => {
         ))}
       </View> */}
 
-      <View style={styles.carouselList}>
-        <FlatList
-          ref={flatlist}
-          data={places}
-          renderItem={({item}) => <PostCarousel post={item} />}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={itemWidth - 40}
-          snapToAlignment={'center'}
-          decelerationRate={'fast'}
-          pagingEnabled={true}
-          viewabilityConfig={viewConfig.current}
-          onViewableItemsChanged={onViewChange.current}
-        />
+        <View style={styles.carouselList}>
+          <FlatList
+            ref={flatlist}
+            data={places}
+            renderItem={({item}) => <PostCarousel post={item} />}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={itemWidth - 40}
+            snapToAlignment={'center'}
+            decelerationRate={'fast'}
+            pagingEnabled={true}
+            viewabilityConfig={viewConfig.current}
+            onViewableItemsChanged={onViewChange.current}
+          />
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

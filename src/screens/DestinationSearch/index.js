@@ -1,13 +1,15 @@
 import React, {useState} from 'react';
-import {View, TextInput, FlatList} from 'react-native';
+import {SafeAreaView, StatusBar, View, TextInput, FlatList} from 'react-native';
 import styles from './styles';
 import searchData from '../../../assets/data/search';
 import SuggestionRow from './SuggestionRow';
 
 const DestinationSearchScreen = () => {
   const [inputText, setInputText] = useState('');
+  console.log('destination Search screen render');
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
       {/* input component */}
       <TextInput
         style={styles.textInput}
@@ -18,9 +20,9 @@ const DestinationSearchScreen = () => {
       {/* List of des */}
       <FlatList
         data={searchData}
-        renderItem={({item}) => <SuggestionRow item={item}/>}
+        renderItem={({item}) => <SuggestionRow item={item} />}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {View, FlatList, ActivityIndicator} from 'react-native';
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
 import Post from '../../components/Post';
 import {DbContext} from '../../Services/DbProvider';
 
@@ -9,38 +15,60 @@ const SearchResultScreen = props => {
   const [lastVisible, setLastVisible] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const {loadDestinations, loadMoreDestinations} = React.useContext(DbContext);
 
   React.useEffect(() => {
+    let mounted = true;
     loadDestinations(1, 1, limit).then(res => {
-      setData(res);
-      setLastVisible(res[res.length - 1].coordinate.latitude);
-      setLoading(false);
-    });
-  }, []);
-
-  return (
-    <View>
-      <FlatList
-        onEndReachedThreshold={0.5}
-        onEndReached={() => {
-          loadMoreDestinations(1, 1, 5, lastVisible).then(res => {
-            setData([...data, ...res]);
-            setLastVisible(res[res.length - 1].coordinate.latitude);
-            setRefreshing(false);
-          });
-        }}
-        ListFooterComponent={() =>
-          loading ? <ActivityIndicator color={'#f15454'} /> : null
+      if (mounted) {
+        if (res.length) {
+          setData(res);
+          setLastVisible(res[res.length - 1].coordinate.latitude);
+        } else {
+          setHasMore(false);
         }
-        data={data}
-        renderItem={({item, index}) => (
-          <Post key={(item.name + index).toString()} post={item} />
-        )}
-        keyExtractor={(item, index) => (item.name + index).toString()}
-        refreshing={refreshing}
-      />
-    </View>
+        setLoading(false);
+      }
+    });
+    return function cleanup() {
+      mounted = false;
+    };
+  }, []);
+  console.log('search result screen render');
+  return (
+    <SafeAreaView>
+      <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
+      <View>
+        <FlatList
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            if (hasMore)
+              loadMoreDestinations(1, 1, 5, lastVisible).then(res => {
+                if (res.length) {
+                  setData([...data, ...res]);
+                  setLastVisible(res[res.length - 1].coordinate.latitude);
+                } else {
+                  setHasMore(false);
+                }
+                setRefreshing(false);
+              });
+          }}
+          ListFooterComponent={() =>
+            loading ? (
+              <ActivityIndicator
+                style={{marginVertical: 20}}
+                color={'#f15454'}
+              />
+            ) : null
+          }
+          data={data}
+          renderItem={({item}) => <Post key={item.id} post={item} />}
+          keyExtractor={item => item.id}
+          refreshing={refreshing}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 export default SearchResultScreen;

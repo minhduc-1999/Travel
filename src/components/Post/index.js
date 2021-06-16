@@ -2,26 +2,64 @@ import React from 'react';
 import {Text, Image, Pressable, View, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-const Post = props => {
-  const post = props.post;
-  const navigation = useNavigation();
-  return (
-    <Pressable
-      // onPress={() => navigation.navigate('Detailed Post', {postId: post.id})}
-      style={styles.container}>
-      <Image style={styles.image} source={{uri: post.images[0]}} />
+class Post extends React.PureComponent {
+  constructor(props) {
+    super(props);
+  }
 
-      <Text style={styles.name} numberOfLines={2}>
-        {post.name} - 5 <Icon name="star" size={25} color={'#ebe707'} />
-      </Text>
-      <View style={styles.tagContainer}>
-        {post.tags
-          ? post.tags.map(tag => <Text style={styles.tag}>{tag}</Text>)
-          : null}
-      </View>
-    </Pressable>
-  );
+  render() {
+    const {navigation} = this.props;
+    return (
+      <Pressable
+        key={this.props.key}
+        onPress={() => {
+          navigation.navigate('Detailed Post', {post: this.props.post});
+        }}
+        style={styles.container}>
+        <Image style={styles.image} source={{uri: this.props.post.images[0]}} />
+
+        <Text style={styles.name} numberOfLines={2}>
+          {this.props.post.name} - 5{' '}
+          <Icon name="star" size={25} color={'#ebe707'} />
+        </Text>
+        <View style={styles.tagContainer}>
+          {this.props.post.tags
+            ? this.props.post.tags.map((tag, index) => (
+                <Text key={index} style={styles.tag}>
+                  {tag}
+                </Text>
+              ))
+            : null}
+        </View>
+      </Pressable>
+    );
+  }
+}
+
+const PostWrapper = props => {
+  const navigation = useNavigation();
+  return <Post {...props} navigation={navigation} />;
 };
+// const Post = props => {
+//   const post = props.post;
+//   const navigation = useNavigation();
+//   return (
+//     <Pressable
+//       // onPress={() => navigation.navigate('Detailed Post', {postId: post.id})}
+//       style={styles.container}>
+//       <Image style={styles.image} source={{uri: post.images[0]}} />
+
+//       <Text style={styles.name} numberOfLines={2}>
+//         {post.name} - 5 <Icon name="star" size={25} color={'#ebe707'} />
+//       </Text>
+//       <View style={styles.tagContainer}>
+//         {post.tags
+//           ? post.tags.map(tag => <Text style={styles.tag}>{tag}</Text>)
+//           : null}
+//       </View>
+//     </Pressable>
+//   );
+// };
 
 const styles = StyleSheet.create({
   container: {
@@ -54,4 +92,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Post;
+export default PostWrapper;

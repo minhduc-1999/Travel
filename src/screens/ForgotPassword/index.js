@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, SafeAreaView, StatusBar} from 'react-native';
 import FormInput from '../../components/Utils/FormInput';
 import FormButton from '../../components/Utils/FormButton';
 import {AuthContext} from '../../navigation/AuthProvider';
@@ -11,7 +11,8 @@ const ForgotPassword = ({navigation}) => {
   const [email, setEmail] = useState('');
   const {forgotPassword} = useContext(AuthContext);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
       <Text style={styles.title}>Forgot your password?</Text>
       <Text style={styles.text}>Enter your email to find account</Text>
 
@@ -26,7 +27,7 @@ const ForgotPassword = ({navigation}) => {
       />
 
       <FormButton buttonTitle="Send" onPress={() => forgotPassword(email)} />
-    </View>
+    </SafeAreaView>
   );
 };
 

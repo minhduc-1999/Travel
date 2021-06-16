@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     position: 'absolute',
-    top: 25,
+    top: 35,
     left: 0,
     zIndex: 100,
     elevation: Platform.OS === 'android' ? 50 : 0,
