@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   divider: {
-    borderTopColor: 'grey',
+    borderTopColor: 'silver',
   },
 });
 

@@ -3,7 +3,6 @@ import {
   View,
   ScrollView,
   Text,
-  TouchableOpacity,
   SafeAreaView,
   StatusBar,
   ActivityIndicator,
@@ -63,7 +62,7 @@ const MenuScreen = ({navigation}) => {
         ) : (
           <ScrollView style={styles.scroll}>
             <View style={styles.userRow}>
-              <TouchableOpacity>
+              <View>
                 <View style={styles.userImage}>
                   <Avatar
                     rounded
@@ -75,7 +74,7 @@ const MenuScreen = ({navigation}) => {
                     }
                   />
                 </View>
-              </TouchableOpacity>
+              </View>
               <View>
                 <Text style={{fontSize: 20}}>
                   {user.info

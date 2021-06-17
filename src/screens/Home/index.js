@@ -8,12 +8,16 @@ import {
   ScrollView,
   SafeAreaView,
   StatusBar,
+  Animated,
 } from 'react-native';
 import styles from './styles';
 import Fonawesome from 'react-native-vector-icons/FontAwesome';
 import Tile from '../../components/Tile';
 import {DbContext} from '../../Services/DbProvider';
-import {windowWidth} from '../../Utils/Dimention';
+import {windowWidth, windowHeight} from '../../Utils/Dimention';
+
+const AnimatedStatusBar = Animated.createAnimatedComponent(StatusBar);
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const HomeScreen = ({navigation}) => {
   const [tags, setTags] = useState([]);
@@ -23,21 +27,67 @@ const HomeScreen = ({navigation}) => {
       .then(res => setTags(res))
       .catch(console.error);
   }, []);
+  const [barStyle, setBarStyle] = React.useState('light-content');
+  const scrollY = React.useRef(new Animated.Value(0)).current;
+  const headerColor = scrollY.interpolate({
+    inputRange: [0, (windowHeight * 20) / 100],
+    outputRange: ['#00000000', '#ffffff'],
+    extrapolate: 'clamp',
+  });
+  const handleScroll = event => {
+    const {y} = event.nativeEvent.contentOffset;
+    if (y >= (windowHeight * 20) / 100) setBarStyle('dark-content');
+    else setBarStyle('light-content');
+  };
   console.log('Home screen render');
   return (
     <SafeAreaView>
-      <StatusBar
+      <AnimatedStatusBar
         translucent
-        backgroundColor={'transparent'}
-        barStyle="light-content"
+        backgroundColor={headerColor}
+        barStyle={barStyle}
       />
-      <ScrollView>
-        <Pressable
-          style={styles.searchButton}
+      <Animated.View
+        style={[
+          styles.header,
+          {
+            backgroundColor: headerColor,
+            borderBottomColor: scrollY.interpolate({
+              inputRange: [0, (windowHeight * 20) / 100],
+              outputRange: ['#00000000', 'silver'],
+              extrapolate: 'clamp',
+            }),
+          },
+        ]}>
+        <AnimatedPressable
+          style={[
+            styles.searchButton,
+            {
+              backgroundColor: scrollY.interpolate({
+                inputRange: [0, (windowHeight * 20) / 100],
+                outputRange: ['#fff', '#ecececb3'],
+                extrapolate: 'clamp',
+              }),
+            },
+          ]}
           onPress={() => navigation.navigate('Destination Search')}>
           <Fonawesome name={'search'} color={'#f15454'} size={16} />
           <Text style={styles.searchButtonText}>Where are you going?</Text>
-        </Pressable>
+        </AnimatedPressable>
+      </Animated.View>
+      <ScrollView
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: {
+                  y: scrollY,
+                },
+              },
+            },
+          ],
+          {useNativeDriver: false, listener: event => handleScroll(event)},
+        )}>
         <ImageBackground
           // source={require('../../../assets/images/wallpaper.jpg')}
           source={{
