@@ -9,9 +9,11 @@ import {
 import DetailPost from '../../components/DetailedPost';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomHeader from '../../components/CustomHeader';
+// import Animated from 'react-native-reanimated';
 
 const DetailedPostScreen = ({route, navigation}) => {
   const [trans, setTrans] = React.useState(true);
+  // const scrollY = React.useRef(new Animated.Value(0)).current
   const {post} = route.params;
   console.log('detail post screen render');
   return (
@@ -42,7 +44,12 @@ const DetailedPostScreen = ({route, navigation}) => {
           </Pressable>
         }
       />
-      <ScrollView>
+      <ScrollView
+        onScroll={e => {
+          const {y} = e.nativeEvent.contentOffset;
+          if (y > 100) setTrans(false);
+          else setTrans(true);
+        }}>
         <DetailPost post={post} />
       </ScrollView>
     </SafeAreaView>
