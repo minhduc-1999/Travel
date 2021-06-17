@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import styles from './styles';
 import {Avatar} from 'react-native-elements';
@@ -15,7 +16,7 @@ import {AuthContext} from '../../navigation/AuthProvider';
 import {DbContext} from '../../Services/DbProvider';
 
 const MenuScreen = ({navigation}) => {
-  const {logout, userAcc} = useContext(AuthContext);
+  const {logout} = useContext(AuthContext);
   const {loadUserData, onUserProfileChange} = useContext(DbContext);
 
   const [user, setUser] = useState(null);
@@ -26,22 +27,21 @@ const MenuScreen = ({navigation}) => {
 
   useEffect(() => {
     const unsub = onUserProfileChange(data => {
-      if (!user)
-        setUser({
-          refId: user.refId,
-          info: {
-            ...user.info,
-            ...data,
-          },
-        });
+      setUser({
+        refId: user.refId,
+        info: {
+          ...user.info,
+          ...data,
+        },
+      });
     });
     return unsub;
   });
 
   const fetchUserData = async () => {
-    loadUserData(userAcc.uid)
+    loadUserData()
       .then(value => {
-        if (value) setUser(value);
+        setUser(value);
       })
       .catch(err => console.error(err));
   };
@@ -51,8 +51,15 @@ const MenuScreen = ({navigation}) => {
       style={{paddingTop: 20, minHeight: '100%', backgroundColor: '#fff'}}>
       <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
       <View>
-        {user === null ? (
-          <Text>Loading...</Text>
+        {!user ? (
+          <View
+            style={{
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator size={30} color={'#f15454'} />
+          </View>
         ) : (
           <ScrollView style={styles.scroll}>
             <View style={styles.userRow}>
@@ -61,20 +68,26 @@ const MenuScreen = ({navigation}) => {
                   <Avatar
                     rounded
                     size="large"
-                    source={{uri: user.info.imageUrl}}
+                    source={
+                      user.info.imageUrl
+                        ? {uri: user.info.imageUrl}
+                        : require('../../../assets/images/anonymous.png')
+                    }
                   />
                 </View>
               </TouchableOpacity>
               <View>
                 <Text style={{fontSize: 20}}>
-                  {user.info.firstName + ' ' + user.info.lastName}
+                  {user.info
+                    ? user.info.firstName + ' ' + user.info.lastName
+                    : 'Anonymous'}
                 </Text>
                 <Text
                   style={{
                     color: 'gray',
                     fontSize: 18,
                   }}>
-                  {user.info.email}
+                  {user.info ? user.info.email : 'Anonymous'}
                 </Text>
               </View>
             </View>

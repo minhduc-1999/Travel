@@ -2,12 +2,13 @@ import React, {createContext} from 'react';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import ReactObserver from 'react-event-observer';
-
+import {AuthContext} from '../navigation/AuthProvider';
 const observer = ReactObserver();
 
 export const DbContext = createContext();
 
 const DbProvider = ({children}) => {
+  const {userAcc} = React.useContext(AuthContext);
   return (
     <DbContext.Provider
       value={{
@@ -36,11 +37,11 @@ const DbProvider = ({children}) => {
           console.log(Date.now() + ': get Url of photo');
           return storage().ref(refPath).getDownloadURL();
         },
-        loadUserData: async accountId => {
+        loadUserData: async () => {
           console.log(Date.now() + ': load user data');
           return firestore()
             .collection('User')
-            .where('accountId', '==', accountId)
+            .where('accountId', '==', userAcc.uid)
             .limit(1)
             .get()
             .then(querySnapshot => {
@@ -48,6 +49,34 @@ const DbProvider = ({children}) => {
                 const _user = querySnapshot.docs[0].data();
                 const _refId = querySnapshot.docs[0].ref.id;
                 return {info: _user, refId: _refId};
+              } else {
+                return firestore()
+                  .collection('User')
+                  .add({
+                    accountId: userAcc.uid,
+                    firstName: 'Unknow',
+                    lastName: '',
+                    sex: '',
+                    dateOB: '',
+                    about: '',
+                    imageUrl: '',
+                    email: userAcc.email,
+                  })
+                  .then(res => {
+                    return {
+                      refId: res.id,
+                      info: {
+                        accountId: userAcc.uid,
+                        firstName: 'Unknow',
+                        lastName: '',
+                        sex: '',
+                        dateOB: '',
+                        about: '',
+                        imageUrl: '',
+                        email: userAcc.email,
+                      },
+                    };
+                  });
               }
             })
             .catch(err => {
@@ -57,6 +86,10 @@ const DbProvider = ({children}) => {
         },
         updateUserProfile: async (userRefId, updateInfo) => {
           console.log(Date.now() + ': update user data');
+          if (!userRefId) {
+            console.log('no profile');
+            throw new Error('no profile exist');
+          }
           return firestore()
             .collection('User')
             .doc(userRefId)

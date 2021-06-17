@@ -20,7 +20,7 @@ class Post extends React.PureComponent {
 
         <Text style={styles.name} numberOfLines={2}>
           {this.props.post.name} - 5{' '}
-          <Icon name="star" size={25} color={'#ebe707'} />
+          <Icon name="star" size={25} color={'#f15454'} />
         </Text>
         <View style={styles.tagContainer}>
           {this.props.post.tags

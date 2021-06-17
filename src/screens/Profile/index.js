@@ -168,26 +168,39 @@ const ProfileScreen = ({navigation, route}) => {
       }
       const name = Date.now() + '_' + user.refId;
       const refPath = '/avatar/' + name;
-      deletePhoto(user.info.imageUrl)
-        .then(() => uploadPhoto(refPath, source.uri))
-        .then(() => {
-          console.log('Upload avatar successfully');
-          return getDownloadUrl(refPath);
-        })
-        .then(url => {
-          updateUserProfile(user.refId, {imageUrl: url});
-          return url;
-        })
-        // .then(url => {
-        //   setUser({
-        //     refId: user.refId,
-        //     info: {
-        //       ...user.info,
-        //       imageUrl: url,
-        //     },
-        //   });
-        // })
-        .catch(err => console.error(err));
+      if (user.info.imageUrl) {
+        deletePhoto(user.info.imageUrl)
+          .then(() => uploadPhoto(refPath, source.uri))
+          .then(() => {
+            console.log('Upload avatar successfully');
+            return getDownloadUrl(refPath);
+          })
+          .then(url => {
+            updateUserProfile(user.refId, {imageUrl: url});
+            return url;
+          })
+          // .then(url => {
+          //   setUser({
+          //     refId: user.refId,
+          //     info: {
+          //       ...user.info,
+          //       imageUrl: url,
+          //     },
+          //   });
+          // })
+          .catch(err => console.error(err));
+      } else {
+        uploadPhoto(refPath, source.uri)
+          .then(() => {
+            console.log('Upload avatar successfully');
+            return getDownloadUrl(refPath);
+          })
+          .then(url => {
+            updateUserProfile(user.refId, {imageUrl: url});
+            return url;
+          })
+          .catch(err => console.error(err));
+      }
     }
   };
   console.log('Profile screen render');
@@ -212,7 +225,14 @@ const ProfileScreen = ({navigation, route}) => {
             style={styles.container}
             showsVerticalScrollIndicator={false}>
             <View style={styles.userImage}>
-              <Avatar rounded size="xlarge" source={{uri: user.info.imageUrl}}>
+              <Avatar
+                rounded
+                size="xlarge"
+                source={
+                  user.info.imageUrl
+                    ? {uri: user.info.imageUrl}
+                    : require('../../../assets/images/anonymous.png')
+                }>
                 <View style={styles.badgeContainer}>
                   <TouchableOpacity
                     style={styles.badgeStyle}
@@ -271,7 +291,9 @@ const ProfileScreen = ({navigation, route}) => {
                   onChangeText={text => onInfoChange('dateOB', text)}
                   editable={editable}
                   style={styles.fieldValue}>
-                  {new Date(user.info.dateOB).toLocaleDateString('vi-VI')}
+                  {user.info.dateOB
+                    ? new Date(user.info.dateOB).toLocaleDateString('vi-VI')
+                    : ''}
                 </TextInput>
               </View>
               <Divider style={styles.divider} />
