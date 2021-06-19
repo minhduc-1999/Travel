@@ -47,6 +47,7 @@ const DestinationSearchScreen = ({navigation, route}) => {
       {/* input component */}
       <TextInput
         autoFocus={true}
+        numberOfLines={1}
         style={styles.textInput}
         placeholder={'Where are you going?'}
         defaultValue={
@@ -63,6 +64,9 @@ const DestinationSearchScreen = ({navigation, route}) => {
       />
       {/* List of des */}
       <FlatList
+        style={styles.searchResult}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         data={addressArr}
         renderItem={({item, index}) => (
           <SuggestionRow navigation={navigation} item={item} />

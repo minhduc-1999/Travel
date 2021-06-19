@@ -24,7 +24,9 @@ export default function SuggestionRow({item, navigation}) {
       <View style={styles.iconContainer}>
         <Entypo name={'location-pin'} size={25} />
       </View>
-      <Text style={styles.locationText}>{item.name}</Text>
+      <Text numberOfLines={1} style={styles.locationText}>
+        {item.name}
+      </Text>
     </Pressable>
   );
 }

@@ -16,7 +16,7 @@ export const Search2 = {
             11.468179702758789,
             107.82376861572266,
           ],
-          name: 'Ho Chi Minh City, Vietnam',
+          name: 'Ho Chi Minh City, Vietnam, cai j day ha nhanh nhanh',
           point: {
             type: 'Point',
             coordinates: [10.776530265808105, 106.70097351074219],

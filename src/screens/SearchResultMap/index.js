@@ -153,13 +153,13 @@ const SearchResultMap = ({navigation, route}) => {
     };
   });
 
-  const onPinClick = event => {
-    console.log(event);
-  };
+  // const onPinClick = event => {
+  //   console.log(event);
+  // };
 
-  const onMapStatusChange = event => {
-    console.log('[TEST EVENT]', event);
-  };
+  // const onMapStatusChange = event => {
+  //   console.log('[TEST EVENT]', event);
+  // };
 
   console.log('search result map screen render');
   return (
@@ -220,8 +220,8 @@ const SearchResultMap = ({navigation, route}) => {
                 zoom: 14,
               }}
               style={styles.map}
-              onMapPinClicked={onPinClick}
-              onMapLoadingStatusChanged={onMapStatusChange}
+              // onMapPinClicked={onPinClick}
+              // onMapLoadingStatusChanged={onMapStatusChange}
               pins={places.map((des, index) => {
                 return {
                   lat: Number(des.coordinate.latitude),
