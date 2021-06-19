@@ -73,7 +73,7 @@ const HomeScreen = ({navigation}) => {
               }),
             },
           ]}
-          onPress={() => navigation.navigate('Destination Search')}>
+          onPress={() => navigation.navigate('Destination Search', {})}>
           <Fonawesome name={'search'} color={'#f15454'} size={16} />
           <Text style={styles.searchButtonText}>Where are you going?</Text>
         </AnimatedPressable>

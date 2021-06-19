@@ -22,7 +22,7 @@ import Animated, {
   interpolateColors,
   Extrapolate,
 } from 'react-native-reanimated';
-import {KEY} from '../../../secret';
+import SECRET from '../../../secret';
 // import BottomSheet from 'reanimated-bottom-sheet';
 import Post from '../../components/Post';
 import Fonawesome from 'react-native-vector-icons/FontAwesome';
@@ -88,7 +88,7 @@ const arr = [
   },
 ];
 
-const SearchResultMap = ({navigation}) => {
+const SearchResultMap = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const [places, setPlaces] = useState([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState(0);
@@ -149,7 +149,10 @@ const SearchResultMap = ({navigation}) => {
     };
   });
 
+  const [curLocation, setCurLocation] = useState(route.params.pos);
+
   console.log('search result map screen render');
+  console.log('[RSM]', curLocation);
   return (
     <SafeAreaView style={{height: '100%'}}>
       <StatusBar
@@ -180,9 +183,13 @@ const SearchResultMap = ({navigation}) => {
               </Pressable>
               <Pressable
                 style={{marginRight: 10, flex: 4}}
-                onPress={() => navigation.navigate('Destination Search')}>
+                onPress={() =>
+                  navigation.navigate('Destination Search', {
+                    oldLocation: curLocation,
+                  })
+                }>
                 <Text numberOfLines={1} style={styles.searchButtonText}>
-                  Ho chi minh city fdafj fd jkdlafjkl jfdlka jfkdlaj kl
+                  {curLocation.name}
                 </Text>
               </Pressable>
               <View style={{flex: 1}}></View>
@@ -190,10 +197,15 @@ const SearchResultMap = ({navigation}) => {
 
             {/* Map here */}
             {/* <BingMapsView
-          credentialsKey={KEY}
-          mapLocation={{lat: 12.9010875, long: 77.6095084, zoom: 15}}
-          style={styles.map}
-        /> */}
+              credentialsKey={SECRET.KEY}
+              compassButtonVisible={true}
+              mapLocation={{
+                lat: curLocation.coordinates.lat,
+                long: curLocation.coordinates.long,
+                zoom: 14,
+              }}
+              style={styles.map}
+            /> */}
             {/* <View>
           {places.map((place, index) => (
             <CustomMarker
@@ -227,7 +239,7 @@ const SearchResultMap = ({navigation}) => {
           </View>
           <BottomSheet
             ref={sheetRef}
-            snapPoints={[40, 330, windowHeight]}
+            snapPoints={[10, 330, windowHeight]}
             index={1}
             animatedPosition={bsScrollY}
             onChange={index => {

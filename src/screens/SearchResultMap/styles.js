@@ -4,7 +4,7 @@ import {StatusBar} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#abdbda',
+    backgroundColor: '#fff',
     width: '100%',
     height: '100%',
   },
