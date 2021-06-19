@@ -23,11 +23,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import SECRET from '../../../secret';
 import MapConfig from '../../../map_config';
-// import BottomSheet from 'reanimated-bottom-sheet';
 import Post from '../../components/Post';
 import Fonawesome from 'react-native-vector-icons/FontAwesome';
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
-
+import {NotSelected, Selected} from '../../../assets/images/MapIcon/location';
 const arr = [
   {
     address:
@@ -70,37 +69,37 @@ const arr = [
 ];
 
 const SearchResultMap = ({navigation, route}) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [places, setPlaces] = useState([]);
   const [curLocation, setCurLocation] = useState(route.params.pos);
   const [selectedPlaceId, setSelectedPlaceId] = useState(0);
   const {loadDestinations} = React.useContext(DbContext);
   const carouselRef = useRef();
-  const [bsOpen, setBsOpen] = useState(false);
+  // const [bsOpen, setBsOpen] = useState(false);
 
-  // React.useEffect(() => {
-  //   let mounted = true;
-  //   loadDestinations(
-  //     [
-  //       Number(curLocation.coordinates.lat),
-  //       Number(curLocation.coordinates.long),
-  //     ],
-  //     MapConfig.SearchLimit,
-  //     MapConfig.SearchRadiusOffset,
-  //   ).then(res => {
-  //     if (mounted) {
-  //       console.log('[QUERY]', res.length);
-  //       if (res.length) {
-  //         // console.log('[RES]', res);
-  //         setPlaces(res);
-  //       }
-  //       setLoading(false);
-  //     }
-  //   });
-  //   return function cleanup() {
-  //     mounted = false;
-  //   };
-  // }, []);
+  React.useEffect(() => {
+    let mounted = true;
+    loadDestinations(
+      [
+        Number(curLocation.coordinates.lat),
+        Number(curLocation.coordinates.long),
+      ],
+      MapConfig.SearchLimit,
+      MapConfig.SearchRadiusOffset,
+    ).then(res => {
+      if (mounted) {
+        console.log('[QUERY]', res.length);
+        if (res.length) {
+          // console.log('[RES]', res);
+          setPlaces(res);
+        }
+        setLoading(false);
+      }
+    });
+    return function cleanup() {
+      mounted = false;
+    };
+  }, []);
 
   const sheetRef = useRef(null);
   const bsScrollY = useSharedValue(0);
@@ -154,12 +153,20 @@ const SearchResultMap = ({navigation, route}) => {
     };
   });
 
+  const onPinClick = event => {
+    console.log(event);
+  };
+
+  const onMapStatusChange = event => {
+    console.log('[TEST EVENT]', event);
+  };
+
   console.log('search result map screen render');
   return (
     <SafeAreaView style={{height: '100%'}}>
       <StatusBar
         translucent
-        barStyle={bsOpen ? 'dark-content' : 'light-content'}
+        barStyle="dark-content"
         backgroundColor="transparent"
         style={{zIndex: 100}}
       />
@@ -204,33 +211,30 @@ const SearchResultMap = ({navigation, route}) => {
             </Animated.View>
 
             {/* Map here */}
-            {/* <BingMapsView
+            <BingMapsView
               credentialsKey={SECRET.KEY}
               compassButtonVisible={true}
               mapLocation={{
-                lat: curLocation.coordinates.lat,
-                long: curLocation.coordinates.long,
+                lat: Number(curLocation.coordinates.lat),
+                long: Number(curLocation.coordinates.long),
                 zoom: 14,
               }}
               style={styles.map}
-            /> */}
-            {/* <View>
-          {places.map((place, index) => (
-            <CustomMarker
-              key={place.id}
-              onPress={() => {
-                carouselRef.current.snapToItem(index);
-                setSelectedPlaceId(index);
-              }}
-              price={place.newPrice}
-              isSelected={index === selectedPlaceId}
+              onMapPinClicked={onPinClick}
+              onMapLoadingStatusChanged={onMapStatusChange}
+              pins={places.map((des, index) => {
+                return {
+                  lat: Number(des.coordinate.latitude),
+                  long: Number(des.coordinate.longitude),
+                  icon: index === selectedPlaceId ? Selected : NotSelected,
+                };
+              })}
             />
-          ))}
-        </View> */}
+
             <View style={styles.carouselList}>
               <Carousel
                 ref={carouselRef}
-                data={arr}
+                data={places}
                 renderItem={({item}) => <PostCarousel post={item} />}
                 sliderWidth={windowWidth}
                 sliderHeight={150}
@@ -313,13 +317,13 @@ const SearchResultMap = ({navigation, route}) => {
             snapPoints={[0, 330, windowHeight]}
             index={1}
             animatedPosition={bsScrollY}
-            onChange={index => {
-              index === 2 ? setBsOpen(true) : setBsOpen(false);
-            }}
+            // onChange={index => {
+            //   index === 2 ? setBsOpen(true) : setBsOpen(false);
+            // }}
             animateOnMount={true}>
             <BottomSheetFlatList
               style={{marginTop: 50}}
-              data={arr}
+              data={places}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({item, index}) => (
                 <Post

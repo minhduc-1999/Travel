@@ -122,7 +122,7 @@ const DbProvider = ({children}) => {
         },
         loadDestinations: async (center, limit, offset) => {
           console.log(Date.now() + ' - Load Destinations');
-          console.log('off set -', offset, center);
+          // console.log('off set -', offset, center);
           const radiusInM = offset * 1000;
           const bounds = geohashQueryBounds(center, radiusInM);
 
