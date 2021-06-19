@@ -16,8 +16,13 @@ import {Avatar} from 'react-native-elements';
 import Divider from '../../components/Divider';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Animated from 'react-native-reanimated';
-import BottomSheet from 'reanimated-bottom-sheet';
+import Animated, {
+  interpolate,
+  useSharedValue,
+  useAnimatedStyle,
+  Extrapolate,
+} from 'react-native-reanimated';
+import BottomSheet from '@gorhom/bottom-sheet';
 
 const ProfileScreen = ({navigation, route}) => {
   const sheetRef = useRef(null);
@@ -31,6 +36,13 @@ const ProfileScreen = ({navigation, route}) => {
     getDownloadUrl,
     onUserProfileChange,
   } = useContext(DbContext);
+
+  const fall = useSharedValue(0);
+  const bgBlur = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(fall.value, [0, 1], [1, 0.2], Extrapolate.CLAMP),
+    };
+  });
 
   useEffect(() => {
     const unsub = onUserProfileChange(data => {
@@ -70,9 +82,6 @@ const ProfileScreen = ({navigation, route}) => {
       ),
     });
   });
-
-  const fall = new Animated.Value(1);
-
   const saveProfile = () => {
     if (updateInfo === null) return;
     updateUserProfile(user.refId, updateInfo)
@@ -140,7 +149,7 @@ const ProfileScreen = ({navigation, route}) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.panelButton}
-        onPress={() => sheetRef.current.snapTo(1)}>
+        onPress={() => sheetRef.current.snapTo(0)}>
         <Text style={styles.panelButtonTitle}>Cancel</Text>
       </TouchableOpacity>
     </View>
@@ -150,7 +159,6 @@ const ProfileScreen = ({navigation, route}) => {
     <View style={styles.header}>
       <View style={styles.panelHeader}>
         <View style={styles.panelHandle} />
-        <View style={styles.sheetDivider} />
       </View>
     </View>
   );
@@ -161,7 +169,7 @@ const ProfileScreen = ({navigation, route}) => {
     } else if (res.errorMessage) {
       console.error('Image error = ', res.errorMessage);
     } else {
-      sheetRef.current.snapTo(1);
+      sheetRef.current.snapTo(0);
       let source = {uri: res.uri.replace('file://', ''), isStatic: true};
       if (Platform.OS === 'android') {
         source = {uri: res.uri, isStatic: true};
@@ -208,19 +216,7 @@ const ProfileScreen = ({navigation, route}) => {
     <SafeAreaView>
       <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
       <View>
-        <BottomSheet
-          ref={sheetRef}
-          snapPoints={[330, 0]}
-          initialSnap={1}
-          borderRadius={10}
-          renderContent={renderContent}
-          renderHeader={renderHeader}
-          callbackNode={fall}
-        />
-        <Animated.View
-          style={{
-            opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)),
-          }}>
+        <Animated.View style={[{backgroundColor: '#fff'}, bgBlur]}>
           <ScrollView
             style={styles.container}
             showsVerticalScrollIndicator={false}>
@@ -236,7 +232,7 @@ const ProfileScreen = ({navigation, route}) => {
                 <View style={styles.badgeContainer}>
                   <TouchableOpacity
                     style={styles.badgeStyle}
-                    onPress={() => sheetRef.current.snapTo(0)}>
+                    onPress={() => sheetRef.current.snapTo(1)}>
                     <Icon name="camera" size={18} />
                   </TouchableOpacity>
                 </View>
@@ -310,6 +306,13 @@ const ProfileScreen = ({navigation, route}) => {
             </View>
           </ScrollView>
         </Animated.View>
+        <BottomSheet
+          ref={sheetRef}
+          snapPoints={[0, '45%']}
+          // handleComponent={() => renderHeader()}
+          animatedIndex={fall}
+          children={() => renderContent()}
+        />
       </View>
     </SafeAreaView>
   );

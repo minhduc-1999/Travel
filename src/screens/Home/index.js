@@ -15,9 +15,12 @@ import Fonawesome from 'react-native-vector-icons/FontAwesome';
 import Tile from '../../components/Tile';
 import {DbContext} from '../../Services/DbProvider';
 import {windowWidth, windowHeight} from '../../Utils/Dimention';
-
-const AnimatedStatusBar = Animated.createAnimatedComponent(StatusBar);
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+import {
+  AnimatedPressable,
+  AnimatedStatusBar,
+} from '../../components/CustomAnimated';
+// const AnimatedStatusBar = Animated.createAnimatedComponent(StatusBar);
+// const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const HomeScreen = ({navigation}) => {
   const [tags, setTags] = useState([]);
@@ -27,7 +30,7 @@ const HomeScreen = ({navigation}) => {
       .then(res => setTags(res))
       .catch(console.error);
   }, []);
-  const [barStyle, setBarStyle] = React.useState('light-content');
+  const [barStyle, setBarStyle] = React.useState(true);
   const scrollY = React.useRef(new Animated.Value(0)).current;
   const headerColor = scrollY.interpolate({
     inputRange: [0, (windowHeight * 20) / 100],
@@ -36,16 +39,16 @@ const HomeScreen = ({navigation}) => {
   });
   const handleScroll = event => {
     const {y} = event.nativeEvent.contentOffset;
-    if (y >= (windowHeight * 20) / 100) setBarStyle('dark-content');
-    else setBarStyle('light-content');
+    if (y <= 70) setBarStyle(true);
+    else setBarStyle(false);
   };
   console.log('Home screen render');
   return (
     <SafeAreaView>
       <AnimatedStatusBar
         translucent
-        backgroundColor={headerColor}
-        barStyle={barStyle}
+        backgroundColor="transparent"
+        barStyle={barStyle ? 'light-content' : 'dark-content'}
       />
       <Animated.View
         style={[
@@ -65,7 +68,7 @@ const HomeScreen = ({navigation}) => {
             {
               backgroundColor: scrollY.interpolate({
                 inputRange: [0, (windowHeight * 20) / 100],
-                outputRange: ['#fff', '#ecececb3'],
+                outputRange: ['#fff', '#b5b5b5'],
                 extrapolate: 'clamp',
               }),
             },

@@ -15,12 +15,12 @@ class Post extends React.PureComponent {
         onPress={() => {
           navigation.navigate('Detailed Post', {post: this.props.post});
         }}
-        style={styles.container}>
+        style={[styles.container, this.props.style]}>
         <Image style={styles.image} source={{uri: this.props.post.images[0]}} />
 
-        <Text style={styles.name} numberOfLines={2}>
+        <Text style={[styles.name, this.props.titleStyle]} numberOfLines={2}>
           {this.props.post.name} - 5{' '}
-          <Icon name="star" size={25} color={'#f15454'} />
+          <Icon name="star" size={22} color={'#f15454'} />
         </Text>
         <View style={styles.tagContainer}>
           {this.props.post.tags
@@ -63,7 +63,8 @@ const PostWrapper = props => {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 20,
+    marginHorizontal: 20,
+    marginVertical: 15,
   },
   image: {
     width: '100%',

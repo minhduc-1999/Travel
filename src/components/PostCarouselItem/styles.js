@@ -3,22 +3,22 @@ import {StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   container: {
     height: 120,
-    padding: 5,
+    backgroundColor: 'transparent',
   },
   innerContainer: {
     flexDirection: 'row',
-    borderRadius: 10,
+    borderRadius: 5,
     overflow: 'hidden',
     backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 7,
+      height: 2,
     },
-    shadowOpacity: 0.43,
-    shadowRadius: 9.51,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
 
-    elevation: 15,
+    elevation: 5,
   },
   image: {
     height: '100%',

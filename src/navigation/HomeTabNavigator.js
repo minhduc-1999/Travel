@@ -8,6 +8,8 @@ import Notification from '../screens/NotificationScreen';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
+import SearchResultScreen from '../screens/SearchResults'; //test
+
 const Tab = createBottomTabNavigator();
 const HomeTabNavigator = props => {
   return (
@@ -35,7 +37,7 @@ const HomeTabNavigator = props => {
       />
       <Tab.Screen
         name={'Plan'}
-        component={HomeScreen}
+        component={SearchResultScreen}
         options={{
           tabBarIcon: ({color}) => (
             <FontAwesome name="paper-plane-o" size={25} color={color} />
