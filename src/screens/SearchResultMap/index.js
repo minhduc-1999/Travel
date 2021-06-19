@@ -17,12 +17,12 @@ import {DbContext} from '../../Services/DbProvider';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  useAnimatedProps,
   interpolate,
   interpolateColors,
   Extrapolate,
 } from 'react-native-reanimated';
 import SECRET from '../../../secret';
+import MapConfig from '../../../map_config';
 // import BottomSheet from 'reanimated-bottom-sheet';
 import Post from '../../components/Post';
 import Fonawesome from 'react-native-vector-icons/FontAwesome';
@@ -67,30 +67,12 @@ const arr = [
     price: '',
     tags: ['Di tích', 'Khám phá', 'Nghệ thuật'],
   },
-  {
-    address:
-      'Nằm trên tỉnh lộ 15, ấp Phú Hiệp, xã Phú Mỹ Hưng, Huyện Củ Chi, Hồ Chí Minh',
-    coordinate: {
-      latitude: '106.46024511569824',
-      longitude: '11.142993359373607',
-    },
-    description:
-      'Trước đây, địa đạo Củ Chi là căn cứ kháng chiến, hệ thống phòng thủ trong lòng đất của quân và dân ta trong thời kỳ chiến tranh Đông Dương và chiến tranh Việt Nam. Củ Chỉ được nhiều người mệnh danh là “thành phố trong lòng đất” bởi không chỉ có hệ thống đường hầm như mê cung mà còn có rất nhiều phòng, kho chứa, nhà bếp, bệnh xá, phòng làm việc,… Ngày nay nó không chỉ là một di tích cấp quốc gia mà còn địa điểm du lịch Sài Gòn ban ngày nổi tiếng, thu hút khoảng 20 triệu lượt khách trong và ngoài nước mỗi năm.',
-    images: [
-      'https://firebasestorage.googleapis.com/v0/b/travelad-8b432.appspot.com/o/app%2Fdestination%2FDia%20Dao%20Cu%20Chi%2Fdia-dao-cu-chi-3.jpg?alt=media&token=256e0ce6-9bcd-4fb2-8e64-175f21731ca8',
-      'https://firebasestorage.googleapis.com/v0/b/travelad-8b432.appspot.com/o/app%2Fdestination%2FDia%20Dao%20Cu%20Chi%2Fkinh-nghiem-tham-quan-dia-dao-cu-chi-1.jpg?alt=media&token=3275c34c-6e4e-4187-9f34-0b8ea1b61730',
-      'https://firebasestorage.googleapis.com/v0/b/travelad-8b432.appspot.com/o/app%2Fdestination%2FDia%20Dao%20Cu%20Chi%2Fthuyet-minh-ve-di-tich-lich-su-dia-dao-cu-chi-1.jpg?alt=media&token=a97533d7-9183-4a2f-85c2-fe5f3b737abc',
-    ],
-    name: 'Địa đạo Củ Chi',
-    openTime: 'Giá vé: 20k/người Việt, 110k/người nước ngoài',
-    price: '',
-    tags: ['Di tích', 'Khám phá', 'Nghệ thuật'],
-  },
 ];
 
 const SearchResultMap = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const [places, setPlaces] = useState([]);
+  const [curLocation, setCurLocation] = useState(route.params.pos);
   const [selectedPlaceId, setSelectedPlaceId] = useState(0);
   const {loadDestinations} = React.useContext(DbContext);
   const carouselRef = useRef();
@@ -98,10 +80,18 @@ const SearchResultMap = ({navigation, route}) => {
 
   // React.useEffect(() => {
   //   let mounted = true;
-  //   loadDestinations(1, 1, 1).then(res => {
+  //   loadDestinations(
+  //     [
+  //       Number(curLocation.coordinates.lat),
+  //       Number(curLocation.coordinates.long),
+  //     ],
+  //     MapConfig.SearchLimit,
+  //     MapConfig.SearchRadiusOffset,
+  //   ).then(res => {
   //     if (mounted) {
+  //       console.log('[QUERY]', res.length);
   //       if (res.length) {
-  //         console.log(res[0]);
+  //         // console.log('[RES]', res);
   //         setPlaces(res);
   //       }
   //       setLoading(false);
@@ -111,6 +101,7 @@ const SearchResultMap = ({navigation, route}) => {
   //     mounted = false;
   //   };
   // }, []);
+
   const sheetRef = useRef(null);
   const bsScrollY = useSharedValue(0);
 
@@ -149,10 +140,21 @@ const SearchResultMap = ({navigation, route}) => {
     };
   });
 
-  const [curLocation, setCurLocation] = useState(route.params.pos);
+  const mapBtnAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(bsScrollY.value, [0, 200], [1, 0]),
+      zIndex: interpolate(bsScrollY.value, [0, 200], [100, 50]),
+    };
+  });
+
+  const listBtnAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(bsScrollY.value, [330, windowHeight - 50], [0, 1]),
+      zIndex: interpolate(bsScrollY.value, [0, 200], [50, 100]),
+    };
+  });
 
   console.log('search result map screen render');
-  console.log('[RSM]', curLocation);
   return (
     <SafeAreaView style={{height: '100%'}}>
       <StatusBar
@@ -167,7 +169,13 @@ const SearchResultMap = ({navigation, route}) => {
         </View>
       ) : (
         <View style={styles.container}>
-          <View style={{width: '100%', height: '100%'}}>
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <Animated.View style={[styles.searchButton, headerAnimatedStyle]}>
               <Pressable
                 style={{
@@ -222,7 +230,7 @@ const SearchResultMap = ({navigation, route}) => {
             <View style={styles.carouselList}>
               <Carousel
                 ref={carouselRef}
-                data={places}
+                data={arr}
                 renderItem={({item}) => <PostCarousel post={item} />}
                 sliderWidth={windowWidth}
                 sliderHeight={150}
@@ -236,10 +244,73 @@ const SearchResultMap = ({navigation, route}) => {
                 }}
               />
             </View>
+
+            <Animated.View
+              style={[
+                {
+                  backgroundColor: 'rgba(0, 0, 0, 0.91)',
+                  position: 'absolute',
+                  bottom: 20,
+                  width: 100,
+                  height: 40,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 20,
+                  zIndex: 100,
+                },
+                mapBtnAnimatedStyle,
+              ]}>
+              <Pressable
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={() => {
+                  sheetRef.current.snapTo(0, 1000);
+                  // console.log('tap tap');
+                }}>
+                <Text style={{fontSize: 17, color: '#fff', fontWeight: 'bold'}}>
+                  Map <Fonawesome name="map" color="#fff" size={17} />
+                </Text>
+              </Pressable>
+            </Animated.View>
+
+            <Animated.View
+              style={[
+                {
+                  backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                  position: 'absolute',
+                  bottom: 2,
+                  width: 100,
+                  height: 40,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 20,
+                  zIndex: 100,
+                },
+                listBtnAnimatedStyle,
+              ]}>
+              <Pressable
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={() => {
+                  sheetRef.current.snapTo(1, 500);
+                }}>
+                <Text style={{fontSize: 17, color: '#fff', fontWeight: 'bold'}}>
+                  List <Fonawesome name="bars" color="#fff" size={17} />
+                </Text>
+              </Pressable>
+            </Animated.View>
           </View>
           <BottomSheet
             ref={sheetRef}
-            snapPoints={[10, 330, windowHeight]}
+            snapPoints={[0, 330, windowHeight]}
             index={1}
             animatedPosition={bsScrollY}
             onChange={index => {

@@ -3,6 +3,7 @@ import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import ReactObserver from 'react-event-observer';
 import {AuthContext} from '../navigation/AuthProvider';
+import {geohashQueryBounds, distanceBetween} from 'geofire-common';
 const observer = ReactObserver();
 
 export const DbContext = createContext();
@@ -119,20 +120,63 @@ const DbProvider = ({children}) => {
               throw new Error(err);
             });
         },
-        loadDestinations: async (long, lat, limit) => {
+        loadDestinations: async (center, limit, offset) => {
           console.log(Date.now() + ' - Load Destinations');
-          return firestore()
-            .collection('destinations')
-            .orderBy('coordinate.latitude', 'asc')
-            .limit(limit)
-            .get()
-            .then(querySnapshot => {
-              console.log(querySnapshot.size);
-              return querySnapshot.docs.map(doc => doc.data());
+          console.log('off set -', offset, center);
+          const radiusInM = offset * 1000;
+          const bounds = geohashQueryBounds(center, radiusInM);
+
+          const promises = [];
+          for (const b of bounds) {
+            const q = firestore()
+              .collection('destinations')
+              .orderBy('coordinate.geoHash')
+              .startAt(b[0])
+              .endAt(b[1]);
+
+            promises.push(q.get());
+          }
+
+          return Promise.all(promises)
+            .then(snapshots => {
+              const matchingDocs = [];
+
+              for (const snap of snapshots) {
+                // console.log('[SNAP SHOT]', snap.metadata);
+                for (const doc of snap.docs) {
+                  const lat = Number(doc.get('coordinate.latitude'));
+                  const lng = Number(doc.get('coordinate.longitude'));
+
+                  // We have to filter out a few false positives due to GeoHash
+                  // accuracy, but most will match
+                  const distanceInKm = distanceBetween([lat, lng], center);
+                  const distanceInM = distanceInKm * 1000;
+                  if (distanceInM <= radiusInM) {
+                    matchingDocs.push(doc);
+                  }
+                }
+              }
+
+              return matchingDocs;
             })
-            .catch(err => {
-              throw new Error(err);
-            });
+            .then(matchingDocs => {
+              // console.log('[This step]', matchingDocs);
+              return matchingDocs.map(doc => doc.data());
+            })
+            .catch(console.error);
+
+          // return firestore()
+          //   .collection('destinations')
+          //   .orderBy('coordinate.latitude', 'asc')
+          //   .limit(limit)
+          //   .get()
+          //   .then(querySnapshot => {
+          //     console.log(querySnapshot.size);
+          //     return querySnapshot.docs.map(doc => doc.data());
+          //   })
+          //   .catch(err => {
+          //     throw new Error(err);
+          //   });
         },
         loadMoreDestinations: async (long, lat, limit, last) => {
           console.log(Date.now() + ' - Load More Destinations');

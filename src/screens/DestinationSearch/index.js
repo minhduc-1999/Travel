@@ -3,7 +3,7 @@ import {SafeAreaView, StatusBar, View, TextInput, FlatList} from 'react-native';
 import styles from './styles';
 import SuggestionRow from './SuggestionRow';
 import SECRET from '../../../secret';
-import MapConfig from '../../../map_config';
+import {SEARCH_OPTION} from '../../../map_config';
 import {encodeQueryData} from '../../Utils/Dimention';
 import {Search2} from '../../../assets/data/search';
 
@@ -14,11 +14,11 @@ const DestinationSearchScreen = ({navigation, route}) => {
   useEffect(() => {
     if (inputText) {
       const params = {
-        countryRegion: MapConfig.CountryRegion,
+        countryRegion: SEARCH_OPTION.CountryRegion,
         adminDistrict: inputText,
         locality: inputText,
         includeNeighborhood: 1,
-        maxResults: MapConfig.SearchMaxResult,
+        maxResults: SEARCH_OPTION.SearchMaxResult,
         key: SECRET.KEY,
       };
       const query = encodeQueryData(params);

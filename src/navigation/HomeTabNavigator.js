@@ -1,14 +1,14 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ExploreNavigator from '../navigation/ExploreNavigator';
-import HomeScreen from '../screens/Home';
+// import HomeScreen from '../screens/Home';
 import SavedNavigator from '../navigation/SavedNavigator';
 import MenuScreen from '../screens/Menu';
 import Notification from '../screens/NotificationScreen';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-import SearchResultScreen from '../screens/SearchResults'; //test
+import Splash from '../screens/Splash'; //test
 
 const Tab = createBottomTabNavigator();
 const HomeTabNavigator = props => {
@@ -37,7 +37,7 @@ const HomeTabNavigator = props => {
       />
       <Tab.Screen
         name={'Plan'}
-        component={SearchResultScreen}
+        component={Splash}
         options={{
           tabBarIcon: ({color}) => (
             <FontAwesome name="paper-plane-o" size={25} color={color} />
