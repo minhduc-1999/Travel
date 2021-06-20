@@ -196,6 +196,42 @@ const DbProvider = ({children}) => {
               throw new Error(err);
             });
         },
+        loadDestinationsByTag: async (tagName, limit) => {
+          return firestore()
+            .collection('destinations')
+            .where('tags', 'array-contains', tagName)
+            .orderBy('coordinate.latitude', 'asc')
+            .limit(limit)
+            .get()
+            .then(querySnapshot => {
+              // console.log(querySnapshot.size);
+              return querySnapshot.docs.map(doc => {
+                return {...doc.data(), id: doc.ref.id};
+              });
+            })
+            .catch(err => {
+              throw new Error(err);
+            });
+        },
+        loadMoreDestinationsByTag: async (tagName, limit, last) => {
+          console.log(Date.now() + ' - Load More Destinations');
+          return firestore()
+            .collection('destinations')
+            .where('tags', 'array-contains', tagName)
+            .orderBy('coordinate.latitude', 'asc')
+            .startAfter(last)
+            .limit(limit)
+            .get()
+            .then(querySnapshot => {
+              // console.log(querySnapshot.size);
+              return querySnapshot.docs.map(doc => {
+                return {...doc.data(), id: doc.ref.id};
+              });
+            })
+            .catch(err => {
+              throw new Error(err);
+            });
+        },
       }}>
       {children}
     </DbContext.Provider>

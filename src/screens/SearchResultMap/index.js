@@ -69,7 +69,7 @@ const arr = [
 ];
 
 const SearchResultMap = ({navigation, route}) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [places, setPlaces] = useState([]);
   const [curLocation, setCurLocation] = useState(route.params.pos);
   const [selectedPlaceId, setSelectedPlaceId] = useState(0);
@@ -77,29 +77,31 @@ const SearchResultMap = ({navigation, route}) => {
   const carouselRef = useRef();
   // const [bsOpen, setBsOpen] = useState(false);
 
-  React.useEffect(() => {
-    let mounted = true;
-    loadDestinations(
-      [
-        Number(curLocation.coordinates.lat),
-        Number(curLocation.coordinates.long),
-      ],
-      MapConfig.SearchLimit,
-      MapConfig.SearchRadiusOffset,
-    ).then(res => {
-      if (mounted) {
-        console.log('[QUERY]', res.length);
-        if (res.length) {
-          // console.log('[RES]', res);
-          setPlaces(res);
-        }
-        setLoading(false);
-      }
-    });
-    return function cleanup() {
-      mounted = false;
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   console.log('[=====]');
+  //   setLoading(true);
+  //   let mounted = true;
+  //   loadDestinations(
+  //     [
+  //       Number(curLocation.coordinates.lat),
+  //       Number(curLocation.coordinates.long),
+  //     ],
+  //     MapConfig.SearchLimit,
+  //     MapConfig.SearchRadiusOffset,
+  //   ).then(res => {
+  //     if (mounted) {
+  //       console.log('[QUERY]', res.length);
+  //       if (res.length) {
+  //         // console.log('[RES]', res);
+  //         setPlaces(res);
+  //       }
+  //       setLoading(false);
+  //     }
+  //   });
+  //   return function cleanup() {
+  //     mounted = false;
+  //   };
+  // }, [route.params.pos.coordinates.lat, route.params.pos.coordinates.long]);
 
   const sheetRef = useRef(null);
   const bsScrollY = useSharedValue(0);
@@ -211,7 +213,7 @@ const SearchResultMap = ({navigation, route}) => {
             </Animated.View>
 
             {/* Map here */}
-            <BingMapsView
+            {/* <BingMapsView
               credentialsKey={SECRET.KEY}
               compassButtonVisible={true}
               mapLocation={{
@@ -229,7 +231,7 @@ const SearchResultMap = ({navigation, route}) => {
                   icon: index === selectedPlaceId ? Selected : NotSelected,
                 };
               })}
-            />
+            /> */}
 
             <View style={styles.carouselList}>
               <Carousel
@@ -281,41 +283,77 @@ const SearchResultMap = ({navigation, route}) => {
               </Pressable>
             </Animated.View>
 
-            <Animated.View
-              style={[
-                {
-                  backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                  position: 'absolute',
-                  bottom: 2,
-                  width: 100,
-                  height: 40,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 20,
-                  zIndex: 100,
-                },
-                listBtnAnimatedStyle,
-              ]}>
-              <Pressable
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  sheetRef.current.snapTo(1, 500);
-                }}>
-                <Text style={{fontSize: 17, color: '#fff', fontWeight: 'bold'}}>
-                  List <Fonawesome name="bars" color="#fff" size={17} />
-                </Text>
-              </Pressable>
-            </Animated.View>
+            {places.length ? (
+              <Animated.View
+                style={[
+                  {
+                    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                    position: 'absolute',
+                    bottom: 2,
+                    width: 100,
+                    height: 40,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 20,
+                    zIndex: 100,
+                  },
+                  listBtnAnimatedStyle,
+                ]}>
+                <Pressable
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    sheetRef.current.snapTo(1, 500);
+                  }}>
+                  <Text
+                    style={{fontSize: 17, color: '#fff', fontWeight: 'bold'}}>
+                    List <Fonawesome name="bars" color="#fff" size={17} />
+                  </Text>
+                </Pressable>
+              </Animated.View>
+            ) : (
+              <View
+                style={[
+                  {
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    position: 'absolute',
+                    bottom: 20,
+                    width: 140,
+                    height: 40,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 20,
+                    zIndex: 100,
+                  },
+                ]}>
+                <Pressable
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    navigation.navigate('Destination Search', {
+                      oldLocation: curLocation,
+                    });
+                  }}>
+                  <Text
+                    style={{fontSize: 17, color: '#fff', fontWeight: 'bold'}}>
+                    Not Found
+                  </Text>
+                </Pressable>
+              </View>
+            )}
           </View>
           <BottomSheet
             ref={sheetRef}
             snapPoints={[0, 330, windowHeight]}
-            index={1}
+            index={0}
             animatedPosition={bsScrollY}
             // onChange={index => {
             //   index === 2 ? setBsOpen(true) : setBsOpen(false);

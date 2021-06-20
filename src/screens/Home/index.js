@@ -23,11 +23,15 @@ import {
 // const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const HomeScreen = ({navigation}) => {
+  const [loading, setLoading] = useState(true);
   const [tags, setTags] = useState([]);
   const {loadTags} = React.useContext(DbContext);
   useEffect(() => {
     loadTags()
-      .then(res => setTags(res))
+      .then(res => {
+        setTags(res);
+        setLoading(false);
+      })
       .catch(console.error);
   }, []);
   const [barStyle, setBarStyle] = React.useState(true);
@@ -68,7 +72,7 @@ const HomeScreen = ({navigation}) => {
             {
               backgroundColor: scrollY.interpolate({
                 inputRange: [0, (windowHeight * 20) / 100],
-                outputRange: ['#fff', '#b5b5b5'],
+                outputRange: ['#fff', '#f0f0f0'],
                 extrapolate: 'clamp',
               }),
             },
@@ -129,7 +133,12 @@ const HomeScreen = ({navigation}) => {
                     fontWeight: 'bold',
                     color: '#fff',
                   }}
-                  onPress={() => console.warn(item.name)}
+                  onPress={() =>
+                    navigation.navigate('List by Tag', {
+                      tags: tags,
+                      selectedTagIndex: index,
+                    })
+                  }
                 />
               )}
               keyExtractor={(item, index) => index.toString()}
