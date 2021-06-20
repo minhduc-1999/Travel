@@ -90,7 +90,13 @@ const AuthProvider = ({children}) => {
                 })
                 .catch(error => console.log(error.message));
             })
-            .catch(error => console.log(error.message));
+            .catch(error => {
+              switch (error.code) {
+                case 'auth/wrong-password':
+                  alert('Current password is not correct');
+                  break;
+              }
+            });
         },
       }}>
       {children}

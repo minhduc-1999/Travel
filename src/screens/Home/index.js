@@ -5,27 +5,36 @@ import {
   Text,
   Pressable,
   FlatList,
-  ScrollView,
   SafeAreaView,
   StatusBar,
-  Animated,
 } from 'react-native';
 import styles from './styles';
 import Fonawesome from 'react-native-vector-icons/FontAwesome';
 import Tile from '../../components/Tile';
 import {DbContext} from '../../Services/DbProvider';
 import {windowWidth, windowHeight} from '../../Utils/Dimention';
-import {
-  AnimatedPressable,
-  AnimatedStatusBar,
-} from '../../components/CustomAnimated';
-// const AnimatedStatusBar = Animated.createAnimatedComponent(StatusBar);
-// const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  useAnimatedScrollHandler,
+  interpolate,
+  interpolateColor,
+} from 'react-native-reanimated';
+import CustomHeader from '../../components/CustomHeader';
 
 const HomeScreen = ({navigation}) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [tags, setTags] = useState([]);
   const {loadTags} = React.useContext(DbContext);
+
+  const scrollY = useSharedValue(0);
+
+  const scrollHander = useAnimatedScrollHandler(event => {
+    const {y} = event.contentOffset;
+    scrollY.value = y;
+  });
+
   useEffect(() => {
     loadTags()
       .then(res => {
@@ -34,69 +43,82 @@ const HomeScreen = ({navigation}) => {
       })
       .catch(console.error);
   }, []);
-  const [barStyle, setBarStyle] = React.useState(true);
-  const scrollY = React.useRef(new Animated.Value(0)).current;
-  const headerColor = scrollY.interpolate({
-    inputRange: [0, (windowHeight * 20) / 100],
-    outputRange: ['#00000000', '#ffffff'],
-    extrapolate: 'clamp',
+
+  const headerStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(
+        scrollY.value,
+        [0, (windowHeight * 20) / 100],
+        [0, 1],
+      ),
+    };
   });
-  const handleScroll = event => {
-    const {y} = event.nativeEvent.contentOffset;
-    if (y <= 70) setBarStyle(true);
-    else setBarStyle(false);
-  };
+
+  const headerShadowAnim = useAnimatedStyle(() => {
+    return {
+      shadowOpacity: interpolate(
+        scrollY.value,
+        [0, (windowHeight * 20) / 100],
+        [0, 1],
+      ),
+    };
+  });
+
+  const btnAnimated = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(
+        scrollY.value,
+        [0, (windowHeight * 20) / 100],
+        ['rgb(255, 255, 255)', 'rgb(240,240,240)'],
+        'RGB',
+      ),
+      shadowOpacity: interpolate(
+        scrollY.value,
+        [0, (windowHeight * 20) / 100],
+        [1, 0],
+      ),
+      elevation: interpolate(
+        scrollY.value,
+        [0, (windowHeight * 20) / 100],
+        [10, 0],
+      ),
+    };
+  });
+
   console.log('Home screen render');
   return (
     <SafeAreaView>
-      <AnimatedStatusBar
+      <StatusBar
         translucent
         backgroundColor="transparent"
-        barStyle={barStyle ? 'light-content' : 'dark-content'}
+        barStyle={'dark-content'}
       />
-      <Animated.View
-        style={[
-          styles.header,
-          {
-            backgroundColor: headerColor,
-            borderBottomColor: scrollY.interpolate({
-              inputRange: [0, (windowHeight * 20) / 100],
-              outputRange: ['#00000000', 'silver'],
-              extrapolate: 'clamp',
-            }),
-          },
-        ]}>
-        <AnimatedPressable
-          style={[
-            styles.searchButton,
-            {
-              backgroundColor: scrollY.interpolate({
-                inputRange: [0, (windowHeight * 20) / 100],
-                outputRange: ['#fff', '#f0f0f0'],
-                extrapolate: 'clamp',
-              }),
-            },
-          ]}
-          onPress={() => navigation.navigate('Destination Search', {})}>
-          <Fonawesome name={'search'} color={'#f15454'} size={16} />
-          <Text style={styles.searchButtonText}>Where are you going?</Text>
-        </AnimatedPressable>
-      </Animated.View>
-      <ScrollView
-        onScroll={Animated.event(
-          [
-            {
-              nativeEvent: {
-                contentOffset: {
-                  y: scrollY,
-                },
-              },
-            },
-          ],
-          {useNativeDriver: false, listener: event => handleScroll(event)},
-        )}>
+      <CustomHeader
+        shadowAnim={headerShadowAnim}
+        bgAnimated={headerStyle}
+        style={{
+          backgroundColor: 'transparent',
+        }}>
+        <Animated.View style={[styles.searchButton, btnAnimated]}>
+          <Pressable
+            style={{
+              flex: 1,
+              backgroundColor: 'transparent',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={() => navigation.navigate('Destination Search', {})}>
+            <Fonawesome name={'search'} color={'#f15454'} size={16} />
+            <Text style={styles.searchButtonText}>Where are you going?</Text>
+          </Pressable>
+        </Animated.View>
+      </CustomHeader>
+
+      <Animated.ScrollView
+        onScroll={scrollHander}
+        showsVerticalScrollIndicator={false}>
         <ImageBackground
-          // source={require('../../../assets/images/wallpaper.jpg')}
           source={{
             uri:
               'https://firebasestorage.googleapis.com/v0/b/travelad-8b432.appspot.com/o/app%2Fbackground%2Fhhrhrbb.png?alt=media&token=cbebeb95-a25e-4d16-971d-73feb9ad55ba',
@@ -147,7 +169,7 @@ const HomeScreen = ({navigation}) => {
             />
           </View>
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 };
