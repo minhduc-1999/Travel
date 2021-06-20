@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#000',
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
   },
   proposedTitle: {

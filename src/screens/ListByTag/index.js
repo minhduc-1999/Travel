@@ -132,7 +132,7 @@ const SearchResultScreen = ({route, navigation}) => {
   const [data, setData] = useState([]);
   // const [limit, setLimit] = useState(2);
   const [lastVisible, setLastVisible] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const {loadDestinationsByTag, loadMoreDestinationsByTag} = React.useContext(
@@ -171,14 +171,14 @@ const SearchResultScreen = ({route, navigation}) => {
   });
 
   React.useEffect(() => {
-    // console.log('[EFFECT LOAD TAG]');
+    // console.log('[EFFECT LOAD]');
     let mounted = true;
     loadDestinationsByTag(
       tags.current[curTagIndex].name,
       API_CALL_CONFIG.limit,
     ).then(res => {
       if (mounted) {
-        // console.log('[first load]', res.length);
+        // console.log('[effect load]', res.length);
         if (res.length) {
           setData(res);
           setLastVisible(res[res.length - 1].coordinate.latitude);
@@ -192,7 +192,7 @@ const SearchResultScreen = ({route, navigation}) => {
       mounted = false;
     };
   }, [curTagIndex]);
-  console.log('search result screen render');
+  console.log('List By tag screen render');
   return (
     <SafeAreaView style={{height: '100%', width: '100%'}}>
       <StatusBar
@@ -220,60 +220,61 @@ const SearchResultScreen = ({route, navigation}) => {
         </View>
         <View style={{flex: 1}}></View>
       </Animated.View>
-      {loading ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size={50} color={'#f15454'} />
-        </View>
-      ) : (
-        <View style={styles.container}>
-          <Animated.View style={[styles.tagSelector, tagSelectorStyle]}>
-            <FlatList
-              initialScrollIndex={curTagIndex}
-              style={{
-                marginHorizontal: 30,
-                flex: 1,
-              }}
-              contentContainerStyle={{
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              data={tags.current}
-              horizontal
-              keyExtractor={item => item.id}
-              showsHorizontalScrollIndicator={false}
-              renderItem={({item, index}) => {
-                return (
-                  <TapGestureHandler
-                    onActivated={() => {
-                      SetCurTagIndex(index);
-                      // console.log('click ne');
-                      setHasMore(true);
-                    }}>
-                    <View
-                      key={index}
-                      style={[
-                        styles.tagItem,
-                        {
-                          backgroundColor:
-                            curTagIndex === index ? '#f15454' : '#fff',
-                          borderColor:
-                            curTagIndex === index ? '#f15454' : 'grey',
-                        },
-                      ]}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          color: curTagIndex === index ? '#fff' : '#000',
-                        }}>
-                        {item.name}
-                      </Text>
-                    </View>
-                  </TapGestureHandler>
-                );
-              }}
-            />
-          </Animated.View>
+
+      <View style={styles.container}>
+        <Animated.View style={[styles.tagSelector, tagSelectorStyle]}>
+          <FlatList
+            initialScrollIndex={curTagIndex}
+            style={{
+              marginHorizontal: 30,
+              flex: 1,
+            }}
+            contentContainerStyle={{
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            data={tags.current}
+            horizontal
+            keyExtractor={item => item.id}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item, index}) => {
+              return (
+                <TapGestureHandler
+                  onActivated={() => {
+                    SetCurTagIndex(index);
+                    // console.log('click ne');
+                    setHasMore(true);
+                  }}>
+                  <View
+                    key={index}
+                    style={[
+                      styles.tagItem,
+                      {
+                        backgroundColor:
+                          curTagIndex === index ? '#f15454' : '#fff',
+                        borderColor: curTagIndex === index ? '#f15454' : 'grey',
+                      },
+                    ]}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        color: curTagIndex === index ? '#fff' : '#000',
+                      }}>
+                      {item.name}
+                    </Text>
+                  </View>
+                </TapGestureHandler>
+              );
+            }}
+          />
+        </Animated.View>
+        {loading ? (
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <ActivityIndicator size={50} color={'#f15454'} />
+          </View>
+        ) : (
           <Animated.View style={[styles.listContainer, listContainerStyle]}>
             <AnimatedFlatlist
               onScroll={scrollHandler}
@@ -312,8 +313,8 @@ const SearchResultScreen = ({route, navigation}) => {
               refreshing={refreshing}
             />
           </Animated.View>
-        </View>
-      )}
+        )}
+      </View>
     </SafeAreaView>
   );
 };

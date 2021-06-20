@@ -20,6 +20,7 @@ import Animated, {
   interpolate,
   interpolateColors,
   Extrapolate,
+  withSpring,
 } from 'react-native-reanimated';
 import SECRET from '../../../secret';
 import MapConfig from '../../../map_config';
@@ -27,7 +28,8 @@ import Post from '../../components/Post';
 import Fonawesome from 'react-native-vector-icons/FontAwesome';
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {NotSelected, Selected} from '../../../assets/images/MapIcon/location';
-const arr = [
+import CustomHeader from '../../components/CustomHeader';
+const places = [
   {
     address:
       'Nằm trên tỉnh lộ 15, ấp Phú Hiệp, xã Phú Mỹ Hưng, Huyện Củ Chi, Hồ Chí Minh',
@@ -70,7 +72,7 @@ const arr = [
 
 const SearchResultMap = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
-  const [places, setPlaces] = useState([]);
+  // const [places, setPlaces] = useState([]);
   const [curLocation, setCurLocation] = useState(route.params.pos);
   const [selectedPlaceId, setSelectedPlaceId] = useState(0);
   const {loadDestinations} = React.useContext(DbContext);
@@ -104,11 +106,12 @@ const SearchResultMap = ({navigation, route}) => {
   // }, [route.params.pos.coordinates.lat, route.params.pos.coordinates.long]);
 
   const sheetRef = useRef(null);
-  const bsScrollY = useSharedValue(0);
+  const bsScrollY = useSharedValue(100);
 
   const headerAnimatedStyle = useAnimatedStyle(() => {
     const inputRange = [-1, 0, 70, 71];
     return {
+      paddingTop: interpolate(bsScrollY.value, inputRange, [20, 20, 0, 0]),
       width: interpolate(bsScrollY.value, inputRange, [
         windowWidth,
         windowWidth,
@@ -116,26 +119,17 @@ const SearchResultMap = ({navigation, route}) => {
         windowWidth - 60,
       ]),
       height: interpolate(bsScrollY.value, inputRange, [
-        60 + StatusBar.currentHeight,
-        60 + StatusBar.currentHeight,
+        70 + StatusBar.currentHeight,
+        70 + StatusBar.currentHeight,
         50,
         50,
-      ]),
-      marginHorizontal: interpolate(bsScrollY.value, inputRange, [
-        0,
-        0,
-        30,
-        30,
       ]),
       borderRadius: interpolate(bsScrollY.value, inputRange, [0, 0, 25, 25]),
       transform: [
         {
-          translateY: interpolate(bsScrollY.value, inputRange, [
-            0,
-            0,
-            StatusBar.currentHeight + 5,
-            StatusBar.currentHeight + 5,
-          ]),
+          translateY: withSpring(
+            interpolate(bsScrollY.value, inputRange, [-20, -20, 0, 0]),
+          ),
         },
       ],
     };
@@ -155,13 +149,22 @@ const SearchResultMap = ({navigation, route}) => {
     };
   });
 
-  // const onPinClick = event => {
-  //   console.log(event);
-  // };
-
-  // const onMapStatusChange = event => {
-  //   console.log('[TEST EVENT]', event);
-  // };
+  const textAnimStyle = useAnimatedStyle(() => {
+    return {
+      fontSize: interpolate(bsScrollY.value, [-1, 0, 70, 71], [27, 27, 18, 18]),
+      maxWidth: interpolate(
+        bsScrollY.value,
+        [-1, 0, 70, 71],
+        [
+          (windowWidth * 70) / 100,
+          (windowWidth * 70) / 100,
+          (windowWidth * 60) / 100,
+          (windowWidth * 60) / 100,
+        ],
+      ),
+      fontWeight: '700',
+    };
+  });
 
   console.log('search result map screen render');
   return (
@@ -172,6 +175,39 @@ const SearchResultMap = ({navigation, route}) => {
         backgroundColor="transparent"
         style={{zIndex: 100}}
       />
+      <CustomHeader
+        style={{
+          backgroundColor: 'transparent',
+        }}>
+        <Animated.View style={[styles.searchButton, headerAnimatedStyle]}>
+          <Pressable
+            style={{
+              flex: 1,
+              width: 30,
+              height: 30,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginLeft: 10,
+            }}
+            onPress={() => navigation.goBack()}>
+            <Fonawesome name={'chevron-left'} color={'#000'} size={24} />
+          </Pressable>
+          <Pressable
+            style={{marginRight: 10, flex: 4}}
+            onPress={() =>
+              navigation.navigate('Destination Search', {
+                oldLocation: curLocation,
+              })
+            }>
+            <Animated.Text
+              numberOfLines={1}
+              style={(styles.searchButtonText, textAnimStyle)}>
+              {curLocation.name}
+            </Animated.Text>
+          </Pressable>
+          <View style={{flex: 1}}></View>
+        </Animated.View>
+      </CustomHeader>
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <ActivityIndicator color={'#f15454'} />
@@ -185,33 +221,6 @@ const SearchResultMap = ({navigation, route}) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Animated.View style={[styles.searchButton, headerAnimatedStyle]}>
-              <Pressable
-                style={{
-                  flex: 1,
-                  width: 30,
-                  height: 30,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft: 10,
-                }}
-                onPress={() => navigation.goBack()}>
-                <Fonawesome name={'chevron-left'} color={'#000'} size={24} />
-              </Pressable>
-              <Pressable
-                style={{marginRight: 10, flex: 4}}
-                onPress={() =>
-                  navigation.navigate('Destination Search', {
-                    oldLocation: curLocation,
-                  })
-                }>
-                <Text numberOfLines={1} style={styles.searchButtonText}>
-                  {curLocation.name}
-                </Text>
-              </Pressable>
-              <View style={{flex: 1}}></View>
-            </Animated.View>
-
             {/* Map here */}
             {/* <BingMapsView
               credentialsKey={SECRET.KEY}
@@ -222,8 +231,6 @@ const SearchResultMap = ({navigation, route}) => {
                 zoom: 14,
               }}
               style={styles.map}
-              // onMapPinClicked={onPinClick}
-              // onMapLoadingStatusChanged={onMapStatusChange}
               pins={places.map((des, index) => {
                 return {
                   lat: Number(des.coordinate.latitude),
@@ -352,7 +359,7 @@ const SearchResultMap = ({navigation, route}) => {
           </View>
           <BottomSheet
             ref={sheetRef}
-            snapPoints={[0, 330, windowHeight]}
+            snapPoints={[0, (windowHeight * 40) / 100, windowHeight]}
             index={0}
             animatedPosition={bsScrollY}
             // onChange={index => {

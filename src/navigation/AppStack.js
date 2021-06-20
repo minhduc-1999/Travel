@@ -23,7 +23,7 @@ const AppStack = props => {
           name={'Destination Search'}
           component={DestinationSearchScreen}
           options={{
-            title: 'Search your destination?',
+            title: 'Search Destination',
             headerTitleAlign: 'center',
           }}
         />

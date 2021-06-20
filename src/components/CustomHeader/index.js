@@ -4,12 +4,18 @@ import {windowHeight} from '../../Utils/Dimention';
 import Animated from 'react-native-reanimated';
 
 const index = props => {
-  const {bgAnimated, shadowAnim} = props;
+  const {bgAnimated, shadowAnim, style, height} = props;
   console.log('Custom Header render');
   return (
-    <Animated.View style={[styles.container, shadowAnim]}>
-      <Animated.View style={[styles.bg, bgAnimated]}></Animated.View>
-      <View style={styles.innerHeader}>{props.children}</View>
+    <Animated.View style={[styles.container, height && {height}, shadowAnim]}>
+      <Animated.View style={[styles.bg, style, bgAnimated]}></Animated.View>
+      <View
+        style={[
+          styles.innerHeader,
+          height && {height: height - StatusBar.currentHeight},
+        ]}>
+        {props.children}
+      </View>
     </Animated.View>
   );
 };
@@ -21,7 +27,7 @@ const styles = StyleSheet.create({
     left: 0,
     backgroundColor: 'transparent',
     width: '100%',
-    height: (windowHeight * 150) / 1000,
+    height: windowHeight * 0.15,
     alignItems: 'center',
     justifyContent: 'flex-end',
     zIndex: 100,
@@ -38,13 +44,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     flexDirection: 'row',
     width: '100%',
-    height: (windowHeight * 150) / 1000 - StatusBar.currentHeight,
+    height: windowHeight * 0.15 - StatusBar.currentHeight,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: StatusBar.currentHeight,
     position: 'absolute',
     top: 0,
     left: 0,
+    flexDirection: 'column',
   },
   bg: {
     width: '100%',

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import Entypo from 'react-native-vector-icons/Entypo';
 // import {useNavigation} from '@react-navigation/native';
@@ -8,7 +8,7 @@ export default function SuggestionRow({item, navigation}) {
   // const navigation = useNavigation();
 
   return (
-    <Pressable
+    <TouchableOpacity
       onPress={() =>
         navigation.navigate('HomeTabnavigator', {
           screen: 'Explore',
@@ -27,6 +27,6 @@ export default function SuggestionRow({item, navigation}) {
       <Text numberOfLines={1} style={styles.locationText}>
         {item.name}
       </Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 }

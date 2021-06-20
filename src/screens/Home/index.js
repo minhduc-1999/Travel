@@ -20,6 +20,7 @@ import Animated, {
   useAnimatedScrollHandler,
   interpolate,
   interpolateColor,
+  withSpring,
 } from 'react-native-reanimated';
 import CustomHeader from '../../components/CustomHeader';
 
@@ -94,11 +95,9 @@ const HomeScreen = ({navigation}) => {
         barStyle={'dark-content'}
       />
       <CustomHeader
+        style={{borderBottomWidth: 2, borderBottomColor: '#e6e6e6'}}
         shadowAnim={headerShadowAnim}
-        bgAnimated={headerStyle}
-        style={{
-          backgroundColor: 'transparent',
-        }}>
+        bgAnimated={headerStyle}>
         <Animated.View style={[styles.searchButton, btnAnimated]}>
           <Pressable
             style={{
@@ -127,8 +126,8 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.title}>Go Near</Text>
           <Pressable
             style={styles.button}
-            onPress={() => console.warn(windowWidth)}>
-            <Text style={styles.buttonText}>Explore nearby stays</Text>
+            onPress={() => navigation.navigate('Plan')}>
+            <Text style={styles.buttonText}>Make your plan</Text>
           </Pressable>
         </ImageBackground>
         <View>

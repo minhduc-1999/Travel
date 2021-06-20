@@ -101,6 +101,230 @@ export const Search2 = {
           ],
           matchCodes: ['UpHierarchy'],
         },
+        {
+          __type:
+            'Location:http://schemas.microsoft.com/search/local/ws/rest/v1',
+          bbox: [
+            20.974586486816406,
+            105.78898620605469,
+            21.068710327148438,
+            105.87332916259766,
+          ],
+          name: 'Hanoi, Vietnam',
+          point: {
+            type: 'Point',
+            coordinates: [21.028278350830078, 105.8538818359375],
+          },
+          address: {
+            adminDistrict: 'Hanoi',
+            countryRegion: 'Vietnam',
+            formattedAddress: 'Hanoi, Vietnam',
+            locality: 'Hanoi',
+          },
+          confidence: 'High',
+          entityType: 'PopulatedPlace',
+          geocodePoints: [
+            {
+              type: 'Point',
+              coordinates: [21.028278350830078, 105.8538818359375],
+              calculationMethod: 'Rooftop',
+              usageTypes: ['Display'],
+            },
+          ],
+          matchCodes: ['Good'],
+        },
+        {
+          __type:
+            'Location:http://schemas.microsoft.com/search/local/ws/rest/v1',
+          bbox: [
+            20.974586486816406,
+            105.78898620605469,
+            21.068710327148438,
+            105.87332916259766,
+          ],
+          name: 'Hanoi, Vietnam',
+          point: {
+            type: 'Point',
+            coordinates: [21.028278350830078, 105.8538818359375],
+          },
+          address: {
+            adminDistrict: 'Hanoi',
+            countryRegion: 'Vietnam',
+            formattedAddress: 'Hanoi, Vietnam',
+            locality: 'Hanoi',
+          },
+          confidence: 'High',
+          entityType: 'PopulatedPlace',
+          geocodePoints: [
+            {
+              type: 'Point',
+              coordinates: [21.028278350830078, 105.8538818359375],
+              calculationMethod: 'Rooftop',
+              usageTypes: ['Display'],
+            },
+          ],
+          matchCodes: ['Good'],
+        },
+        {
+          __type:
+            'Location:http://schemas.microsoft.com/search/local/ws/rest/v1',
+          bbox: [
+            20.974586486816406,
+            105.78898620605469,
+            21.068710327148438,
+            105.87332916259766,
+          ],
+          name: 'Hanoi, Vietnam',
+          point: {
+            type: 'Point',
+            coordinates: [21.028278350830078, 105.8538818359375],
+          },
+          address: {
+            adminDistrict: 'Hanoi',
+            countryRegion: 'Vietnam',
+            formattedAddress: 'Hanoi, Vietnam',
+            locality: 'Hanoi',
+          },
+          confidence: 'High',
+          entityType: 'PopulatedPlace',
+          geocodePoints: [
+            {
+              type: 'Point',
+              coordinates: [21.028278350830078, 105.8538818359375],
+              calculationMethod: 'Rooftop',
+              usageTypes: ['Display'],
+            },
+          ],
+          matchCodes: ['Good'],
+        },
+        {
+          __type:
+            'Location:http://schemas.microsoft.com/search/local/ws/rest/v1',
+          bbox: [
+            20.974586486816406,
+            105.78898620605469,
+            21.068710327148438,
+            105.87332916259766,
+          ],
+          name: 'Hanoi, Vietnam',
+          point: {
+            type: 'Point',
+            coordinates: [21.028278350830078, 105.8538818359375],
+          },
+          address: {
+            adminDistrict: 'Hanoi',
+            countryRegion: 'Vietnam',
+            formattedAddress: 'Hanoi, Vietnam',
+            locality: 'Hanoi',
+          },
+          confidence: 'High',
+          entityType: 'PopulatedPlace',
+          geocodePoints: [
+            {
+              type: 'Point',
+              coordinates: [21.028278350830078, 105.8538818359375],
+              calculationMethod: 'Rooftop',
+              usageTypes: ['Display'],
+            },
+          ],
+          matchCodes: ['Good'],
+        },
+        {
+          __type:
+            'Location:http://schemas.microsoft.com/search/local/ws/rest/v1',
+          bbox: [
+            20.974586486816406,
+            105.78898620605469,
+            21.068710327148438,
+            105.87332916259766,
+          ],
+          name: 'Hanoi, Vietnam',
+          point: {
+            type: 'Point',
+            coordinates: [21.028278350830078, 105.8538818359375],
+          },
+          address: {
+            adminDistrict: 'Hanoi',
+            countryRegion: 'Vietnam',
+            formattedAddress: 'Hanoi, Vietnam',
+            locality: 'Hanoi',
+          },
+          confidence: 'High',
+          entityType: 'PopulatedPlace',
+          geocodePoints: [
+            {
+              type: 'Point',
+              coordinates: [21.028278350830078, 105.8538818359375],
+              calculationMethod: 'Rooftop',
+              usageTypes: ['Display'],
+            },
+          ],
+          matchCodes: ['Good'],
+        },
+        {
+          __type:
+            'Location:http://schemas.microsoft.com/search/local/ws/rest/v1',
+          bbox: [
+            20.974586486816406,
+            105.78898620605469,
+            21.068710327148438,
+            105.87332916259766,
+          ],
+          name: 'Hanoi, Vietnam',
+          point: {
+            type: 'Point',
+            coordinates: [21.028278350830078, 105.8538818359375],
+          },
+          address: {
+            adminDistrict: 'Hanoi',
+            countryRegion: 'Vietnam',
+            formattedAddress: 'Hanoi, Vietnam',
+            locality: 'Hanoi',
+          },
+          confidence: 'High',
+          entityType: 'PopulatedPlace',
+          geocodePoints: [
+            {
+              type: 'Point',
+              coordinates: [21.028278350830078, 105.8538818359375],
+              calculationMethod: 'Rooftop',
+              usageTypes: ['Display'],
+            },
+          ],
+          matchCodes: ['Good'],
+        },
+        {
+          __type:
+            'Location:http://schemas.microsoft.com/search/local/ws/rest/v1',
+          bbox: [
+            20.974586486816406,
+            105.78898620605469,
+            21.068710327148438,
+            105.87332916259766,
+          ],
+          name: 'Hanoi, Vietnam',
+          point: {
+            type: 'Point',
+            coordinates: [21.028278350830078, 105.8538818359375],
+          },
+          address: {
+            adminDistrict: 'Hanoi',
+            countryRegion: 'Vietnam',
+            formattedAddress: 'Hanoi, Vietnam',
+            locality: 'Hanoi',
+          },
+          confidence: 'High',
+          entityType: 'PopulatedPlace',
+          geocodePoints: [
+            {
+              type: 'Point',
+              coordinates: [21.028278350830078, 105.8538818359375],
+              calculationMethod: 'Rooftop',
+              usageTypes: ['Display'],
+            },
+          ],
+          matchCodes: ['Good'],
+        },
       ],
     },
   ],
