@@ -21,6 +21,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import {API_CALL_CONFIG} from '../../../map_config';
 import {TapGestureHandler} from 'react-native-gesture-handler';
+import {windowHeight, windowWidth} from '../../Utils/Dimention';
+import ContentLoader, {Rect} from 'react-content-loader/native';
 
 // const data = [
 //   {
@@ -244,6 +246,7 @@ const SearchResultScreen = ({route, navigation}) => {
                     SetCurTagIndex(index);
                     // console.log('click ne');
                     setHasMore(true);
+                    setLoading(true);
                   }}>
                   <View
                     key={index}
@@ -269,14 +272,61 @@ const SearchResultScreen = ({route, navigation}) => {
             }}
           />
         </Animated.View>
-        {loading ? (
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <ActivityIndicator size={50} color={'#f15454'} />
-          </View>
-        ) : (
-          <Animated.View style={[styles.listContainer, listContainerStyle]}>
+
+        <Animated.View style={[styles.listContainer, listContainerStyle]}>
+          {loading ? (
+            <FlatList
+              keyExtractor={item => item}
+              style={{width: windowWidth, overflow: 'hidden', padding: 20}}
+              scrollEnabled={false}
+              data={[1, 2]}
+              renderItem={({item}) => (
+                <View
+                  key={item}
+                  style={{
+                    width: windowWidth - 40,
+                    height: windowHeight * 0.4,
+                    overflow: 'hidden',
+                    marginBottom: 20,
+                  }}>
+                  <ContentLoader
+                    backgroundColor="#dcdcdc"
+                    foregroundColor="#f5f5f5"
+                    speed={1}
+                    viewBox={`0 0 ${windowWidth - 40} ${windowHeight * 0.4}`}
+                    height={windowHeight * 0.4}
+                    width={windowWidth - 40}>
+                    <Rect
+                      x="0"
+                      y="0"
+                      rx="20"
+                      ry="20"
+                      width={windowWidth - 40}
+                      height={windowHeight * 0.4 - 60}
+                    />
+                    <Rect
+                      x="0"
+                      y={windowHeight * 0.4 - 55}
+                      rx="3"
+                      ry="3"
+                      width="80"
+                      height="20"
+                    />
+                    <Rect
+                      x="0"
+                      y={windowHeight * 0.4 - 25}
+                      rx="3"
+                      ry="3"
+                      width={windowWidth - 40}
+                      height="20"
+                    />
+                  </ContentLoader>
+                </View>
+              )}
+            />
+          ) : (
             <AnimatedFlatlist
+              showsVerticalScrollIndicator={false}
               onScroll={scrollHandler}
               onEndReachedThreshold={0.5}
               onEndReached={() => {
@@ -312,8 +362,8 @@ const SearchResultScreen = ({route, navigation}) => {
               keyExtractor={(item, index) => (item.name + index).toString()}
               refreshing={refreshing}
             />
-          </Animated.View>
-        )}
+          )}
+        </Animated.View>
       </View>
     </SafeAreaView>
   );

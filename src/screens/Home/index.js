@@ -23,9 +23,10 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import CustomHeader from '../../components/CustomHeader';
+import ContentLoader, {Rect} from 'react-content-loader/native';
 
 const HomeScreen = ({navigation}) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [tags, setTags] = useState([]);
   const {loadTags} = React.useContext(DbContext);
 
@@ -37,12 +38,18 @@ const HomeScreen = ({navigation}) => {
   });
 
   useEffect(() => {
+    let mounted = true;
     loadTags()
       .then(res => {
-        setTags(res);
-        setLoading(false);
+        if (mounted) {
+          setTags(res);
+          setLoading(false);
+        }
       })
       .catch(console.error);
+    return function clean() {
+      mounted = false;
+    };
   }, []);
 
   const headerStyle = useAnimatedStyle(() => {
@@ -133,39 +140,72 @@ const HomeScreen = ({navigation}) => {
         <View>
           <Text style={styles.proposedTitle}>Most Popular</Text>
           <View style={{marginVertical: 10}}>
-            <FlatList
-              data={tags}
-              renderItem={({item, index}) => (
-                <Tile
-                  width={(windowWidth * 70) / 100}
-                  height={(windowWidth * 70) / 100}
-                  containerStyle={{
-                    marginHorizontal: 15,
-                    borderRadius: 10,
-                    overflow: 'hidden',
-                  }}
-                  opacity={1}
-                  // activeOpacity={0.5}
-                  // featured
-                  imageSrc={item.coverUrl}
-                  title={item.name}
-                  titleStyle={{
-                    fontSize: 36,
-                    fontWeight: 'bold',
-                    color: '#fff',
-                  }}
-                  onPress={() =>
-                    navigation.navigate('List by Tag', {
-                      tags: tags,
-                      selectedTagIndex: index,
-                    })
-                  }
-                />
-              )}
-              keyExtractor={(item, index) => index.toString()}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            />
+            {loading ? (
+              <FlatList
+                scrollEnabled={false}
+                data={[1, 2]}
+                renderItem={({item, index}) => (
+                  <View
+                    style={{
+                      padding: 10,
+                      width: windowWidth * 0.7,
+                      height: windowWidth * 0.7,
+                    }}>
+                    <ContentLoader
+                      backgroundColor="#dcdcdc"
+                      foregroundColor="#f5f5f5"
+                      speed={1}
+                      viewBox={`0 0 ${windowWidth * 0.7} ${windowWidth * 0.7}`}>
+                      <Rect
+                        x="0"
+                        y="0"
+                        rx="10"
+                        ry="10"
+                        width={windowWidth * 0.7}
+                        height={windowWidth * 0.7}
+                      />
+                    </ContentLoader>
+                  </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              />
+            ) : (
+              <FlatList
+                data={tags}
+                renderItem={({item, index}) => (
+                  <Tile
+                    width={(windowWidth * 70) / 100}
+                    height={(windowWidth * 70) / 100}
+                    containerStyle={{
+                      marginHorizontal: 15,
+                      borderRadius: 10,
+                      overflow: 'hidden',
+                    }}
+                    opacity={1}
+                    // activeOpacity={0.5}
+                    // featured
+                    imageSrc={item.coverUrl}
+                    title={item.name}
+                    titleStyle={{
+                      fontSize: 36,
+                      fontWeight: 'bold',
+                      color: '#fff',
+                    }}
+                    onPress={() =>
+                      navigation.navigate('List by Tag', {
+                        tags: tags,
+                        selectedTagIndex: index,
+                      })
+                    }
+                  />
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              />
+            )}
           </View>
         </View>
       </Animated.ScrollView>
