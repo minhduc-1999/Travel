@@ -2,9 +2,11 @@ import {StyleSheet, Dimensions} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 30,
+    backgroundColor: '#fff',
+    height: '100%',
   },
   forgotButton: {
     marginTop: 15,

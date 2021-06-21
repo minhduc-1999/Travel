@@ -17,20 +17,24 @@ class Post extends React.PureComponent {
         }}
         style={[styles.container, this.props.style]}>
         <Image style={styles.image} source={{uri: this.props.post.images[0]}} />
-
-        <Text style={[styles.name, this.props.titleStyle]} numberOfLines={2}>
-          {this.props.post.name} - 5{' '}
-          <Icon name="star" size={22} color={'#f15454'} />
+        <Text style={[styles.rate]} numberOfLines={2}>
+          <Icon name="star" size={22} color={'#f15454'} /> 5
         </Text>
-        <View style={styles.tagContainer}>
-          {this.props.post.tags
-            ? this.props.post.tags.map((tag, index) => (
-                <Text key={index} style={styles.tag}>
-                  {tag}
-                </Text>
-              ))
-            : null}
-        </View>
+        <Text style={[styles.name, this.props.titleStyle]} numberOfLines={2}>
+          {this.props.post.name}
+        </Text>
+        {typeof this.props.showTags === 'boolean' &&
+        this.props.showTags === false ? null : (
+          <View style={styles.tagContainer}>
+            {this.props.post.tags
+              ? this.props.post.tags.map((tag, index) => (
+                  <Text key={index} style={styles.tag}>
+                    {tag}
+                  </Text>
+                ))
+              : null}
+          </View>
+        )}
       </Pressable>
     );
   }
@@ -64,7 +68,7 @@ const PostWrapper = props => {
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 20,
-    marginVertical: 15,
+    marginVertical: 10,
   },
   image: {
     width: '100%',
@@ -73,14 +77,21 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 15,
   },
+  rate: {
+    fontSize: 20,
+    lineHeight: 25,
+    marginTop: 8,
+    fontWeight: '700',
+  },
   name: {
     fontSize: 25,
     lineHeight: 26,
     fontWeight: '700',
-    marginVertical: 10,
+    marginTop: 5,
   },
   tagContainer: {
     flexDirection: 'row',
+    marginTop: 10,
   },
   tag: {
     marginRight: 5,

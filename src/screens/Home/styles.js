@@ -1,5 +1,5 @@
-import {StatusBar} from 'react-native';
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet} from 'react-native';
+import {windowHeight, windowWidth} from '../../Utils/Dimention';
 
 const styles = StyleSheet.create({
   header: {
@@ -17,22 +17,27 @@ const styles = StyleSheet.create({
   searchButton: {
     backgroundColor: '#fff',
     height: 50,
-    width: Dimensions.get('screen').width - 60,
+    width: (windowWidth * 80) / 100,
     marginHorizontal: 30,
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
-    position: 'absolute',
-    top: StatusBar.currentHeight + 5,
-    left: 0,
     zIndex: 100,
-    elevation: Platform.OS === 'android' ? 50 : 0,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.32,
+    shadowRadius: 5.46,
+
+    elevation: 9,
   },
   searchButtonText: {
     color: '#000',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 10,
   },
@@ -64,7 +69,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#000',
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
   },
   proposedTitle: {

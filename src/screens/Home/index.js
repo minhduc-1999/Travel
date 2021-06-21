@@ -5,94 +5,126 @@ import {
   Text,
   Pressable,
   FlatList,
-  ScrollView,
   SafeAreaView,
   StatusBar,
-  Animated,
 } from 'react-native';
 import styles from './styles';
 import Fonawesome from 'react-native-vector-icons/FontAwesome';
 import Tile from '../../components/Tile';
 import {DbContext} from '../../Services/DbProvider';
 import {windowWidth, windowHeight} from '../../Utils/Dimention';
-import {
-  AnimatedPressable,
-  AnimatedStatusBar,
-} from '../../components/CustomAnimated';
-// const AnimatedStatusBar = Animated.createAnimatedComponent(StatusBar);
-// const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  useAnimatedScrollHandler,
+  interpolate,
+  interpolateColor,
+  withSpring,
+} from 'react-native-reanimated';
+import CustomHeader from '../../components/CustomHeader';
+import ContentLoader, {Rect} from 'react-content-loader/native';
 
 const HomeScreen = ({navigation}) => {
+  const [loading, setLoading] = useState(true);
   const [tags, setTags] = useState([]);
   const {loadTags} = React.useContext(DbContext);
-  useEffect(() => {
-    loadTags()
-      .then(res => setTags(res))
-      .catch(console.error);
-  }, []);
-  const [barStyle, setBarStyle] = React.useState(true);
-  const scrollY = React.useRef(new Animated.Value(0)).current;
-  const headerColor = scrollY.interpolate({
-    inputRange: [0, (windowHeight * 20) / 100],
-    outputRange: ['#00000000', '#ffffff'],
-    extrapolate: 'clamp',
+
+  const scrollY = useSharedValue(0);
+
+  const scrollHander = useAnimatedScrollHandler(event => {
+    const {y} = event.contentOffset;
+    scrollY.value = y;
   });
-  const handleScroll = event => {
-    const {y} = event.nativeEvent.contentOffset;
-    if (y <= 70) setBarStyle(true);
-    else setBarStyle(false);
-  };
+
+  useEffect(() => {
+    let mounted = true;
+    loadTags()
+      .then(res => {
+        if (mounted) {
+          setTags(res);
+          setLoading(false);
+        }
+      })
+      .catch(console.error);
+    return function clean() {
+      mounted = false;
+    };
+  }, []);
+
+  const headerStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(
+        scrollY.value,
+        [0, (windowHeight * 20) / 100],
+        [0, 1],
+      ),
+    };
+  });
+
+  const headerShadowAnim = useAnimatedStyle(() => {
+    return {
+      shadowOpacity: interpolate(
+        scrollY.value,
+        [0, (windowHeight * 20) / 100],
+        [0, 1],
+      ),
+    };
+  });
+
+  const btnAnimated = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(
+        scrollY.value,
+        [0, (windowHeight * 20) / 100],
+        ['rgb(255, 255, 255)', 'rgb(240,240,240)'],
+        'RGB',
+      ),
+      shadowOpacity: interpolate(
+        scrollY.value,
+        [0, (windowHeight * 20) / 100],
+        [1, 0],
+      ),
+      elevation: interpolate(
+        scrollY.value,
+        [0, (windowHeight * 20) / 100],
+        [10, 0],
+      ),
+    };
+  });
+
   console.log('Home screen render');
   return (
     <SafeAreaView>
-      <AnimatedStatusBar
+      <StatusBar
         translucent
         backgroundColor="transparent"
-        barStyle={barStyle ? 'light-content' : 'dark-content'}
+        barStyle={'dark-content'}
       />
-      <Animated.View
-        style={[
-          styles.header,
-          {
-            backgroundColor: headerColor,
-            borderBottomColor: scrollY.interpolate({
-              inputRange: [0, (windowHeight * 20) / 100],
-              outputRange: ['#00000000', 'silver'],
-              extrapolate: 'clamp',
-            }),
-          },
-        ]}>
-        <AnimatedPressable
-          style={[
-            styles.searchButton,
-            {
-              backgroundColor: scrollY.interpolate({
-                inputRange: [0, (windowHeight * 20) / 100],
-                outputRange: ['#fff', '#b5b5b5'],
-                extrapolate: 'clamp',
-              }),
-            },
-          ]}
-          onPress={() => navigation.navigate('Destination Search', {})}>
-          <Fonawesome name={'search'} color={'#f15454'} size={16} />
-          <Text style={styles.searchButtonText}>Where are you going?</Text>
-        </AnimatedPressable>
-      </Animated.View>
-      <ScrollView
-        onScroll={Animated.event(
-          [
-            {
-              nativeEvent: {
-                contentOffset: {
-                  y: scrollY,
-                },
-              },
-            },
-          ],
-          {useNativeDriver: false, listener: event => handleScroll(event)},
-        )}>
+      <CustomHeader
+        style={{borderBottomWidth: 2, borderBottomColor: '#e6e6e6'}}
+        shadowAnim={headerShadowAnim}
+        bgAnimated={headerStyle}>
+        <Animated.View style={[styles.searchButton, btnAnimated]}>
+          <Pressable
+            style={{
+              flex: 1,
+              backgroundColor: 'transparent',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={() => navigation.navigate('Destination Search', {})}>
+            <Fonawesome name={'search'} color={'#f15454'} size={16} />
+            <Text style={styles.searchButtonText}>Where are you going?</Text>
+          </Pressable>
+        </Animated.View>
+      </CustomHeader>
+
+      <Animated.ScrollView
+        onScroll={scrollHander}
+        showsVerticalScrollIndicator={false}>
         <ImageBackground
-          // source={require('../../../assets/images/wallpaper.jpg')}
           source={{
             uri:
               'https://firebasestorage.googleapis.com/v0/b/travelad-8b432.appspot.com/o/app%2Fbackground%2Fhhrhrbb.png?alt=media&token=cbebeb95-a25e-4d16-971d-73feb9ad55ba',
@@ -101,44 +133,82 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.title}>Go Near</Text>
           <Pressable
             style={styles.button}
-            onPress={() => console.warn(windowWidth)}>
-            <Text style={styles.buttonText}>Explore nearby stays</Text>
+            onPress={() => navigation.navigate('Plan')}>
+            <Text style={styles.buttonText}>Make your plan</Text>
           </Pressable>
         </ImageBackground>
         <View>
           <Text style={styles.proposedTitle}>Most Popular</Text>
           <View style={{marginVertical: 10}}>
-            <FlatList
-              data={tags}
-              renderItem={({item, index}) => (
-                <Tile
-                  width={(windowWidth * 70) / 100}
-                  height={(windowWidth * 70) / 100}
-                  containerStyle={{
-                    marginHorizontal: 15,
-                    borderRadius: 10,
-                    overflow: 'hidden',
-                  }}
-                  opacity={1}
-                  // activeOpacity={0.5}
-                  // featured
-                  imageSrc={item.coverUrl}
-                  title={item.name}
-                  titleStyle={{
-                    fontSize: 36,
-                    fontWeight: 'bold',
-                    color: '#fff',
-                  }}
-                  onPress={() => console.warn(item.name)}
-                />
-              )}
-              keyExtractor={(item, index) => index.toString()}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            />
+            {loading ? (
+              <FlatList
+                scrollEnabled={false}
+                data={[1, 2]}
+                renderItem={({item, index}) => (
+                  <View
+                    style={{
+                      padding: 10,
+                      width: windowWidth * 0.7,
+                      height: windowWidth * 0.7,
+                    }}>
+                    <ContentLoader
+                      backgroundColor="#dcdcdc"
+                      foregroundColor="#f5f5f5"
+                      speed={1}
+                      viewBox={`0 0 ${windowWidth * 0.7} ${windowWidth * 0.7}`}>
+                      <Rect
+                        x="0"
+                        y="0"
+                        rx="10"
+                        ry="10"
+                        width={windowWidth * 0.7}
+                        height={windowWidth * 0.7}
+                      />
+                    </ContentLoader>
+                  </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              />
+            ) : (
+              <FlatList
+                data={tags}
+                renderItem={({item, index}) => (
+                  <Tile
+                    width={(windowWidth * 70) / 100}
+                    height={(windowWidth * 70) / 100}
+                    containerStyle={{
+                      marginHorizontal: 15,
+                      borderRadius: 10,
+                      overflow: 'hidden',
+                    }}
+                    opacity={1}
+                    // activeOpacity={0.5}
+                    // featured
+                    imageSrc={item.coverUrl}
+                    title={item.name}
+                    titleStyle={{
+                      fontSize: 36,
+                      fontWeight: 'bold',
+                      color: '#fff',
+                    }}
+                    onPress={() =>
+                      navigation.navigate('List by Tag', {
+                        tags: tags,
+                        selectedTagIndex: index,
+                      })
+                    }
+                  />
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              />
+            )}
           </View>
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 };

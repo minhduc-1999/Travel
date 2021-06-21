@@ -2,97 +2,95 @@ import React from 'react';
 import {
   SafeAreaView,
   StatusBar,
-  ScrollView,
   Pressable,
   StyleSheet,
-  Animated,
   View,
 } from 'react-native';
 import DetailPost from '../../components/DetailedPost';
 import Icon from 'react-native-vector-icons/FontAwesome';
-// import CustomHeader from '../../components/CustomHeader';
+import CustomHeader from '../../components/CustomHeader';
 import {windowHeight} from '../../Utils/Dimention';
-// import Animated from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  useAnimatedScrollHandler,
+  interpolate,
+  interpolateColor,
+} from 'react-native-reanimated';
 
-const AnimatedStatusBar = Animated.createAnimatedComponent(StatusBar);
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 const DetailedPostScreen = ({route, navigation}) => {
-  const [barStyle, setBarStyle] = React.useState('light-content');
-  const scrollY = React.useRef(new Animated.Value(0)).current;
-  const headerColor = scrollY.interpolate({
-    inputRange: [0, (windowHeight * 30) / 100],
-    outputRange: ['#00000000', '#ffffffff'],
-    extrapolate: 'clamp',
+  const scrollY = useSharedValue(0);
+  const scrollHander = useAnimatedScrollHandler(event => {
+    const {y} = event.contentOffset;
+    scrollY.value = y;
   });
+  const headerStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(scrollY.value, [0, windowHeight * 0.2], [0, 1]),
+    };
+  });
+
+  const shadowAnimStyle = useAnimatedStyle(() => {
+    return {
+      shadowColor: interpolateColor(
+        scrollY.value,
+        [0, windowHeight * 0.2],
+        ['rgb(255,255,255)', 'rbg(0,0,0)'],
+        'RGB',
+      ),
+    };
+  });
+
   const {post} = route.params;
   console.log('detail post screen render');
-  const handleScroll = event => {
-    const {y} = event.nativeEvent.contentOffset;
-    if (y >= (windowHeight * 20) / 100) setBarStyle('dark-content');
-    else setBarStyle('light-content');
-  };
+
   return (
     <SafeAreaView>
-      <AnimatedStatusBar
+      <StatusBar
         translucent
-        backgroundColor={headerColor}
-        barStyle={barStyle}
+        backgroundColor={'transparent'}
+        barStyle={'dark-content'}
       />
-      <View style={[styles.container]}>
-        <Animated.View
-          style={[
-            styles.header,
-            {
-              backgroundColor: headerColor,
-              borderBottomColor: scrollY.interpolate({
-                inputRange: [0, (windowHeight * 30) / 100],
-                outputRange: ['#00000000', 'silver'],
-                extrapolate: 'clamp',
-              }),
-            },
-          ]}>
-          <View style={[styles.section]}>
-            <Pressable
-              style={styles.back}
+      <CustomHeader
+        height={windowHeight * 0.12}
+        style={{borderBottomWidth: 2, borderBottomColor: '#e6e6e6'}}
+        bgAnimated={headerStyle}>
+        <View style={styles.header}>
+          <Animated.View style={styles.section}>
+            <AnimatedPressable
+              style={[styles.smallBtn, shadowAnimStyle]}
               onPress={() => {
                 navigation.goBack();
               }}>
               <Icon name="times" color="#000" size={16} />
-            </Pressable>
-          </View>
+            </AnimatedPressable>
+          </Animated.View>
           <View
             style={[
               styles.section,
               {flex: 3, justifyContent: 'center'},
             ]}></View>
-          <View style={[styles.section]}>
-            <Pressable style={styles.back} onPress={() => {}}>
+          <Animated.View style={styles.section}>
+            <AnimatedPressable
+              style={[styles.smallBtn, shadowAnimStyle]}
+              onPress={() => {}}>
               <Icon name="heart" color="#000" size={16} />
-            </Pressable>
-          </View>
-        </Animated.View>
-      </View>
+            </AnimatedPressable>
+          </Animated.View>
+        </View>
+      </CustomHeader>
 
-      <ScrollView
-        onScroll={Animated.event(
-          [
-            {
-              nativeEvent: {
-                contentOffset: {
-                  y: scrollY,
-                },
-              },
-            },
-          ],
-          {useNativeDriver: false, listener: event => handleScroll(event)},
-        )}>
+      <Animated.ScrollView onScroll={scrollHander}>
         <DetailPost post={post} />
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  back: {
+  smallBtn: {
     // position: 'absolute',
     // top: 30,
     // left: 20,
@@ -101,34 +99,32 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 9,
-    // },
-    // shadowOpacity: 0.48,
-    // shadowRadius: 11.95,
-    // elevation: 18,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 9,
+    },
+    shadowOpacity: 0.8,
+    shadowRadius: 11.95,
+    elevation: 18,
     backgroundColor: '#fff',
     zIndex: 100,
   },
-  container: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    backgroundColor: 'transparent',
-    width: '100%',
-    height: 70,
-    alignItems: 'center',
-    zIndex: 100,
-  },
+  // container: {
+  //   position: 'absolute',
+  //   top: 0,
+  //   left: 0,
+  //   backgroundColor: 'transparent',
+  //   width: '100%',
+  //   height: 70,
+  //   alignItems: 'center',
+  //   zIndex: 100,
+  // },
   header: {
-    borderBottomColor: 'transparent',
-    borderBottomWidth: 1,
     backgroundColor: 'transparent',
     flexDirection: 'row',
-    flex: 1,
-    marginTop: StatusBar.currentHeight,
+    // flex: 1,
+    // marginTop: StatusBar.currentHeight,
   },
   section: {
     flex: 1,

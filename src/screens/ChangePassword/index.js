@@ -42,12 +42,6 @@ const ChangePassword = ({navigation}) => {
           buttonTitle="Change Password"
           onPress={() => changePassword(currentPassword, newPassword)}
         />
-
-        <TouchableOpacity
-          style={styles.forgotButton}
-          onPress={() => navigation.navigate('Forgot Password')}>
-          <Text style={styles.navButtonText}>Forgot Password</Text>
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
