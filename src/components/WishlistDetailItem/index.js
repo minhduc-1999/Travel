@@ -12,7 +12,7 @@ const WishlistDetailItem = ({item}) => {
       style={styles.container}>
       <Image 
         style={styles.image}
-        source={{uri: item.image}}
+        source={{uri: item.images[0]}}
       />
       <Text 
         style={styles.description}

@@ -161,7 +161,9 @@ const DbProvider = ({children}) => {
             })
             .then(matchingDocs => {
               // console.log('[This step]', matchingDocs);
-              return matchingDocs.map(doc => doc.data());
+              return matchingDocs.map(doc => {
+                return {...doc.data(), id: doc.ref.id}
+              });
             })
             .catch(console.error);
 
@@ -195,6 +197,34 @@ const DbProvider = ({children}) => {
             .catch(err => {
               throw new Error(err);
             });
+        },
+        loadWishlists: async () => {
+          console.log('[Wishlists]: load');
+          return firestore() 
+            .collection('wishlists')
+            .where('userId', '==', userAcc.uid)
+            .orderBy('createDate', 'desc')
+            .limit(10)
+            .get()
+            .then(querySnapshot => {
+              return querySnapshot.docs.map(doc => doc.data());
+            })
+            .catch(error => {
+              throw new Error(error);
+            })
+        },
+        loadDestinationsByRefId: async (listDes) => {
+          const res = [];
+          for (const d of listDes) {
+            res.push(firestore()
+              .collection('destinations')
+              .doc(d)
+              .get()
+              .then(res => {
+                return res.data();
+              }))
+          }
+          return Promise.all(res);
         },
       }}>
       {children}

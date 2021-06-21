@@ -1,10 +1,12 @@
 import {StyleSheet} from 'react-native';
+import {windowWidth} from '../../Utils/Dimention';
 
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 20,
     backgroundColor: 'white',
     height: 270,
+    width: windowWidth - 40,
     borderRadius: 20,
     marginTop: 0,
     marginBottom: 30,
@@ -20,30 +22,32 @@ const styles = StyleSheet.create({
   },
   imageGroup: {
     height: '65%',
-    width: '100%',
-    backgroundColor: 'lightblue',
+    width: windowWidth - 40,
     flexDirection: 'column',
     flexWrap: 'wrap',
+    overflow: 'hidden',
+  },
+  imageSingle: {
+    width: windowWidth - 40,
+    height: '100%',
+    resizeMode: 'cover',
   },
   mainImage: {
-    width: '60%',
-    marginRight: 1,
-    flexBasis: '100%',
-    flexGrow: 2,
+    width: (windowWidth - 40) * 0.55,
+    height: '100%',
+    marginRight: 2,
     resizeMode: 'cover',
   },
   image1: {
-    width: '40%',
-    flexGrow: 1,
-    marginBottom: 1,
-    flexBasis: '48%',
+    width: '100%',
+    height: '100%',
+    marginBottom: 2,
     resizeMode: 'cover',
   },
   image2: {
-    width: '40%',
-    flexGrow: 1,
+    width: '100%',
+    height: '100%',
     marginTop: 1,
-    flexBasis: '48%',
     resizeMode: 'cover',
   },
   name: {

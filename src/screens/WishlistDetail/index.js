@@ -1,26 +1,25 @@
 import React from 'react';
 import {View, Text, FlatList, SafeAreaView, StatusBar} from 'react-native';
 import {Divider} from 'react-native-elements';
-import places from '../../../assets/data/feed';
-import savedList from '../../../assets/data/saved';
 import styles from './styles';
 import WishlistDetailItem from '../../components/WishlistDetailItem';
 import {Value} from 'react-native-reanimated';
+import Post from '../../components/Post';
 
-const WishlistDetail = () => {
-  console.log('wishlist detail screen render');
+const WishlistDetail = ({route, navigation}) => {
+  const {places, name} = route.params;
   return (
     <SafeAreaView>
       <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
       <View style={styles.container}>
-        <Text style={styles.title}>{savedList[0].name}</Text>
+        <Text style={styles.title}>{name}</Text>
         <Divider style={styles.separator} />
         <FlatList
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           data={places}
-          renderItem={({item}) => <WishlistDetailItem item={item} />}
-          keyExtractor={item => item.id}
+          renderItem={({item}) => <Post post={item} />}
+          keyExtractor={item => item.name}
         />
       </View>
     </SafeAreaView>
