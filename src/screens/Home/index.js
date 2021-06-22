@@ -102,6 +102,7 @@ const HomeScreen = ({navigation}) => {
         barStyle={'dark-content'}
       />
       <CustomHeader
+        height={windowHeight * 0.16}
         style={{borderBottomWidth: 2, borderBottomColor: '#e6e6e6'}}
         shadowAnim={headerShadowAnim}
         bgAnimated={headerStyle}>

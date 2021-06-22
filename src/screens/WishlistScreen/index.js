@@ -1,19 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {View, Text, FlatList, SafeAreaView, StatusBar, ActivityIndicator} from 'react-native';
+import {View, Text, FlatList, SafeAreaView, StatusBar, ActivityIndicator, Pressable} from 'react-native';
 import WishlistItem from '../../components/WishlistItem';
-import places from '../../../assets/data/feed';
-import savedList from '../../../assets/data/saved';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { DbContext } from '../../Services/DbProvider';
+import styles from './styles';
 
-const WishlistScreen = () => {
-  console.log('wishlist screen render');
+const WishlistScreen = ({navigation}) => {
   const {loadWishlists} = useContext(DbContext);
   const [wishlistsData, setWishlistsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(async () => {
-    fetchWishlistsData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      setLoading(true);
+      fetchWishlistsData();
+    })
+    return unsubscribe;
+  }, [navigation]);
 
   const fetchWishlistsData = () => {
     loadWishlists()

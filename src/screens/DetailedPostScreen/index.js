@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {useEffect, useContext, useState, useRef} from 'react';
 import {
   SafeAreaView,
   StatusBar,
   Pressable,
   StyleSheet,
   View,
+  Text,
+  TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
 import DetailPost from '../../components/DetailedPost';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -17,11 +20,28 @@ import Animated, {
   interpolate,
   interpolateColor,
 } from 'react-native-reanimated';
+import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
+import {Image, Divider} from 'react-native-elements';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {DbContext} from '../../Services/DbProvider';
+import { Dialog } from 'react-native-simple-dialogs';
+import Toast from 'react-native-toast-message';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const DetailedPostScreen = ({route, navigation}) => {
+  const {
+    loadWishlists, 
+    addDestinationToWishlist, 
+    addNewWishlist, 
+    removeDestinationFromWishlist} = useContext(DbContext);
+  const sheetRef = useRef(null);
+  const [wishlists, setWishlists] = useState([]);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [newWishlistName, setNewWishlistName] = useState('')
+  const [isFavorite, setIsFavorite] = useState(false);
   const scrollY = useSharedValue(0);
+  const bsScrollY = useSharedValue(100);
   const scrollHander = useAnimatedScrollHandler(event => {
     const {y} = event.contentOffset;
     scrollY.value = y;
@@ -45,6 +65,20 @@ const DetailedPostScreen = ({route, navigation}) => {
 
   const {post} = route.params;
   console.log('detail post screen render');
+
+  useEffect(() => {
+    loadWishlists()
+      .then(res => {
+        setWishlists(res);
+        res.forEach(wishlist => {
+          if (wishlist.destinations.includes(post.id)) {
+            setIsFavorite(true);
+            return;
+          }
+        });
+      })
+      .catch(err => console.log(err));
+  }, [isFavorite]);
 
   return (
     <SafeAreaView>
@@ -75,8 +109,23 @@ const DetailedPostScreen = ({route, navigation}) => {
           <Animated.View style={styles.section}>
             <AnimatedPressable
               style={[styles.smallBtn, shadowAnimStyle]}
-              onPress={() => {}}>
-              <Icon name="heart" color="#000" size={16} />
+              onPress={() => {
+                if (!isFavorite) {
+                  sheetRef.current.snapTo(1, 500)
+                } else {
+                  removeDestinationFromWishlist(post.id, wishlists);
+                  setIsFavorite(false);
+                  Toast.show({
+                    type: 'success',
+                    position: 'bottom',
+                    text1: 'Remove destination successfully',
+                    visibilityTime: 2000,
+                    autoHide: true,
+                    bottomOffset: 40,
+                  });
+                }
+              }}>
+              <Icon name="heart" color={isFavorite ? "#f15454" : '#000'} size={16} />
             </AnimatedPressable>
           </Animated.View>
         </View>
@@ -85,6 +134,118 @@ const DetailedPostScreen = ({route, navigation}) => {
       <Animated.ScrollView onScroll={scrollHander}>
         <DetailPost post={post} />
       </Animated.ScrollView>
+
+      <BottomSheet
+        ref={sheetRef}
+        snapPoints={[0, windowHeight * 0.55, windowHeight * 0.9]}
+        animatedPosition={bsScrollY} >
+        <Pressable
+          style={{
+            position: 'absolute',
+            width: 20,
+            height: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginLeft: 20
+          }}
+          onPress={() => sheetRef.current.snapTo(0, 1000)}>
+          <FontAwesome name="times" size={20} color="black" />
+        </Pressable>
+        <View style={styles.sheetTitle}>
+          <Text style={{fontSize: 18}}>Your wishlists</Text>
+        </View>
+        <Divider style={{height: 1, marginTop: 10}} />
+        <Pressable
+          onPress={() => {
+            setDialogVisible(true);
+          }}
+          style={styles.sheetItem}>
+          <View
+            style={{
+              width: 60,
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: '#222',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <FontAwesome name="plus" size={30} color="white" />
+          </View>
+          <Text style={styles.sheetText}>Create new wishlist</Text>
+        </Pressable>
+        <BottomSheetFlatList
+          data={wishlists}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item, index}) => (
+            <Pressable 
+              onPress={() => {
+                addDestinationToWishlist(post.id, item.id);
+                setIsFavorite(true);
+                Toast.show({
+                  type: 'success',
+                  position: 'bottom',
+                  text1: 'Add destination to wishlist successfully',
+                  visibilityTime: 2000,
+                  autoHide: true,
+                  bottomOffset: 40,
+                });
+              }}
+              style={styles.sheetItem} 
+              key={index}>
+              <View style={{backgroundColor: '#ebebeb'}}>
+                <Image
+                  style={styles.sheetImage}
+                  source={{uri: item.repImage}}
+                />
+              </View>
+              <Text style={styles.sheetText}>{item.name}</Text>
+            </Pressable>
+          )}
+        />
+      </BottomSheet>
+
+      <Dialog
+        dialogStyle={styles.dialog}
+        animationType='fade'
+        visible={dialogVisible}
+        onTouchOutside={() => setDialogVisible(false)} >
+          <View>
+            <Pressable
+              onPress={() => setDialogVisible(false)}
+              style={{
+                position: 'absolute',
+                width: 20,
+                height: 20,
+                marginTop: 5,
+              }}>
+              <FontAwesome name='times' size={20} />
+            </Pressable>
+            <View style={styles.dialogTitle}>
+              <Text style={{fontSize: 20}}>Name your new wishlist</Text>
+            </View>
+            <Divider style={{height: 1, marginTop: 10, marginHorizontal: -24}} />
+            <View style={styles.inputContainer}>
+              <Text style={{marginLeft: 10, color: 'grey'}}>Name</Text>
+              <TextInput
+                defaultValue={post.name}
+                value={newWishlistName}
+                onChangeText={text => setNewWishlistName(text)}
+                style={styles.wishlistInput}
+                numberOfLines={1} />
+            </View>
+            <Text style={{color: 'grey', height: 20}}>50 letters max</Text>
+            <Divider style={{height: 1, marginTop: 20, marginHorizontal: -24}} />
+            <Pressable 
+              disabled={newWishlistName === ''}
+              style={styles.createButton}
+              onPress={() => {
+                addNewWishlist(post.id, post.images[0], newWishlistName);
+                setDialogVisible(false);
+              }} >
+              <Text style={{color: '#ffff', fontSize: 22}}>Create</Text>
+            </Pressable>
+          </View>
+      </Dialog>
     </SafeAreaView>
   );
 };
@@ -132,6 +293,54 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  sheetTitle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  sheetItem: {
+    width: '80%',
+    height: 80,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 20,
+  },
+  sheetImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+  },
+  sheetText: {
+    marginLeft: 10,
+    fontSize: 20,
+  },
+  dialog: {
+    borderRadius: 10,
+  },
+  dialogTitle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  inputContainer: {
+    height: 60,
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: 'grey',
+    marginTop: 20,
+  },
+  wishlistInput: {
+    height: 40,
+    marginLeft: 8,
+    fontSize: 18,
+  },
+  createButton: {
+    backgroundColor: '#000',
+    marginTop: 20,
+    borderRadius: 10,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });
 
 export default DetailedPostScreen;

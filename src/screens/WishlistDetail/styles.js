@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { windowWidth } from '../../Utils/Dimention';
 
 const styles = StyleSheet.create({
   container: {
@@ -12,6 +13,12 @@ const styles = StyleSheet.create({
   separator: {
     height: 3,
     marginHorizontal: 20,
+  },
+  menuButton: {
+    position: 'absolute',
+    marginTop: 10,
+    marginLeft: windowWidth - 40,
+    backgroundColor: '#ffff',
   },
 });
 

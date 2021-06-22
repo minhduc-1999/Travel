@@ -15,7 +15,7 @@ const SavedNavigator = () => {
           title: 'Wishlists',
           headerStyle: {
             backgroundColor: '#f2f2f2',
-            height: 80,
+            height: 120,
           },
           headerTitleStyle: {
             fontSize: 30,
@@ -30,7 +30,7 @@ const SavedNavigator = () => {
           title: '',
           headerStyle: {
             backgroundColor: '#f2f2f2',
-            height: 80,
+            height: 100,
           },
         }}
       />

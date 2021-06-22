@@ -1,5 +1,5 @@
 import React, {createContext} from 'react';
-import storage from '@react-native-firebase/storage';
+import storage, { firebase } from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import ReactObserver from 'react-event-observer';
 import {AuthContext} from '../navigation/AuthProvider';
@@ -243,7 +243,9 @@ const DbProvider = ({children}) => {
             .limit(10)
             .get()
             .then(querySnapshot => {
-              return querySnapshot.docs.map(doc => doc.data());
+              return querySnapshot.docs.map(doc => {
+                return {...doc.data(), id: doc.ref.id};
+              });
             })
             .catch(error => {
               throw new Error(error);
@@ -257,11 +259,57 @@ const DbProvider = ({children}) => {
               .doc(d)
               .get()
               .then(res => {
-                return res.data();
+                return {...res.data(), id: d};
               }))
           }
           return Promise.all(res);
         },
+        addDestinationToWishlist: async (desId, wlId) => {
+          if(!desId || !wlId) {
+            throw new Error('destination or wishlist does not exist')
+          }
+          return firestore().collection('wishlists').doc(wlId).update({
+            destinations: firestore.FieldValue.arrayUnion(desId)
+          }).then(() => {
+            return true;
+          }).catch(err => {
+            throw new Error(err);
+          })
+        },
+        addNewWishlist: async (desId, desImg, wlName) => {
+          if(!desId || !wlName || !userAcc) {
+            throw new Error('destination does not exist')
+          }
+          return firestore()
+            .collection('wishlists')
+            .add({
+              createDate: firebase.firestore.Timestamp.now(),
+              destinations: [desId],
+              name: wlName,
+              repImage: desImg,
+              userId: userAcc.uid,
+            })
+            .then(res => {
+              refId: res.id
+            })
+            .catch(err => {
+              throw new Error(err);
+            })
+        },
+        removeDestinationFromWishlist: async (desId, listWl) => {
+          if(!desId || listWl.length < 1) {
+            throw new Error('destination does not exist')
+          }
+          const res = [];
+          listWl.forEach(wishlist => {
+            firestore()
+            .collection('wishlists')
+            .doc(wishlist.id)
+            .update({
+              "destinations": firestore.FieldValue.arrayRemove(desId)
+            })
+          });
+        }
       }}>
       {children}
     </DbContext.Provider>

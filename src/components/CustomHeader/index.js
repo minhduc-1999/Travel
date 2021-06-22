@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     height: windowHeight * 0.15,
     alignItems: 'center',
     justifyContent: 'flex-end',
-    zIndex: 100,
+    zIndex: 999,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

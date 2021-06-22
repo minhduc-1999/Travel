@@ -31,6 +31,7 @@ import {NotSelected, Selected} from '../../../assets/images/MapIcon/location';
 import CustomHeader from '../../components/CustomHeader';
 const places = [
   {
+    id: 'gVu3kGiZAGv77FGU5HAV',
     address:
       'Nằm trên tỉnh lộ 15, ấp Phú Hiệp, xã Phú Mỹ Hưng, Huyện Củ Chi, Hồ Chí Minh',
     coordinate: {
@@ -50,6 +51,7 @@ const places = [
     tags: ['Di tích', 'Khám phá', 'Nghệ thuật'],
   },
   {
+    id: 'gVu3kGiZAGv77FGU5HAV',
     address:
       'Nằm trên tỉnh lộ 15, ấp Phú Hiệp, xã Phú Mỹ Hưng, Huyện Củ Chi, Hồ Chí Minh',
     coordinate: {
