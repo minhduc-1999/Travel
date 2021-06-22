@@ -27,7 +27,7 @@ const WishlistItem = ({item}) => {
     <Pressable
       style={styles.container}
       onPress={() =>
-        navigation.navigate('SavedDetail', {places: des, name: item.name})
+        navigation.navigate('SavedDetail', {places: des, wishlist: item})
       }>
       {des.length < 3 ? (
         <View style={styles.imageGroup}>

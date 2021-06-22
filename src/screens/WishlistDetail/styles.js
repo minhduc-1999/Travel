@@ -17,8 +17,12 @@ const styles = StyleSheet.create({
   menuButton: {
     position: 'absolute',
     marginTop: 10,
-    marginLeft: windowWidth - 40,
-    backgroundColor: '#ffff',
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: windowWidth - 50,
+    backgroundColor: '#f2f2f2',
   },
 });
 

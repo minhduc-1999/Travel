@@ -309,6 +309,27 @@ const DbProvider = ({children}) => {
               "destinations": firestore.FieldValue.arrayRemove(desId)
             })
           });
+        },
+        deleteWishlist: async (wlId) => {
+          if (!wlId) {
+            throw new Error('This wishlist does not exist');
+          }
+          return firestore()
+            .collection('wishlists')
+            .doc(wlId)
+            .delete();
+        },
+        updateWishlistName: async (wlId, wlName) => {
+          if (!wlId || wlName === '') {
+            throw new Error('Update wishlist name failed');
+          }
+
+          return firestore()
+            .collection('wishlists')
+            .doc(wlId)
+            .update({
+              name: wlName
+            })
         }
       }}>
       {children}

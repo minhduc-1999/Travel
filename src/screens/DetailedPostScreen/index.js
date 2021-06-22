@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   KeyboardAvoidingView,
+  FlatList,
 } from 'react-native';
 import DetailPost from '../../components/DetailedPost';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -38,10 +39,10 @@ const DetailedPostScreen = ({route, navigation}) => {
   const sheetRef = useRef(null);
   const [wishlists, setWishlists] = useState([]);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [newWishlistName, setNewWishlistName] = useState('')
+  const [newWishlistName, setNewWishlistName] = useState(undefined)
   const [isFavorite, setIsFavorite] = useState(false);
   const scrollY = useSharedValue(0);
-  const bsScrollY = useSharedValue(100);
+  const bsScrollY = useSharedValue(windowHeight);
   const scrollHander = useAnimatedScrollHandler(event => {
     const {y} = event.contentOffset;
     scrollY.value = y;
@@ -173,14 +174,16 @@ const DetailedPostScreen = ({route, navigation}) => {
           </View>
           <Text style={styles.sheetText}>Create new wishlist</Text>
         </Pressable>
-        <BottomSheetFlatList
+        <FlatList
           data={wishlists}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) => (
             <Pressable 
               onPress={() => {
-                addDestinationToWishlist(post.id, item.id);
+                sheetRef.current.close();
                 setIsFavorite(true);
+                console.log('i pressed');
+                addDestinationToWishlist(post.id, item.id);
                 Toast.show({
                   type: 'success',
                   position: 'bottom',
@@ -211,7 +214,9 @@ const DetailedPostScreen = ({route, navigation}) => {
         onTouchOutside={() => setDialogVisible(false)} >
           <View>
             <Pressable
-              onPress={() => setDialogVisible(false)}
+              onPress={() => {
+                setDialogVisible(false);
+              }}
               style={{
                 position: 'absolute',
                 width: 20,

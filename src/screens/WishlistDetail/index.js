@@ -8,14 +8,16 @@ import Post from '../../components/Post';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const WishlistDetail = ({route, navigation}) => {
-  const {places, name} = route.params;
+  const {places, wishlist} = route.params;
   return (
     <SafeAreaView>
       <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
       <View style={styles.container}>
-        <Text style={styles.title}>{name}</Text>
+        <Text style={styles.title}>{wishlist.name}</Text>
         <Pressable
-          onPress={() => console.log('btn press')}
+          onPress={() => {
+            navigation.navigate('MenuWishlist', {detail: wishlist});
+          }}
           style={styles.menuButton}>
           <FontAwesome name='ellipsis-v' size={25} />
         </Pressable>
