@@ -110,6 +110,7 @@ const HomeScreen = ({navigation}) => {
           <Pressable
             style={{
               flex: 1,
+              height: '100%',
               backgroundColor: 'transparent',
               flexDirection: 'row',
               justifyContent: 'center',
@@ -177,6 +178,7 @@ const HomeScreen = ({navigation}) => {
                 data={tags}
                 renderItem={({item, index}) => (
                   <Tile
+                    key={item.refId}
                     width={(windowWidth * 70) / 100}
                     height={(windowWidth * 70) / 100}
                     containerStyle={{
@@ -202,7 +204,7 @@ const HomeScreen = ({navigation}) => {
                     }
                   />
                 )}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={item => item.refId.toString()}
                 horizontal
                 showsHorizontalScrollIndicator={false}
               />

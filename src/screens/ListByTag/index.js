@@ -228,7 +228,7 @@ const SearchResultScreen = ({route, navigation}) => {
           <FlatList
             initialScrollIndex={curTagIndex}
             style={{
-              marginHorizontal: 30,
+              // marginHorizontal: 30,
               flex: 1,
             }}
             contentContainerStyle={{
@@ -237,11 +237,12 @@ const SearchResultScreen = ({route, navigation}) => {
             }}
             data={tags.current}
             horizontal
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.refId}
             showsHorizontalScrollIndicator={false}
             renderItem={({item, index}) => {
               return (
                 <TapGestureHandler
+                  key={item.refId}
                   onActivated={() => {
                     SetCurTagIndex(index);
                     // console.log('click ne');
@@ -249,7 +250,7 @@ const SearchResultScreen = ({route, navigation}) => {
                     setLoading(true);
                   }}>
                   <View
-                    key={index}
+                    // key={item.refId}
                     style={[
                       styles.tagItem,
                       {
@@ -352,14 +353,10 @@ const SearchResultScreen = ({route, navigation}) => {
                 loading ? <ActivityIndicator color={'#f15454'} /> : null
               }
               data={data}
-              renderItem={({item, index}) => (
-                <Post
-                  showTags={false}
-                  key={(item.name + index).toString()}
-                  post={item}
-                />
+              renderItem={({item}) => (
+                <Post showTags={false} key={item.id.toString()} post={item} />
               )}
-              keyExtractor={(item, index) => (item.name + index).toString()}
+              keyExtractor={item => item.id.toString()}
               refreshing={refreshing}
             />
           )}

@@ -84,7 +84,7 @@ const ProfileScreen = ({navigation, route}) => {
   });
   const saveProfile = () => {
     if (updateInfo === null) return;
-    updateUserProfile(user.refId, updateInfo)
+    updateUserProfile(updateInfo)
       .then(() => {
         setEditable(false);
         setUpdateInfo(null);
@@ -184,7 +184,7 @@ const ProfileScreen = ({navigation, route}) => {
             return getDownloadUrl(refPath);
           })
           .then(url => {
-            updateUserProfile(user.refId, {imageUrl: url});
+            updateUserProfile({imageUrl: url});
             return url;
           })
           // .then(url => {
@@ -204,7 +204,7 @@ const ProfileScreen = ({navigation, route}) => {
             return getDownloadUrl(refPath);
           })
           .then(url => {
-            updateUserProfile(user.refId, {imageUrl: url});
+            updateUserProfile({imageUrl: url});
             return url;
           })
           .catch(err => console.error(err));
@@ -288,8 +288,9 @@ const ProfileScreen = ({navigation, route}) => {
                   editable={editable}
                   style={styles.fieldValue}>
                   {user.info.dateOB
-                    ? new Date(user.info.dateOB).toLocaleDateString('vi-VI')
-                    : ''}
+                    ? user.info.dateOB
+                    : // ? new Date(user.info.dateOB).toLocaleDateString('vi-VI')
+                      ''}
                 </TextInput>
               </View>
               <Divider style={styles.divider} />

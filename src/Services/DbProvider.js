@@ -1,5 +1,5 @@
 import React, {createContext} from 'react';
-import storage, { firebase } from '@react-native-firebase/storage';
+import storage, {firebase} from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import ReactObserver from 'react-event-observer';
 import {AuthContext} from '../navigation/AuthProvider';
@@ -42,19 +42,18 @@ const DbProvider = ({children}) => {
           console.log(Date.now() + ': load user data');
           return firestore()
             .collection('User')
-            .where('accountId', '==', userAcc.uid)
-            .limit(1)
+            .doc(userAcc.uid)
             .get()
-            .then(querySnapshot => {
-              if (querySnapshot.size == 1) {
-                const _user = querySnapshot.docs[0].data();
-                const _refId = querySnapshot.docs[0].ref.id;
+            .then(documentSnapshot => {
+              if (documentSnapshot.exists) {
+                const _user = documentSnapshot.data();
+                const _refId = documentSnapshot.ref.id;
                 return {info: _user, refId: _refId};
               } else {
                 return firestore()
                   .collection('User')
-                  .add({
-                    accountId: userAcc.uid,
+                  .doc(userAcc.uid)
+                  .set({
                     firstName: 'Unknow',
                     lastName: '',
                     sex: '',
@@ -63,11 +62,10 @@ const DbProvider = ({children}) => {
                     imageUrl: '',
                     email: userAcc.email,
                   })
-                  .then(res => {
+                  .then(() => {
                     return {
-                      refId: res.id,
+                      refId: userAcc.uid,
                       info: {
-                        accountId: userAcc.uid,
                         firstName: 'Unknow',
                         lastName: '',
                         sex: '',
@@ -85,15 +83,15 @@ const DbProvider = ({children}) => {
               throw new Error('Cannot load user profile');
             });
         },
-        updateUserProfile: async (userRefId, updateInfo) => {
+        updateUserProfile: async updateInfo => {
           console.log(Date.now() + ': update user data');
-          if (!userRefId) {
+          if (!userAcc.uid) {
             console.log('no profile');
             throw new Error('no profile exist');
           }
           return firestore()
             .collection('User')
-            .doc(userRefId)
+            .doc(userAcc.uid)
             .update(updateInfo)
             .then(() => {
               observer.publish('infoChange', updateInfo);
@@ -114,7 +112,9 @@ const DbProvider = ({children}) => {
             .limit(10)
             .get()
             .then(querySnapshot => {
-              return querySnapshot.docs.map(doc => doc.data());
+              return querySnapshot.docs.map(doc => {
+                return {...doc.data(), refId: doc.ref.id};
+              });
             })
             .catch(err => {
               throw new Error(err);
@@ -162,7 +162,7 @@ const DbProvider = ({children}) => {
             .then(matchingDocs => {
               // console.log('[This step]', matchingDocs);
               return matchingDocs.map(doc => {
-                return {...doc.data(), id: doc.ref.id}
+                return {...doc.data(), id: doc.ref.id};
               });
             })
             .catch(console.error);
@@ -236,7 +236,7 @@ const DbProvider = ({children}) => {
         },
         loadWishlists: async () => {
           console.log('[Wishlists]: load');
-          return firestore() 
+          return firestore()
             .collection('wishlists')
             .where('userId', '==', userAcc.uid)
             .orderBy('createDate', 'desc')
@@ -249,36 +249,43 @@ const DbProvider = ({children}) => {
             })
             .catch(error => {
               throw new Error(error);
-            })
+            });
         },
-        loadDestinationsByRefId: async (listDes) => {
+        loadDestinationsByRefId: async listDes => {
           const res = [];
           for (const d of listDes) {
-            res.push(firestore()
-              .collection('destinations')
-              .doc(d)
-              .get()
-              .then(res => {
-                return {...res.data(), id: d};
-              }))
+            res.push(
+              firestore()
+                .collection('destinations')
+                .doc(d)
+                .get()
+                .then(res => {
+                  return {...res.data(), id: d};
+                }),
+            );
           }
           return Promise.all(res);
         },
         addDestinationToWishlist: async (desId, wlId) => {
-          if(!desId || !wlId) {
-            throw new Error('destination or wishlist does not exist')
+          if (!desId || !wlId) {
+            throw new Error('destination or wishlist does not exist');
           }
-          return firestore().collection('wishlists').doc(wlId).update({
-            destinations: firestore.FieldValue.arrayUnion(desId)
-          }).then(() => {
-            return true;
-          }).catch(err => {
-            throw new Error(err);
-          })
+          return firestore()
+            .collection('wishlists')
+            .doc(wlId)
+            .update({
+              destinations: firestore.FieldValue.arrayUnion(desId),
+            })
+            .then(() => {
+              return true;
+            })
+            .catch(err => {
+              throw new Error(err);
+            });
         },
         addNewWishlist: async (desId, desImg, wlName) => {
-          if(!desId || !wlName || !userAcc) {
-            throw new Error('destination does not exist')
+          if (!desId || !wlName || !userAcc) {
+            throw new Error('destination does not exist');
           }
           return firestore()
             .collection('wishlists')
@@ -290,47 +297,49 @@ const DbProvider = ({children}) => {
               userId: userAcc.uid,
             })
             .then(res => {
-              refId: res.id
+              refId: res.id;
             })
             .catch(err => {
               throw new Error(err);
-            })
+            });
         },
         removeDestinationFromWishlist: async (desId, listWl) => {
-          if(!desId || listWl.length < 1) {
-            throw new Error('destination does not exist')
+          if (!desId || listWl.length < 1) {
+            throw new Error('destination does not exist');
           }
           const res = [];
           listWl.forEach(wishlist => {
             firestore()
-            .collection('wishlists')
-            .doc(wishlist.id)
-            .update({
-              "destinations": firestore.FieldValue.arrayRemove(desId)
-            })
+              .collection('wishlists')
+              .doc(wishlist.id)
+              .update({
+                destinations: firestore.FieldValue.arrayRemove(desId),
+              });
           });
         },
-        deleteWishlist: async (wlId) => {
+        deleteWishlist: async wlId => {
           if (!wlId) {
             throw new Error('This wishlist does not exist');
           }
-          return firestore()
-            .collection('wishlists')
-            .doc(wlId)
-            .delete();
+          return firestore().collection('wishlists').doc(wlId).delete();
         },
         updateWishlistName: async (wlId, wlName) => {
           if (!wlId || wlName === '') {
             throw new Error('Update wishlist name failed');
           }
 
-          return firestore()
-            .collection('wishlists')
-            .doc(wlId)
-            .update({
-              name: wlName
-            })
-        }
+          return firestore().collection('wishlists').doc(wlId).update({
+            name: wlName,
+          });
+        },
+        rate: async (desId, rate) => {
+          const {star, comment, isNew} = rate;
+          firestore().collection('comments').doc(desId).set({
+            comment: comment,
+            star: star,
+            voter: userAcc.uid,
+          });
+        },
       }}>
       {children}
     </DbContext.Provider>
