@@ -8,6 +8,7 @@ import ChangePassword from '../screens/ChangePassword';
 import ForgotPasswordScreen from '../screens/ForgotPassword';
 import DbProvider from '../Services/DbProvider';
 import ListByTag from '../screens/ListByTag';
+import Comment from '../screens/Comment';
 
 const Stack = createStackNavigator();
 const AppStack = props => {
@@ -50,6 +51,11 @@ const AppStack = props => {
         <Stack.Screen
           name={'List by Tag'}
           component={ListByTag}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={'Comment'}
+          component={Comment}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

@@ -135,7 +135,7 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.title}>Go Near</Text>
           <Pressable
             style={styles.button}
-            onPress={() => navigation.navigate('Plan')}>
+            onPress={() => navigation.navigate('Comment')}>
             <Text style={styles.buttonText}>Make your plan</Text>
           </Pressable>
         </ImageBackground>
