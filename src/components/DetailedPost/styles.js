@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {windowWidth} from '../../Utils/Dimention';
 
 const styles = StyleSheet.create({
   infoContainer: {
@@ -48,6 +49,25 @@ const styles = StyleSheet.create({
   },
   divider: {
     borderTopColor: 'silver',
+  },
+});
+
+export const cmtStyle = StyleSheet.create({
+  container: {
+    marginVertical: 15,
+    width: windowWidth - 40,
+    height: 'auto',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  info: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginLeft: 10,
   },
 });
 
