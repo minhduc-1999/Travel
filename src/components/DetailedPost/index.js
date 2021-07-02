@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {View, Text, Pressable} from 'react-native';
 import styles, {cmtStyle} from './styles.js';
 import {windowHeight} from '../../Utils/Dimention';
@@ -6,8 +6,111 @@ import Swiper from '../Swiper';
 import Divider from '../Divider';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import {windowWidth} from '../../Utils/Dimention';
-import {Avatar, Rating} from 'react-native-elements';
-const DetailPost = ({post}) => {
+import {Avatar, AirbnbRating} from 'react-native-elements';
+import ContentLoader, {Rect, Circle} from 'react-content-loader/native';
+import {DbContext} from '../../Services/DbProvider';
+
+const DetailPost = ({post, navigation}) => {
+  const [loading, setLoading] = useState(true);
+  const [star, setStar] = useState(3);
+  const [comments, setComments] = useState([]);
+  const {loadComments} = useContext(DbContext);
+  useEffect(async () => {
+    let mounted = true;
+    loadComments(post.id, 3).then(res => {
+      if (mounted) {
+        setComments(res);
+        setLoading(false);
+      }
+    });
+    return function () {
+      mounted = false;
+    };
+  }, []);
+  const renderVote = () => {
+    return (
+      <View style={{marginBottom: 40}}>
+        <View
+          style={{
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+          }}>
+          <Text style={styles.descriptionTitle}>{'Xếp hạng địa điểm này'}</Text>
+          <Text
+            style={{
+              fontSize: 16,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            {'Cho người khác biết suy nghĩ của bạn'}
+          </Text>
+        </View>
+        <View style={{width: windowWidth - 40}}>
+          <AirbnbRating
+            selectedColor="#f15454"
+            reviewColor="#f15454"
+            count={5}
+            reviews={['Kinh khủng', 'Tệ', 'Bình thường', 'Tốt', 'Tuyệt vời']}
+            defaultRating={star}
+            size={40}
+            onFinishRating={star => {
+              setStar(star);
+            }}
+          />
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Rate', {
+                desName: post.name,
+                desId: post.id,
+                star,
+                metadata: post.rate,
+              });
+            }}
+            style={{
+              marginTop: 10,
+            }}>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                textDecorationLine: 'underline',
+              }}>
+              Viết đánh giá
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  };
+  const renderComment = () => {
+    return loading
+      ? [1, 2, 3].map(item => (
+          <View
+            key={item}
+            style={{
+              width: windowWidth - 40,
+              marginVertical: 15,
+            }}>
+            <ContentLoader
+              speed={2}
+              width={windowWidth - 40}
+              height={120}
+              viewBox={`0 0 ${windowWidth - 40} 120`}
+              backgroundColor="#dcdcdc"
+              foregroundColor="#f5f5f5">
+              <Rect x="60" y="8" rx="4" ry="4" width="100" height="8" />
+              <Rect x="60" y="26" rx="4" ry="4" width="70" height="8" />
+              <Rect x="0" y="61" rx="4" ry="4" width="410" height="8" />
+              <Rect x="0" y="83" rx="4" ry="4" width="410" height="8" />
+              <Rect x="0" y="104" rx="4" ry="4" width="178" height="8" />
+              <Circle cx="25" cy="25" r="25" />
+            </ContentLoader>
+          </View>
+        ))
+      : comments.map(item => <CommentItem comment={item} key={item.key} />);
+  };
+
   console.log('detail post component render');
   return (
     <View style={{backgroundColor: '#fff'}}>
@@ -33,7 +136,15 @@ const DetailPost = ({post}) => {
         <Text style={styles.descriptionTitle}>Giới thiệu</Text>
         <Text style={styles.description}>{post.description}</Text>
         <Divider style={styles.divider} />
-        <Pressable onPress={() => console.warn('go to comment')}>
+        {renderVote()}
+        <Pressable
+          onPress={() =>
+            navigation.navigate('Comment', {
+              postId: post.id,
+              postName: post.name,
+              metadata: post.rate,
+            })
+          }>
           <View>
             <View
               style={{
@@ -69,40 +180,42 @@ const DetailPost = ({post}) => {
                 <Text
                   style={{
                     fontWeight: 'bold',
-                    fontSize: 20,
+                    fontSize: 22,
                     color: '#000',
                   }}>
-                  3.3
+                  {post.rate.avg}
                 </Text>
                 /5
               </Text>
-              <Rating
-                imageSize={16}
-                ratingColor="#f15454"
-                readonly
-                fractions={1}
-                startingValue={3.3}
-                type="custom"
+              <AirbnbRating
+                selectedColor="#f15454"
+                count={5}
+                defaultRating={post.rate.avg}
+                size={16}
+                isDisabled
+                showRating={false}
               />
             </View>
           </View>
-          {[1, 2, 3].map(item => (
-            <CommentItem key={item} />
-          ))}
+          {renderComment()}
         </Pressable>
       </View>
     </View>
   );
 };
 
-const CommentItem = () => {
+const CommentItem = ({comment}) => {
   return (
     <View style={cmtStyle.container}>
       <View style={cmtStyle.header}>
         <Avatar
           rounded
           size="medium"
-          source={require('../../../assets/images/anonymous.png')}
+          source={
+            comment.avatar
+              ? {uri: comment.avatar}
+              : require('../../../assets/images/anonymous.png')
+          }
         />
         <View style={cmtStyle.info}>
           <Text
@@ -114,27 +227,22 @@ const CommentItem = () => {
               maxWidth: windowWidth * 0.4,
               lineHeight: 26,
             }}>
-            Name here f jalkfj dlajk fdal fkdlskl
+            {comment.voter}
           </Text>
-          <Rating
-            imageSize={16}
-            ratingColor="#f15454"
-            tintColor="#fff"
-            ratingBackgroundColor="#fff"
-            readonly
-            ratingCount={4}
-            startingValue={4}
-            type="custom"
+
+          <AirbnbRating
+            selectedColor="#f15454"
+            count={comment.star}
+            defaultRating={comment.star}
+            size={16}
+            isDisabled
+            showRating={false}
           />
         </View>
       </View>
       <View>
         <Text numberOfLines={3} style={{lineHeight: 22, fontSize: 16}}>
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries,
+          {comment.comment}
         </Text>
       </View>
     </View>

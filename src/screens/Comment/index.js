@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Rating, Avatar} from 'react-native-elements';
+import {AirbnbRating, Avatar} from 'react-native-elements';
 import ContentLoader, {Rect, Circle} from 'react-content-loader/native';
 import {
   View,
@@ -8,73 +8,97 @@ import {
   FlatList,
   StatusBar,
   Pressable,
-  TextInput,
 } from 'react-native';
-import styles, {cmtStyle, diaStyle} from './style';
+import styles, {cmtStyle} from './style';
 import Fonawesome from 'react-native-vector-icons/FontAwesome';
-import GgIcon from 'react-native-vector-icons/MaterialIcons';
 import {windowWidth} from '../../Utils/Dimention';
 import {DbContext} from '../../Services/DbProvider';
-import {Dialog} from 'react-native-simple-dialogs';
-import {AirbnbRating} from 'react-native-elements';
 
-const comments = [
-  {
-    dateCreated: {seconds: 1625237898741},
-    voter: 'Test',
-    avatar: '',
-    comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
-    star: 3,
-    key: 1,
-  },
-  {
-    dateCreated: {seconds: 1625237898741},
-    voter: 'Test 2',
-    avatar: '',
-    comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
-    star: 4,
-    key: 2,
-  },
-];
+// const comments = [
+//   {
+//     dateCreated: {seconds: 1625237898741},
+//     voter: 'Test',
+//     avatar: '',
+//     comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
+//     star: 3,
+//     key: 1,
+//   },
+//   {
+//     dateCreated: {seconds: 1625237898741},
+//     voter: 'Test 2',
+//     avatar: '',
+//     comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
+//     star: 4,
+//     key: 2,
+//   },
+//   {
+//     dateCreated: {seconds: 1625237898741},
+//     voter: 'Test 2',
+//     avatar: '',
+//     comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
+//     star: 4,
+//     key: 3,
+//   },
+//   {
+//     dateCreated: {seconds: 1625237898741},
+//     voter: 'Test 2',
+//     avatar: '',
+//     comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
+//     star: 4,
+//     key: 4,
+//   },
+//   {
+//     dateCreated: {seconds: 1625237898741},
+//     voter: 'Test 2',
+//     avatar: '',
+//     comment:
+//       'lorem lorem iifd fdjal dkal jfkewkl fdlal a fda fda da fdajej kfdklaj fldajkj kflkl jdfakl ',
+//     star: 4,
+//     key: 5,
+//   },
+// ];
 
 const comment = ({route, navigation}) => {
-  const [selected, setSelected] = useState(3);
+  const [selected, setSelected] = useState(0);
   const [loading, setLoading] = useState(true);
-  // const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState([]);
   const {loadComments} = useContext(DbContext);
-  const [comment, setComment] = useState('');
-  const [dialogVisible, setDialogVisible] = useState(false);
-  const [star, setStar] = useState(-1);
-  const [canVote, setCanVote] = useState(false);
+  const [metadata, setMetadata] = useState(route.params.metadata);
 
-  // useEffect(() => {
-  //   let mounted = true;
-  //   loadComments('5yrKsxJMo7c9819tTsvQ', 2)
-  //     .then(res => {
-  //       if (mounted) setComments(res);
-  //     })
-  //     .catch(console.error);
+  useEffect(() => {
+    let mounted = true;
+    loadComments(route.params.postId, 1)
+      .then(res => {
+        if (mounted) {
+          setComments(res);
+          setLoading(false);
+        }
+      })
+      .catch(console.error);
 
-  //   return function () {
-  //     mounted = false;
-  //   };
-  // }, []);
+    return function () {
+      mounted = false;
+    };
+  }, []);
   //   const destination = useRef(route.params.destination);
   const renderOption = () => {
-    const report = [0, 0, 0, 1, 1];
+    // const report = [0, 0, 0, 1, 1];
     // const {report} = route.params;
-    return report.map((item, index) => (
-      <StarItem
-        key={index}
-        isSelected={index + 1 === selected}
-        star={index + 1}
-        amount={item}
-        onPress={() => setSelected(index + 1)}
-      />
-    ));
+    return metadata.report
+      .slice(0)
+      .reverse()
+      .map((item, index) => (
+        <StarItem
+          key={index}
+          isSelected={index + 1 === selected}
+          star={index + 1}
+          amount={item}
+          onPress={() => setSelected(index + 1)}
+        />
+      ));
   };
   // const {metadata} = route.params;
-  const metadata = {avg: 4.5};
+  // const metadata = {avg: 4.5};
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -97,7 +121,7 @@ const comment = ({route, navigation}) => {
         </Pressable>
         <View style={{marginRight: 10, flex: 4}}>
           <Text numberOfLines={1} style={styles.title}>
-            Name
+            {route.params.postName}
           </Text>
         </View>
         <View style={{flex: 1}}></View>
@@ -126,13 +150,13 @@ const comment = ({route, navigation}) => {
                   </Text>
                   /5
                 </Text>
-                <Rating
-                  imageSize={22}
-                  ratingColor="#f15454"
-                  readonly
-                  fractions={1}
-                  startingValue={metadata.avg}
-                  type="custom"
+                <AirbnbRating
+                  selectedColor="#f15454"
+                  count={5}
+                  defaultRating={metadata.avg}
+                  size={22}
+                  isDisabled
+                  showRating={false}
                 />
               </View>
               <View style={styles.option}>{renderOption()}</View>
@@ -180,83 +204,6 @@ const comment = ({route, navigation}) => {
           keyExtractor={loading ? item => item : item => item.key}
         />
       </View>
-      <View style={styles.commentInput}>
-        <TextInput
-          placeholder="Viết bình luận..."
-          multiline
-          onChangeText={text => {
-            if (text) setCanVote(true);
-            else setCanVote(false);
-          }}
-          defaultValue={comment}
-          onEndEditing={e => {
-            const input = e.nativeEvent.text;
-            console.log('[comment ne]', input);
-            setComment(input);
-          }}
-          style={styles.input}></TextInput>
-        <Pressable
-          disabled={!canVote}
-          onPress={() => {
-            setDialogVisible(true);
-          }}
-          style={[styles.send]}>
-          <GgIcon
-            name={'send'}
-            size={30}
-            color={canVote ? '#435be0' : '#435be04d'}
-          />
-        </Pressable>
-      </View>
-
-      <Dialog
-        dialogStyle={diaStyle.dialog}
-        animationType="fade"
-        visible={dialogVisible}
-        onTouchOutside={() => setDialogVisible(false)}>
-        <View style={diaStyle.container}>
-          <Pressable
-            onPress={() => {
-              setStar(-1);
-              setDialogVisible(false);
-            }}
-            style={diaStyle.exit}>
-            <Fonawesome name="times" size={20} />
-          </Pressable>
-          <View style={diaStyle.dialogTitle}>
-            <Text style={{fontSize: 20, display: 'none'}}>Đánh giá</Text>
-          </View>
-          <View style={diaStyle.inputContainer}>
-            <AirbnbRating
-              selectedColor="#f15454"
-              reviewColor="#f15454"
-              count={5}
-              reviews={['Kinh khủng', 'Tệ', 'Bình thường', 'Tốt', 'Tuyệt vời']}
-              defaultRating={star}
-              size={40}
-              onFinishRating={star => {
-                setStar(star);
-              }}
-            />
-          </View>
-          <Pressable
-            disabled={star === -1}
-            style={[diaStyle.createButton, {opacity: star === -1 ? 0.7 : 1}]}
-            onPress={() => {
-              console.log({
-                star,
-                comment,
-                dateCreated: new Date(),
-              });
-              setComment('');
-              setCanVote(false);
-              setStar(-1);
-              setDialogVisible(false);
-            }}>
-            <Text style={{color: '#ffff', fontSize: 22}}>Đánh giá</Text>
-          </Pressable>
-        </View>
-      </Dialog>
     </SafeAreaView>
   );
 };
@@ -281,14 +228,13 @@ const StarItem = props => {
         borderColor: isSelected ? '#f15454' : 'rgb(240,240,240)',
         backgroundColor: isSelected ? 'rgb(240, 204, 204)' : 'rgb(240,240,240)',
       }}>
-      <Rating
-        imageSize={14}
-        ratingColor="#f15454"
-        tintColor={isSelected ? 'rgb(240, 204, 204)' : 'rgb(240,240,240)'}
-        readonly
-        ratingCount={star}
-        startingValue={star}
-        type="custom"
+      <AirbnbRating
+        selectedColor="#f15454"
+        count={star}
+        defaultRating={star}
+        size={14}
+        isDisabled
+        showRating={false}
       />
       <Text>({amount})</Text>
     </Pressable>
@@ -338,15 +284,13 @@ const CommentItem = ({comment}) => {
             justifyContent: 'flex-end',
             flex: 2,
           }}>
-          <Rating
-            imageSize={20}
-            ratingColor="#f15454"
-            tintColor="#fff"
-            ratingBackgroundColor="#fff"
-            readonly
-            ratingCount={comment.star}
-            startingValue={comment.star}
-            type="custom"
+          <AirbnbRating
+            selectedColor="#f15454"
+            count={comment.star}
+            defaultRating={comment.star}
+            size={20}
+            isDisabled
+            showRating={false}
           />
         </View>
       </View>

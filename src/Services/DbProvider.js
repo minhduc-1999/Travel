@@ -4,6 +4,7 @@ import firestore from '@react-native-firebase/firestore';
 import ReactObserver from 'react-event-observer';
 import {AuthContext} from '../navigation/AuthProvider';
 import {geohashQueryBounds, distanceBetween} from 'geofire-common';
+import {measure} from 'react-native-reanimated';
 const observer = ReactObserver();
 
 export const DbContext = createContext();
@@ -386,6 +387,59 @@ const DbProvider = ({children}) => {
             );
           }
           return Promise.all(promises);
+        },
+        postComment: async rate => {
+          const {meta, comment, star, desId} = rate;
+          try {
+            const existed = await firestore()
+              .collection('comments')
+              .doc(`${desId}_${userAcc.uid}`)
+              .get()
+              .then(doc => {
+                return doc.data();
+              });
+            const result = await firestore()
+              .collection('comments')
+              .doc(`${desId}_${userAcc.uid}`)
+              .set({
+                comment: comment,
+                dateCreated: firestore.FieldValue.serverTimestamp(),
+                star: star,
+                desId: desId,
+                voter: userAcc.uid,
+              })
+              .then(() => {
+                return true;
+              });
+            console.log('old', meta.report);
+            if (result && existed) {
+              meta.report[existed.star - 1]--;
+            }
+            meta.report[star - 1]++;
+            console.log('new', meta.report);
+            const totalStar = meta.report.reduce(
+              (acc, cur, index) => acc + cur * (index + 1),
+              0,
+            );
+            const totalAmount = meta.report.reduce((acc, cur) => acc + cur);
+            return firestore()
+              .collection('destinations')
+              .doc(desId)
+              .update({
+                rate: {
+                  avg: Math.round((totalStar / totalAmount) * 10) / 10,
+                  report: [...meta.report],
+                },
+              })
+              .then(() => {
+                return true;
+              })
+              .catch(err => {
+                throw new Error(err);
+              });
+          } catch {
+            return false;
+          }
         },
       }}>
       {children}

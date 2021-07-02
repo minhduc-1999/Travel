@@ -9,6 +9,7 @@ import ForgotPasswordScreen from '../screens/ForgotPassword';
 import DbProvider from '../Services/DbProvider';
 import ListByTag from '../screens/ListByTag';
 import Comment from '../screens/Comment';
+import Rate from '../screens/RateScreen';
 
 const Stack = createStackNavigator();
 const AppStack = props => {
@@ -56,6 +57,11 @@ const AppStack = props => {
         <Stack.Screen
           name={'Comment'}
           component={Comment}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={'Rate'}
+          component={Rate}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

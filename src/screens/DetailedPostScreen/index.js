@@ -137,7 +137,7 @@ const DetailedPostScreen = ({route, navigation}) => {
       </CustomHeader>
 
       <Animated.ScrollView onScroll={scrollHander}>
-        <DetailPost post={post} />
+        <DetailPost post={post} navigation={navigation} />
       </Animated.ScrollView>
 
       <BottomSheet
