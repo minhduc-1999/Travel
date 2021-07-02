@@ -341,12 +341,51 @@ const DbProvider = ({children}) => {
           return listener.unsubscribe;
         },
         rate: async (desId, rate) => {
-          const {star, comment, isNew} = rate;
+          const {star, comment} = rate;
           firestore().collection('comments').doc(desId).set({
             comment: comment,
             star: star,
             voter: userAcc.uid,
           });
+        },
+        loadComments: async (desId, limit) => {
+          console.log('load comments');
+          const comments = await firestore()
+            .collection('comments')
+            .where('desId', '==', desId)
+            .orderBy('dateCreated', 'asc')
+            .limit(limit)
+            .get()
+            .then(querySnapshot => {
+              console.log('[size]', querySnapshot.size);
+              return querySnapshot.docs.map(doc => {
+                return {...doc.data(), id: doc.ref.id};
+              });
+            })
+            .catch(err => {
+              throw new Error(err);
+            });
+          const promises = [];
+          for (const index in comments) {
+            promises.push(
+              firestore()
+                .collection('User')
+                .doc(comments[index].voter)
+                .get()
+                .then(doc => {
+                  const user = doc.data();
+                  return {
+                    avatar: user.imageUrl,
+                    voter: user.firstName + ' ' + user.lastName,
+                    dateCreated: comments[index].dateCreated,
+                    comment: comments[index].comment,
+                    star: comments[index].star,
+                    key: comments[index].id,
+                  };
+                }),
+            );
+          }
+          return Promise.all(promises);
         },
       }}>
       {children}

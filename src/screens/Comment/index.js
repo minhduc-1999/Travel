@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Rating, Avatar} from 'react-native-elements';
-
+import ContentLoader, {Rect, Circle} from 'react-content-loader/native';
 import {
   View,
   Text,
@@ -10,24 +10,71 @@ import {
   Pressable,
   TextInput,
 } from 'react-native';
-import styles, {cmtStyle} from './style';
+import styles, {cmtStyle, diaStyle} from './style';
 import Fonawesome from 'react-native-vector-icons/FontAwesome';
 import GgIcon from 'react-native-vector-icons/MaterialIcons';
 import {windowWidth} from '../../Utils/Dimention';
+import {DbContext} from '../../Services/DbProvider';
+import {Dialog} from 'react-native-simple-dialogs';
+import {AirbnbRating} from 'react-native-elements';
+
+const comments = [
+  {
+    dateCreated: {seconds: 1625237898741},
+    voter: 'Test',
+    avatar: '',
+    comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
+    star: 3,
+    key: 1,
+  },
+  {
+    dateCreated: {seconds: 1625237898741},
+    voter: 'Test 2',
+    avatar: '',
+    comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
+    star: 4,
+    key: 2,
+  },
+];
+
 const comment = ({route, navigation}) => {
   const [selected, setSelected] = useState(3);
+  const [loading, setLoading] = useState(true);
+  // const [comments, setComments] = useState([]);
+  const {loadComments} = useContext(DbContext);
+  const [comment, setComment] = useState('');
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [star, setStar] = useState(-1);
+  const [canVote, setCanVote] = useState(false);
+
+  // useEffect(() => {
+  //   let mounted = true;
+  //   loadComments('5yrKsxJMo7c9819tTsvQ', 2)
+  //     .then(res => {
+  //       if (mounted) setComments(res);
+  //     })
+  //     .catch(console.error);
+
+  //   return function () {
+  //     mounted = false;
+  //   };
+  // }, []);
   //   const destination = useRef(route.params.destination);
   const renderOption = () => {
-    return [5, 4, 3, 2, 1].map(item => (
+    const report = [0, 0, 0, 1, 1];
+    // const {report} = route.params;
+    return report.map((item, index) => (
       <StarItem
-        key={item}
-        isSelected={item === selected}
-        star={item}
+        key={index}
+        isSelected={index + 1 === selected}
+        star={index + 1}
         amount={item}
-        onPress={() => setSelected(item)}
+        onPress={() => setSelected(index + 1)}
       />
     ));
   };
+  // const {metadata} = route.params;
+  const metadata = {avg: 4.5};
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -55,6 +102,7 @@ const comment = ({route, navigation}) => {
         </View>
         <View style={{flex: 1}}></View>
       </View>
+      <View style={styles.topMain}></View>
       <View style={styles.main}>
         <FlatList
           ListHeaderComponent={() => (
@@ -74,7 +122,7 @@ const comment = ({route, navigation}) => {
                       fontSize: 20,
                       color: '#000',
                     }}>
-                    3.3
+                    {metadata.avg}
                   </Text>
                   /5
                 </Text>
@@ -83,7 +131,7 @@ const comment = ({route, navigation}) => {
                   ratingColor="#f15454"
                   readonly
                   fractions={1}
-                  startingValue={3.3}
+                  startingValue={metadata.avg}
                   type="custom"
                 />
               </View>
@@ -92,21 +140,123 @@ const comment = ({route, navigation}) => {
           )}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          data={[1, 2, 3, 4]}
-          renderItem={({item}) => <CommentItem key={item} />}
+          scrollEnabled={!loading}
+          data={loading ? [1, 2, 3, 4] : comments}
+          renderItem={
+            loading
+              ? ({item}) => (
+                  <View
+                    style={{
+                      paddingHorizontal: 20,
+                      width: windowWidth - 40,
+                      marginVertical: 10,
+                    }}>
+                    <ContentLoader
+                      speed={2}
+                      width={windowWidth - 40}
+                      height={120}
+                      viewBox={`0 0 ${windowWidth - 40} 120`}
+                      backgroundColor="#dcdcdc"
+                      foregroundColor="#f5f5f5">
+                      <Rect x="60" y="8" rx="4" ry="4" width="100" height="8" />
+                      <Rect x="60" y="26" rx="4" ry="4" width="70" height="8" />
+                      <Rect x="0" y="61" rx="4" ry="4" width="410" height="8" />
+                      <Rect x="0" y="83" rx="4" ry="4" width="410" height="8" />
+                      <Rect
+                        x="0"
+                        y="104"
+                        rx="4"
+                        ry="4"
+                        width="178"
+                        height="8"
+                      />
+                      <Circle cx="25" cy="25" r="25" />
+                    </ContentLoader>
+                  </View>
+                )
+              : ({item}) => <CommentItem key={item.key} comment={item} />
+          }
           style={styles.commentList}
-          keyExtractor={item => item}
+          keyExtractor={loading ? item => item : item => item.key}
         />
       </View>
       <View style={styles.commentInput}>
         <TextInput
-          placeholder="Write comments..."
+          placeholder="Viết bình luận..."
           multiline
+          onChangeText={text => {
+            if (text) setCanVote(true);
+            else setCanVote(false);
+          }}
+          defaultValue={comment}
+          onEndEditing={e => {
+            const input = e.nativeEvent.text;
+            console.log('[comment ne]', input);
+            setComment(input);
+          }}
           style={styles.input}></TextInput>
-        <Pressable style={[styles.send]}>
-          <GgIcon name={'send'} size={30} color={'#435be0'} />
+        <Pressable
+          disabled={!canVote}
+          onPress={() => {
+            setDialogVisible(true);
+          }}
+          style={[styles.send]}>
+          <GgIcon
+            name={'send'}
+            size={30}
+            color={canVote ? '#435be0' : '#435be04d'}
+          />
         </Pressable>
       </View>
+
+      <Dialog
+        dialogStyle={diaStyle.dialog}
+        animationType="fade"
+        visible={dialogVisible}
+        onTouchOutside={() => setDialogVisible(false)}>
+        <View style={diaStyle.container}>
+          <Pressable
+            onPress={() => {
+              setStar(-1);
+              setDialogVisible(false);
+            }}
+            style={diaStyle.exit}>
+            <Fonawesome name="times" size={20} />
+          </Pressable>
+          <View style={diaStyle.dialogTitle}>
+            <Text style={{fontSize: 20, display: 'none'}}>Đánh giá</Text>
+          </View>
+          <View style={diaStyle.inputContainer}>
+            <AirbnbRating
+              selectedColor="#f15454"
+              reviewColor="#f15454"
+              count={5}
+              reviews={['Kinh khủng', 'Tệ', 'Bình thường', 'Tốt', 'Tuyệt vời']}
+              defaultRating={star}
+              size={40}
+              onFinishRating={star => {
+                setStar(star);
+              }}
+            />
+          </View>
+          <Pressable
+            disabled={star === -1}
+            style={[diaStyle.createButton, {opacity: star === -1 ? 0.7 : 1}]}
+            onPress={() => {
+              console.log({
+                star,
+                comment,
+                dateCreated: new Date(),
+              });
+              setComment('');
+              setCanVote(false);
+              setStar(-1);
+              setDialogVisible(false);
+            }}>
+            <Text style={{color: '#ffff', fontSize: 22}}>Đánh giá</Text>
+          </Pressable>
+        </View>
+      </Dialog>
     </SafeAreaView>
   );
 };
@@ -145,14 +295,18 @@ const StarItem = props => {
   );
 };
 
-const CommentItem = () => {
+const CommentItem = ({comment}) => {
   return (
     <View style={cmtStyle.container}>
       <View style={cmtStyle.header}>
         <Avatar
           rounded
           size="medium"
-          source={require('../../../assets/images/anonymous.png')}
+          source={
+            comment.avatar
+              ? {uri: comment.avatar}
+              : require('../../../assets/images/anonymous.png')
+          }
         />
         <View style={cmtStyle.info}>
           <Text
@@ -164,7 +318,7 @@ const CommentItem = () => {
               maxWidth: windowWidth * 0.4,
               lineHeight: 26,
             }}>
-            Name here f jalkfj dlajk fdal fkdlskl
+            {comment.voter}
           </Text>
           <Text
             numberOfLines={1}
@@ -175,7 +329,7 @@ const CommentItem = () => {
               maxWidth: windowWidth * 0.4,
               lineHeight: 26,
             }}>
-            {new Date().toLocaleDateString('vi-VI')}
+            {new Date(comment.dateCreated.seconds).toLocaleDateString('vi-VI')}
           </Text>
         </View>
         <View
@@ -190,20 +344,14 @@ const CommentItem = () => {
             tintColor="#fff"
             ratingBackgroundColor="#fff"
             readonly
-            ratingCount={4}
-            startingValue={4}
+            ratingCount={comment.star}
+            startingValue={comment.star}
             type="custom"
           />
         </View>
       </View>
       <View>
-        <Text style={{lineHeight: 25, fontSize: 16}}>
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries,
-        </Text>
+        <Text style={{lineHeight: 25, fontSize: 16}}>{comment.comment}</Text>
       </View>
     </View>
   );

@@ -10,8 +10,7 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     zIndex: 100,
-    backgroundColor: '#fff',
-    height: 70,
+    height: 80,
     position: 'absolute',
     top: 0,
     left: 0,
@@ -19,8 +18,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: StatusBar.currentHeight,
-    borderBottomColor: 'grey',
-    borderBottomWidth: 0.5,
   },
   title: {
     fontSize: 30,
@@ -28,11 +25,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: '100%',
   },
+  topMain: {
+    width: '100%',
+    height: 80,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 6.27,
+
+    elevation: 1,
+  },
   main: {
     width: '100%',
-    height: windowHeight - 70 - StatusBar.currentHeight,
-    marginTop: 70,
-    paddingTop: 10,
+    height: windowHeight - 80 - StatusBar.currentHeight,
+    // marginTop: 80,
     backgroundColor: 'transparent',
     paddingBottom: 40,
   },
@@ -94,6 +103,41 @@ export const cmtStyle = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     marginLeft: 10,
+  },
+});
+
+export const diaStyle = StyleSheet.create({
+  dialog: {
+    borderRadius: 10,
+  },
+  container: {
+    alignItems: 'center',
+  },
+  dialogTitle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  wishlistInput: {
+    height: 40,
+    marginLeft: 8,
+    fontSize: 18,
+  },
+  createButton: {
+    backgroundColor: '#000',
+    marginTop: 20,
+    borderRadius: 10,
+    height: 50,
+    width: '60%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  exit: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    marginTop: 5,
+    top: 0,
+    left: 0,
   },
 });
 
