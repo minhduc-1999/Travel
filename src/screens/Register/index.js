@@ -39,7 +39,7 @@ const RegisterScreen = ({navigation}) => {
             onChangeText={userPassword => setPassword(userPassword)}
             placeholderText="Mật khẩu"
             iconType="lock"
-            secureTextEntry={true}
+            secureTextEntry
           />
 
           <FormInput
@@ -47,7 +47,7 @@ const RegisterScreen = ({navigation}) => {
             onChangeText={userPassword => setConfirmPassword(userPassword)}
             placeholderText="Xác nhận mật khẩu"
             iconType="lock"
-            secureTextEntry={true}
+            secureTextEntry
           />
 
           <FormButton

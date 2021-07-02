@@ -79,6 +79,42 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginTop: 20,
   },
+  covidContainer: {
+    borderWidth: 0.5,
+    borderColor: '#000',
+    margin: 15,
+    borderRadius: 10,
+    padding: 10,
+  },
+  covidTitle: {
+    fontSize: 20,
+    color: '#000',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  imageTitle: {
+    width: 40,
+    height: 40,
+  },
+  covidContent: {
+    fontSize: 20,
+    marginTop: 20,
+    color: '#000',
+  },
+  sourceContainer: {
+    marginTop: 20,
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  sourceCovidTitle: {
+    color: '#f15454',
+  },
+  sourceCovid: {
+    fontStyle: 'italic',
+    textDecorationLine: 'underline',
+    color: '#f15454',
+  },
 });
 
 export default styles;

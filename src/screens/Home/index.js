@@ -7,13 +7,14 @@ import {
   FlatList,
   SafeAreaView,
   StatusBar,
+  Image,
 } from 'react-native';
 import styles from './styles';
 import Fonawesome from 'react-native-vector-icons/FontAwesome';
 import Tile from '../../components/Tile';
 import {DbContext} from '../../Services/DbProvider';
 import {windowWidth, windowHeight} from '../../Utils/Dimention';
-
+import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -24,10 +25,13 @@ import Animated, {
 } from 'react-native-reanimated';
 import CustomHeader from '../../components/CustomHeader';
 import ContentLoader, {Rect} from 'react-content-loader/native';
+import {Divider} from 'react-native-elements';
 
 const HomeScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [tags, setTags] = useState([]);
+  const [covidData, setCovidData] = useState(null);
+  const [covidLoading, setCovidLoading] = useState(true);
   const {loadTags} = React.useContext(DbContext);
 
   const scrollY = useSharedValue(0);
@@ -47,6 +51,21 @@ const HomeScreen = ({navigation}) => {
         }
       })
       .catch(console.error);
+    return function clean() {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch(
+      'https://api.apify.com/v2/key-value-stores/ZsOpZgeg7dFS1rgfM/records/LATEST?fbclid=IwAR3XYaigGNLpMr5frJXNo2XX05DZ_jjxX5e6QyDQu_I1LQn030HeOYfmv64',
+    )
+      .then(response => response.json())
+      .then(data => {
+        setCovidData(data);
+        setCovidLoading(false);
+      });
     return function clean() {
       mounted = false;
     };
@@ -211,6 +230,53 @@ const HomeScreen = ({navigation}) => {
             )}
           </View>
         </View>
+        {covidLoading ? null : (
+          <View>
+            <Text style={styles.proposedTitle}>Cập nhật thường xuyên</Text>
+            <View style={styles.covidContainer}>
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Image
+                  style={styles.imageTitle}
+                  source={require('../../../assets/images/vietnam.png')}
+                />
+                <Text style={styles.covidTitle}>
+                  Thông tin về đại dịch COVID19 tại Việt Nam
+                </Text>
+              </View>
+              <Divider height={1} />
+              <Text style={styles.covidContent}>
+                <FontAwesome name="virus" size={20} />
+                {'  '}Tổng số ca nhiễm:{' '}
+                <Text style={{fontWeight: 'bold'}}>{covidData.infected}</Text>
+              </Text>
+              <Text style={styles.covidContent}>
+                <FontAwesome name="head-side-mask" color="#34bced" size={20} />
+                {'  '}Số ca đang điều trị:{' '}
+                <Text style={{fontWeight: 'bold'}}>{covidData.treated}</Text>
+              </Text>
+              <Text style={styles.covidContent}>
+                <FontAwesome name="virus-slash" color="#24f27a" size={20} /> Số
+                ca khỏi bệnh:{' '}
+                <Text style={{fontWeight: 'bold'}}>{covidData.recovered}</Text>
+              </Text>
+              <Text style={styles.covidContent}>
+                <FontAwesome name="skull" color="#fa3939" size={20} />
+                {'  '}Số ca tử vong:{' '}
+                <Text style={{fontWeight: 'bold'}}>{covidData.deceased}</Text>
+              </Text>
+              <Text style={styles.covidContent}>
+                Cập nhật lần cuối:{' '}
+                {new Date(covidData.lastUpdatedAtSource).toLocaleDateString(
+                  'vi-VI',
+                )}
+              </Text>
+              <View style={styles.sourceContainer}>
+                <Text style={styles.sourceCovidTitle}>Nguồn: </Text>
+                <Text style={styles.sourceCovid}>{covidData.sourceUrl}</Text>
+              </View>
+            </View>
+          </View>
+        )}
       </Animated.ScrollView>
     </SafeAreaView>
   );

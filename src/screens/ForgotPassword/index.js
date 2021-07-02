@@ -13,8 +13,8 @@ const ForgotPassword = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
-      <Text style={styles.title}>Forgot your password?</Text>
-      <Text style={styles.text}>Enter your email to find account</Text>
+      <Text style={styles.title}>Bạn không nhớ mật khẩu?</Text>
+      <Text style={styles.text}>Nhập địa chỉ email để lấy lại tài khoản</Text>
 
       <FormInput
         labelValue={email}
@@ -26,7 +26,7 @@ const ForgotPassword = ({navigation}) => {
         autoCorrect={false}
       />
 
-      <FormButton buttonTitle="Send" onPress={() => forgotPassword(email)} />
+      <FormButton buttonTitle="Gửi" onPress={() => forgotPassword(email)} />
     </SafeAreaView>
   );
 };

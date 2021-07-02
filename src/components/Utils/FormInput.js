@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     color: '#666',
     justifyContent: 'center',
     alignItems: 'center',
-    fontFamily: 'Arial',
+    fontFamily: 'Consolas',
   },
   inputField: {
     padding: 10,
@@ -64,6 +64,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderRadius: 8,
     borderWidth: 1,
-    fontFamily: 'Arial',
+    fontFamily: 'Consolas',
   },
 });

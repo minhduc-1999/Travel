@@ -56,7 +56,7 @@ const LoginScreen = ({navigation}) => {
               onChangeText={userPassword => setPassword(userPassword)}
               placeholderText="Mật khẩu"
               iconType="lock"
-              secureTextEntry={true}
+              secureTextEntry
             />
 
             <FormButton
@@ -101,7 +101,7 @@ const LoginScreen = ({navigation}) => {
               style={styles.forgotButton}
               onPress={() => navigation.navigate('Register')}>
               <Text style={styles.navButtonText}>
-                Không có tài khoản? Tạo ngay
+                Chưa có tài khoản? Tạo ngay
               </Text>
             </TouchableOpacity>
 
