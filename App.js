@@ -12,12 +12,14 @@ import Providers from './src/navigation/index';
 import Toast from 'react-native-toast-message';
 import toastConfig from './src/components/CustomToast';
 import 'react-native-gesture-handler';
+import RemotePushController from './src/Services/RemotePushController';
 const App = () => {
   return (
     <>
       <StatusBar barStyle="light-content" />
       <Providers />
-      <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
+      <Toast config={toastConfig} ref={ref => Toast.setRef(ref)} />
+      <RemotePushController />
     </>
   );
 };

@@ -1,15 +1,27 @@
 import {StyleSheet} from 'react-native';
+import {windowHeight} from '../../Utils/Dimention';
 
 const styles = StyleSheet.create({
+  image: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
   container: {
+    justifyContent: 'center',
+    height: windowHeight,
+  },
+  contentContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     padding: 30,
-    paddingTop: 50,
+    paddingTop: 0,
+    backgroundColor: 'rgba(65, 209, 222, 0.6)',
+    height: '100%',
   },
   logo: {
-    height: 150,
-    width: 150,
+    height: 200,
+    width: 200,
     resizeMode: 'cover',
   },
   text: {
@@ -28,6 +40,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#f15454',
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(255, 255, 255, 0.9)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10,
     // fontFamily: 'Lato-Regular',
   },
 });

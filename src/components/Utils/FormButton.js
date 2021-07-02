@@ -21,10 +21,10 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: windowHeight / 6,
+    borderRadius: 10,
   },
   buttonText: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#ffffff',
     // fontFamily: 'Lato-Regular',
