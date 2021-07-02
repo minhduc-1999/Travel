@@ -22,7 +22,7 @@ const RegisterScreen = ({navigation}) => {
       <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
       <ScrollView>
         <View style={styles.container}>
-          <Text style={styles.text}>Create an account</Text>
+          <Text style={styles.text}>Tạo một tài khoản</Text>
 
           <FormInput
             labelValue={email}
@@ -37,7 +37,7 @@ const RegisterScreen = ({navigation}) => {
           <FormInput
             labelValue={password}
             onChangeText={userPassword => setPassword(userPassword)}
-            placeholderText="Password"
+            placeholderText="Mật khẩu"
             iconType="lock"
             secureTextEntry={true}
           />
@@ -45,36 +45,53 @@ const RegisterScreen = ({navigation}) => {
           <FormInput
             labelValue={confirmPassword}
             onChangeText={userPassword => setConfirmPassword(userPassword)}
-            placeholderText="Confirm Password"
+            placeholderText="Xác nhận mật khẩu"
             iconType="lock"
             secureTextEntry={true}
           />
 
           <FormButton
-            buttonTitle="Sign Up"
+            buttonTitle="Đăng ký"
             onPress={() => {
               if (email && password && confirmPassword) {
                 if (password === confirmPassword) register(email, password);
-                else alert('Password not matched');
+                else {
+                  Toast.show({
+                    type: 'success',
+                    position: 'bottom',
+                    text1: 'Mật khẩu và xác nhận mật khẩu không khớp',
+                    visibilityTime: 2000,
+                    autoHide: true,
+                    bottomOffset: 40,
+                  });
+                }
               } else {
-                alert('Enter email and password');
+                Toast.show({
+                  type: 'success',
+                  position: 'bottom',
+                  text1: 'Vui lòng nhập email và mật khẩu',
+                  visibilityTime: 2000,
+                  autoHide: true,
+                  bottomOffset: 40,
+                });
               }
             }}
           />
 
           <View style={styles.textPrivate}>
             <Text style={styles.color_textPrivate}>
-              By registering, you confirm that you accept our{' '}
+              Bằng cách đăng ký, bạn đồng ý với{' '}
             </Text>
             <TouchableOpacity onPress={() => alert('Terms Clicked!')}>
               <Text style={[styles.color_textPrivate, {color: '#e88832'}]}>
-                Terms of service
+                Điều khoản
               </Text>
             </TouchableOpacity>
-            <Text style={styles.color_textPrivate}> and </Text>
+            <Text style={styles.color_textPrivate}> và </Text>
             <Text style={[styles.color_textPrivate, {color: '#e88832'}]}>
-              Privacy Policy
+              Chính sách quyền riêng tư
             </Text>
+            <Text style={styles.color_textPrivate}> của chúng tôi</Text>
           </View>
 
           {/* {Platform.OS === 'android' ? (
@@ -100,7 +117,7 @@ const RegisterScreen = ({navigation}) => {
           <TouchableOpacity
             style={styles.navButton}
             onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.navButtonText}>Have an account? Sign In</Text>
+            <Text style={styles.navButtonText}>Đã có tài khoản? Đăng nhập</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

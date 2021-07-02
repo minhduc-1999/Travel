@@ -14,6 +14,7 @@ import FormButton from '../../components/Utils/FormButton';
 // import SocialButton from '../../components/FormInput/SocialButton';
 import {AuthContext} from '../../navigation/AuthProvider';
 import styles from './styles';
+import Toast from 'react-native-toast-message';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState();
@@ -22,8 +23,12 @@ const LoginScreen = ({navigation}) => {
   const {login} = useContext(AuthContext);
 
   return (
-    <SafeAreaView>
-      <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
+    <SafeAreaView style={{height: '100%'}}>
+      <StatusBar
+        backgroundColor={'transparent'}
+        barStyle="dark-content"
+        translucent
+      />
 
       <ScrollView contentContainerStyle={styles.container}>
         <ImageBackground
@@ -49,14 +54,27 @@ const LoginScreen = ({navigation}) => {
             <FormInput
               labelValue={password}
               onChangeText={userPassword => setPassword(userPassword)}
-              placeholderText="Password"
+              placeholderText="Mật khẩu"
               iconType="lock"
               secureTextEntry={true}
             />
 
             <FormButton
-              buttonTitle="Sign In"
-              onPress={() => login(email, password)}
+              buttonTitle="Đăng nhập"
+              onPress={() => {
+                if (!email || !password) {
+                  Toast.show({
+                    type: 'success',
+                    position: 'bottom',
+                    text1: 'Vui lòng nhập email và mật khẩu',
+                    visibilityTime: 2000,
+                    autoHide: true,
+                    bottomOffset: 40,
+                  });
+                  return;
+                }
+                login(email, password);
+              }}
             />
 
             {/* {Platform.OS === 'android' ? (
@@ -83,14 +101,14 @@ const LoginScreen = ({navigation}) => {
               style={styles.forgotButton}
               onPress={() => navigation.navigate('Register')}>
               <Text style={styles.navButtonText}>
-                Don't have an acount? Create here
+                Không có tài khoản? Tạo ngay
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.forgotButton}
               onPress={() => navigation.navigate('ForgotPassword')}>
-              <Text style={styles.navButtonText}>Forgot Password?</Text>
+              <Text style={styles.navButtonText}>Quên mật khẩu?</Text>
             </TouchableOpacity>
           </View>
         </ImageBackground>

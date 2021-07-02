@@ -1,5 +1,6 @@
 import React, {createContext, useState} from 'react';
 import auth from '@react-native-firebase/auth';
+import Toast from 'react-native-toast-message';
 
 export const AuthContext = createContext();
 
@@ -17,16 +18,44 @@ const AuthProvider = ({children}) => {
           } catch (error) {
             switch (error.code) {
               case 'auth/user-not-found':
-                alert('User not found');
+                Toast.show({
+                  type: 'success',
+                  position: 'bottom',
+                  text1: 'Không tìm thấy người dùng',
+                  visibilityTime: 2000,
+                  autoHide: true,
+                  bottomOffset: 40,
+                });
                 break;
               case 'auth/user-disabled':
-                alert('User has been disabled');
+                Toast.show({
+                  type: 'success',
+                  position: 'bottom',
+                  text1: 'Người dùng đã bị vô hiệu hóa',
+                  visibilityTime: 2000,
+                  autoHide: true,
+                  bottomOffset: 40,
+                });
                 break;
               case 'auth/wrong-password':
-                alert('Password is not correct');
+                Toast.show({
+                  type: 'success',
+                  position: 'bottom',
+                  text1: 'Mật khẩu không đúng',
+                  visibilityTime: 2000,
+                  autoHide: true,
+                  bottomOffset: 40,
+                });
                 break;
               case 'auth/invalid-email':
-                alert('Invalid email');
+                Toast.show({
+                  type: 'success',
+                  position: 'bottom',
+                  text1: 'Email không tồn tại',
+                  visibilityTime: 2000,
+                  autoHide: true,
+                  bottomOffset: 40,
+                });
                 break;
             }
           }

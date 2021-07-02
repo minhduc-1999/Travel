@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   },
   container: {
     justifyContent: 'center',
-    height: windowHeight,
+    height: '100%',
   },
   contentContainer: {
     justifyContent: 'center',
