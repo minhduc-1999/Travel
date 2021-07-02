@@ -93,16 +93,16 @@ const ProfileScreen = ({navigation, route}) => {
   };
 
   const unsavedAlert = () =>
-    Alert.alert('Unsaved Changes', 'Do you want to save your changes?', [
+    Alert.alert('Lưu thay đổi', 'Bạn có muốn lưu các thay đổi?', [
       {
-        text: 'Save',
+        text: 'Lưu',
         onPress: () => {
           saveProfile();
           navigation.goBack();
         },
       },
       {
-        text: 'Discard',
+        text: 'Hủy bỏ',
         style: 'cancel',
         onPress: () => navigation.goBack(),
       },
@@ -134,23 +134,23 @@ const ProfileScreen = ({navigation, route}) => {
   const renderContent = () => (
     <View style={styles.panel}>
       <View style={{alignItems: 'center'}}>
-        <Text style={styles.panelTitle}>Upload Photo</Text>
-        <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
+        <Text style={styles.panelTitle}>Tải ảnh lên</Text>
+        <Text style={styles.panelSubtitle}>Chọn ảnh đại diện</Text>
       </View>
       <TouchableOpacity
         style={styles.panelButton}
         onPress={takePhotoFromCamera}>
-        <Text style={styles.panelButtonTitle}>Take Photo</Text>
+        <Text style={styles.panelButtonTitle}>Chụp một ảnh</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.panelButton}
         onPress={choosePhotoFromLibrary}>
-        <Text style={styles.panelButtonTitle}>Choose From Library</Text>
+        <Text style={styles.panelButtonTitle}>Chọn từ thư viện</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.panelButton}
         onPress={() => sheetRef.current.snapTo(0)}>
-        <Text style={styles.panelButtonTitle}>Cancel</Text>
+        <Text style={styles.panelButtonTitle}>Hủy</Text>
       </TouchableOpacity>
     </View>
   );
@@ -240,7 +240,7 @@ const ProfileScreen = ({navigation, route}) => {
             </View>
             <View style={styles.userInfo}>
               <View>
-                <Text style={styles.field}>First Name</Text>
+                <Text style={styles.field}>Tên</Text>
                 <TextInput
                   editable={editable}
                   onChangeText={text => onInfoChange('firstName', text)}
@@ -251,7 +251,7 @@ const ProfileScreen = ({navigation, route}) => {
               </View>
               <Divider style={styles.divider} />
               <View>
-                <Text style={styles.field}>Last Name</Text>
+                <Text style={styles.field}>Họ</Text>
                 <TextInput
                   editable={editable}
                   onChangeText={text => onInfoChange('lastName', text)}
@@ -272,7 +272,7 @@ const ProfileScreen = ({navigation, route}) => {
               </View>
               <Divider style={styles.divider} />
               <View>
-                <Text style={styles.field}>Sex</Text>
+                <Text style={styles.field}>Giới tính</Text>
                 <TextInput
                   onChangeText={text => onInfoChange('sex', text)}
                   editable={editable}
@@ -282,7 +282,7 @@ const ProfileScreen = ({navigation, route}) => {
               </View>
               <Divider style={styles.divider} />
               <View>
-                <Text style={styles.field}>Date Of Birth</Text>
+                <Text style={styles.field}>Ngày sinh</Text>
                 <TextInput
                   onChangeText={text => onInfoChange('dateOB', text)}
                   editable={editable}
@@ -295,7 +295,7 @@ const ProfileScreen = ({navigation, route}) => {
               </View>
               <Divider style={styles.divider} />
               <View>
-                <Text style={styles.field}>About</Text>
+                <Text style={styles.field}>Giới thiệu</Text>
                 <TextInput
                   onChangeText={text => onInfoChange('about', text)}
                   editable={editable}

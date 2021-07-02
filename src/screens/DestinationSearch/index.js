@@ -49,7 +49,7 @@ const DestinationSearchScreen = ({navigation, route}) => {
         autoFocus={true}
         numberOfLines={1}
         style={styles.textInput}
-        placeholder={'Where are you going?'}
+        placeholder={'Bạn sẽ đi đâu?'}
         defaultValue={
           route.params.oldLocation ? route.params.oldLocation.name : ''
         }

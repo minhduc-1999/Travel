@@ -25,21 +25,24 @@ import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {Image, Divider} from 'react-native-elements';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {DbContext} from '../../Services/DbProvider';
-import { Dialog } from 'react-native-simple-dialogs';
+import {Dialog} from 'react-native-simple-dialogs';
 import Toast from 'react-native-toast-message';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const DetailedPostScreen = ({route, navigation}) => {
+  const {post} = route.params;
+  console.log('detail post screen render');
   const {
-    loadWishlists, 
-    addDestinationToWishlist, 
-    addNewWishlist, 
-    removeDestinationFromWishlist} = useContext(DbContext);
+    loadWishlists,
+    addDestinationToWishlist,
+    addNewWishlist,
+    removeDestinationFromWishlist,
+  } = useContext(DbContext);
   const sheetRef = useRef(null);
   const [wishlists, setWishlists] = useState([]);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [newWishlistName, setNewWishlistName] = useState(undefined)
+  const [newWishlistName, setNewWishlistName] = useState(post.name);
   const [isFavorite, setIsFavorite] = useState(false);
   const scrollY = useSharedValue(0);
   const bsScrollY = useSharedValue(windowHeight);
@@ -63,9 +66,6 @@ const DetailedPostScreen = ({route, navigation}) => {
       ),
     };
   });
-
-  const {post} = route.params;
-  console.log('detail post screen render');
 
   useEffect(() => {
     loadWishlists()
@@ -112,21 +112,25 @@ const DetailedPostScreen = ({route, navigation}) => {
               style={[styles.smallBtn, shadowAnimStyle]}
               onPress={() => {
                 if (!isFavorite) {
-                  sheetRef.current.snapTo(1, 500)
+                  sheetRef.current.snapTo(1, 500);
                 } else {
                   removeDestinationFromWishlist(post.id, wishlists);
                   setIsFavorite(false);
                   Toast.show({
                     type: 'success',
                     position: 'bottom',
-                    text1: 'Remove destination successfully',
+                    text1: 'Xóa địa điểm thành công',
                     visibilityTime: 2000,
                     autoHide: true,
                     bottomOffset: 40,
                   });
                 }
               }}>
-              <Icon name="heart" color={isFavorite ? "#f15454" : '#000'} size={16} />
+              <Icon
+                name="heart"
+                color={isFavorite ? '#f15454' : '#000'}
+                size={16}
+              />
             </AnimatedPressable>
           </Animated.View>
         </View>
@@ -139,7 +143,7 @@ const DetailedPostScreen = ({route, navigation}) => {
       <BottomSheet
         ref={sheetRef}
         snapPoints={[0, windowHeight * 0.55, windowHeight * 0.9]}
-        animatedPosition={bsScrollY} >
+        animatedPosition={bsScrollY}>
         <Pressable
           style={{
             position: 'absolute',
@@ -147,13 +151,13 @@ const DetailedPostScreen = ({route, navigation}) => {
             height: 20,
             justifyContent: 'center',
             alignItems: 'center',
-            marginLeft: 20
+            marginLeft: 20,
           }}
           onPress={() => sheetRef.current.snapTo(0, 1000)}>
           <FontAwesome name="times" size={20} color="black" />
         </Pressable>
         <View style={styles.sheetTitle}>
-          <Text style={{fontSize: 18}}>Your wishlists</Text>
+          <Text style={{fontSize: 18}}>Danh sách yêu thích</Text>
         </View>
         <Divider style={{height: 1, marginTop: 10}} />
         <Pressable
@@ -172,28 +176,27 @@ const DetailedPostScreen = ({route, navigation}) => {
             }}>
             <FontAwesome name="plus" size={30} color="white" />
           </View>
-          <Text style={styles.sheetText}>Create new wishlist</Text>
+          <Text style={styles.sheetText}>Tạo danh sách yêu thích mới</Text>
         </Pressable>
         <FlatList
           data={wishlists}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) => (
-            <Pressable 
+            <Pressable
               onPress={() => {
                 sheetRef.current.close();
                 setIsFavorite(true);
-                console.log('i pressed');
                 addDestinationToWishlist(post.id, item.id);
                 Toast.show({
                   type: 'success',
                   position: 'bottom',
-                  text1: 'Add destination to wishlist successfully',
+                  text1: 'Thêm địa điểm vào yêu thích thành công',
                   visibilityTime: 2000,
                   autoHide: true,
                   bottomOffset: 40,
                 });
               }}
-              style={styles.sheetItem} 
+              style={styles.sheetItem}
               key={index}>
               <View style={{backgroundColor: '#ebebeb'}}>
                 <Image
@@ -209,47 +212,50 @@ const DetailedPostScreen = ({route, navigation}) => {
 
       <Dialog
         dialogStyle={styles.dialog}
-        animationType='fade'
+        animationType="fade"
         visible={dialogVisible}
-        onTouchOutside={() => setDialogVisible(false)} >
-          <View>
-            <Pressable
-              onPress={() => {
-                setDialogVisible(false);
-              }}
-              style={{
-                position: 'absolute',
-                width: 20,
-                height: 20,
-                marginTop: 5,
-              }}>
-              <FontAwesome name='times' size={20} />
-            </Pressable>
-            <View style={styles.dialogTitle}>
-              <Text style={{fontSize: 20}}>Name your new wishlist</Text>
-            </View>
-            <Divider style={{height: 1, marginTop: 10, marginHorizontal: -24}} />
-            <View style={styles.inputContainer}>
-              <Text style={{marginLeft: 10, color: 'grey'}}>Name</Text>
-              <TextInput
-                defaultValue={post.name}
-                value={newWishlistName}
-                onChangeText={text => setNewWishlistName(text)}
-                style={styles.wishlistInput}
-                numberOfLines={1} />
-            </View>
-            <Text style={{color: 'grey', height: 20}}>50 letters max</Text>
-            <Divider style={{height: 1, marginTop: 20, marginHorizontal: -24}} />
-            <Pressable 
-              disabled={newWishlistName === ''}
-              style={styles.createButton}
-              onPress={() => {
-                addNewWishlist(post.id, post.images[0], newWishlistName);
-                setDialogVisible(false);
-              }} >
-              <Text style={{color: '#ffff', fontSize: 22}}>Create</Text>
-            </Pressable>
+        onTouchOutside={() => setDialogVisible(false)}>
+        <View>
+          <Pressable
+            onPress={() => {
+              setDialogVisible(false);
+            }}
+            style={{
+              position: 'absolute',
+              width: 20,
+              height: 20,
+              marginTop: 5,
+            }}>
+            <FontAwesome name="times" size={20} />
+          </Pressable>
+          <View style={styles.dialogTitle}>
+            <Text style={{fontSize: 20}}>Đặt tên cho danh sách</Text>
           </View>
+          <Divider style={{height: 1, marginTop: 10, marginHorizontal: -24}} />
+          <View style={styles.inputContainer}>
+            <Text style={{marginLeft: 10, color: 'grey'}}>Tên</Text>
+            <TextInput
+              defaultValue={post.name}
+              value={newWishlistName}
+              onChangeText={text => setNewWishlistName(text)}
+              style={styles.wishlistInput}
+              numberOfLines={1}
+            />
+          </View>
+          <Text style={{color: 'grey', height: 20}}>Tối đa 50 ký tự</Text>
+          <Divider style={{height: 1, marginTop: 20, marginHorizontal: -24}} />
+          <Pressable
+            disabled={newWishlistName === ''}
+            style={styles.createButton}
+            onPress={() => {
+              addNewWishlist(post.id, post.images[0], newWishlistName);
+              setDialogVisible(false);
+              sheetRef.current.close();
+              setIsFavorite(true);
+            }}>
+            <Text style={{color: '#ffff', fontSize: 22}}>Tạo</Text>
+          </Pressable>
+        </View>
       </Dialog>
     </SafeAreaView>
   );
@@ -345,7 +351,7 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-  }
+  },
 });
 
 export default DetailedPostScreen;

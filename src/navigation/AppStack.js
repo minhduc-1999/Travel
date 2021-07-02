@@ -24,7 +24,7 @@ const AppStack = props => {
           name={'Destination Search'}
           component={DestinationSearchScreen}
           options={{
-            title: 'Search Destination',
+            title: 'Tìm kiếm địa điểm',
             headerTitleAlign: 'center',
           }}
         />
@@ -36,12 +36,12 @@ const AppStack = props => {
         <Stack.Screen
           name={'Profile'}
           component={ProfileScreen}
-          options={{title: 'Edit Profile', headerTitleAlign: 'center'}}
+          options={{title: 'Chỉnh sửa thông tin', headerTitleAlign: 'center'}}
         />
         <Stack.Screen
           name={'Change Password'}
           component={ChangePassword}
-          options={{title: 'Change Password', headerTitleAlign: 'center'}}
+          options={{title: 'Đổi mật khẩu', headerTitleAlign: 'center'}}
         />
         <Stack.Screen
           name={'Forgot Password'}

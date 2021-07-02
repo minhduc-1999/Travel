@@ -118,7 +118,7 @@ const HomeScreen = ({navigation}) => {
             }}
             onPress={() => navigation.navigate('Destination Search', {})}>
             <Fonawesome name={'search'} color={'#f15454'} size={16} />
-            <Text style={styles.searchButtonText}>Where are you going?</Text>
+            <Text style={styles.searchButtonText}>Bạn sắp đi đâu?</Text>
           </Pressable>
         </Animated.View>
       </CustomHeader>
@@ -136,11 +136,11 @@ const HomeScreen = ({navigation}) => {
           <Pressable
             style={styles.button}
             onPress={() => navigation.navigate('Comment')}>
-            <Text style={styles.buttonText}>Make your plan</Text>
+            <Text style={styles.buttonText}>Lên kế hoạch</Text>
           </Pressable>
         </ImageBackground>
         <View>
-          <Text style={styles.proposedTitle}>Most Popular</Text>
+          <Text style={styles.proposedTitle}>Phổ biến nhất</Text>
           <View style={{marginVertical: 10}}>
             {loading ? (
               <FlatList

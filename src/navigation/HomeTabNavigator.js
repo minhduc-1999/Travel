@@ -18,7 +18,7 @@ const HomeTabNavigator = props => {
         activeTintColor: '#f15454',
       }}>
       <Tab.Screen
-        name={'Explore'}
+        name={'Khám phá'}
         component={ExploreNavigator}
         options={{
           tabBarIcon: ({color}) => (
@@ -27,7 +27,7 @@ const HomeTabNavigator = props => {
         }}
       />
       <Tab.Screen
-        name={'Saved'}
+        name={'Yêu thích'}
         component={SavedNavigator}
         options={{
           tabBarIcon: ({color}) => (
@@ -36,7 +36,7 @@ const HomeTabNavigator = props => {
         }}
       />
       <Tab.Screen
-        name={'Plan'}
+        name={'Chuyến đi'}
         component={Splash}
         options={{
           tabBarIcon: ({color}) => (
@@ -45,7 +45,7 @@ const HomeTabNavigator = props => {
         }}
       />
       <Tab.Screen
-        name={'Notifications'}
+        name={'Hộp thư'}
         component={Notification}
         options={{
           tabBarIcon: ({color}) => (
@@ -54,7 +54,7 @@ const HomeTabNavigator = props => {
         }}
       />
       <Tab.Screen
-        name={'Menu'}
+        name={'Tài khoản'}
         component={MenuScreen}
         options={{
           tabBarIcon: ({color}) => (

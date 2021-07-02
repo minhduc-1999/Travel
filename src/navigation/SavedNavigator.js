@@ -13,7 +13,7 @@ const SavedNavigator = () => {
         name={'SavedList'}
         component={WishlistScreen}
         options={{
-          title: 'Wishlists',
+          title: 'Yêu thích',
           headerStyle: {
             backgroundColor: '#f2f2f2',
             height: 120,
@@ -21,7 +21,7 @@ const SavedNavigator = () => {
           headerTitleStyle: {
             fontSize: 30,
             fontWeight: 'bold',
-          }
+          },
         }}
       />
       <Stack.Screen

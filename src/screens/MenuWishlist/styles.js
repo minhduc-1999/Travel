@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native";
-import { windowWidth } from "../../Utils/Dimention";
+import {StyleSheet} from 'react-native';
+import {windowWidth} from '../../Utils/Dimention';
 
 const styles = StyleSheet.create({
   container: {
@@ -24,17 +24,18 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     marginTop: 20,
-    width: windowWidth / 2 - 30,
+    width: windowWidth / 2,
   },
   deleteText: {
     fontSize: 20,
     color: 'red',
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
+    width: '100%',
   },
   buttonContainer: {
     marginTop: 50,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   botButton: {
     width: windowWidth / 5,

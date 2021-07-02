@@ -32,7 +32,7 @@ const LoginScreen = ({navigation}) => {
 
       <ScrollView contentContainerStyle={styles.container}>
         <ImageBackground
-          source={require('../../../assets/images/wallpaper.jpg')}
+          source={require('../../../assets/images/Vinhhalong.png')}
           style={styles.image}>
           <View style={styles.contentContainer}>
             <Image

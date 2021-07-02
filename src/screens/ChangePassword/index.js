@@ -25,7 +25,7 @@ const ChangePassword = ({navigation}) => {
           onChangeText={userCurrentPassword =>
             setCurrentPassword(userCurrentPassword)
           }
-          placeholderText="Current password"
+          placeholderText="Mật khẩu hiện tại"
           iconType="lock"
           secureTextEntry={true}
         />
@@ -33,13 +33,13 @@ const ChangePassword = ({navigation}) => {
         <FormInput
           labelValue={newPassword}
           onChangeText={userNewPassword => setNewPassword(userNewPassword)}
-          placeholderText="New password"
+          placeholderText="Mật khẩu mới"
           iconType="lock"
           secureTextEntry={true}
         />
 
         <FormButton
-          buttonTitle="Change Password"
+          buttonTitle="Đổi mật khẩu"
           onPress={() => changePassword(currentPassword, newPassword)}
         />
       </ScrollView>

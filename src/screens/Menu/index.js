@@ -78,24 +78,24 @@ const MenuScreen = ({navigation}) => {
                 <Text style={{fontSize: 20}}>
                   {user.info
                     ? user.info.firstName + ' ' + user.info.lastName
-                    : 'Anonymous'}
+                    : 'Ẩn danh'}
                 </Text>
                 <Text
                   style={{
                     color: 'gray',
                     fontSize: 18,
                   }}>
-                  {user.info ? user.info.email : 'Anonymous'}
+                  {user.info ? user.info.email : ''}
                 </Text>
               </View>
             </View>
           )}
 
-          <Text style={styles.groupText}>Account</Text>
+          <Text style={styles.groupText}>Tài khoản</Text>
           <View>
             <GroupListItem
               showChervon
-              title="Profile"
+              title="Hồ sơ"
               iconName="user-o"
               onPress={() =>
                 navigation.navigate('Profile', {
@@ -105,31 +105,31 @@ const MenuScreen = ({navigation}) => {
             />
             <GroupListItem
               showChervon
-              title="Change Password"
+              title="Đổi mật khẩu"
               iconName="key"
               onPress={() => navigation.navigate('Change Password')}
             />
           </View>
-          <Text style={styles.groupText}>More</Text>
+          <Text style={styles.groupText}>Khác</Text>
           <View>
             <SwitchListItem
-              title="Push Notifications"
+              title="Nhận thông báo"
               iconName="bell-o"
               onSwitchStateChange={value => {}}
               initState={true}
               switchColor={'#f15454'}
             />
             <SwitchListItem
-              title="Dark Mode"
+              title="Chủ đề tối"
               iconName="moon-o"
               onSwitchStateChange={value => {}}
               initState={false}
               switchColor={'#f15454'}
             />
-            <GroupListItem title="Send feedbacks" iconName="comments-o" />
+            <GroupListItem title="Gửi phản hồi" iconName="comments-o" />
             <GroupListItem
               onPress={() => logout()}
-              title="Log Out"
+              title="Đăng xuất"
               iconName="sign-out"
             />
           </View>

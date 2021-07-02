@@ -307,7 +307,6 @@ const DbProvider = ({children}) => {
           if (!desId || listWl.length < 1) {
             throw new Error('destination does not exist');
           }
-          const res = [];
           listWl.forEach(wishlist => {
             firestore()
               .collection('wishlists')
@@ -316,6 +315,7 @@ const DbProvider = ({children}) => {
                 destinations: firestore.FieldValue.arrayRemove(desId),
               });
           });
+          observer.publish('wishlistDesChange', desId);
         },
         deleteWishlist: async wlId => {
           if (!wlId) {
@@ -323,14 +323,22 @@ const DbProvider = ({children}) => {
           }
           return firestore().collection('wishlists').doc(wlId).delete();
         },
-        updateWishlistName: async (wlId, wlName) => {
-          if (!wlId || wlName === '') {
+        updateWishlistName: async (wishlist, wlName) => {
+          if (!wishlist || wlName === '') {
             throw new Error('Update wishlist name failed');
           }
-
-          return firestore().collection('wishlists').doc(wlId).update({
-            name: wlName,
-          });
+          firestore()
+            .collection('wishlists')
+            .doc(wishlist.id)
+            .update({name: wlName})
+            .then(() => {
+              observer.publish('wishlistNameChange', wlName);
+              return true;
+            });
+        },
+        onWishlistChange: (handler, event) => {
+          const listener = observer.subscribe(event, handler);
+          return listener.unsubscribe;
         },
         rate: async (desId, rate) => {
           const {star, comment, isNew} = rate;
