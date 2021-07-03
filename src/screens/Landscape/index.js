@@ -13,7 +13,12 @@ import styles from './styles';
 
 const Landscape = () => {
   return (
-    <SafeAreaView style={{height: '100%', paddingHorizontal: 20}}>
+    <SafeAreaView
+      style={{
+        height: '100%',
+        paddingHorizontal: 20,
+        backgroundColor: 'whitesmoke',
+      }}>
       <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
       <View
         style={{
@@ -25,14 +30,11 @@ const Landscape = () => {
         <FlatList
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          data={landscape}
+          data={[landscape]}
           renderItem={({item, index}) => <LandscapeItem landscape={item} />}
           keyExtractor={item => item.name}
-          ListHeaderComponent={() => (
-            <Text style={styles.foreWord}>
-              Việt Nam may mắn được thiên nhiên ban tặng cho vô số các danh lam
-              thắng cảnh khiến cho người ta phải ngỡ ngàng
-            </Text>
+          ListFooterComponent={() => (
+            <Text style={styles.source}>Nguồn: Internet</Text>
           )}
         />
       </View>

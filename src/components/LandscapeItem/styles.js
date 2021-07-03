@@ -2,19 +2,26 @@ import {StyleSheet} from 'react-native';
 import {windowWidth, windowHeight} from '../../Utils/Dimention';
 
 const styles = StyleSheet.create({
-  title: {
-    fontWeight: 'bold',
+  introduction: {
     marginBottom: 10,
-    fontSize: 20,
-    marginTop: 30,
+    fontSize: 18,
+    textAlign: 'justify',
+    lineHeight: 25,
   },
   image: {
     borderRadius: 10,
     width: windowWidth - 40,
     height: windowHeight / 2.8,
   },
-  description: {
-    marginTop: 10,
+  infoContainer: {
+    marginBottom: 10,
+  },
+  index: {
+    fontSize: 18,
+    lineHeight: 25,
+    fontWeight: 'bold',
+  },
+  value: {
     textAlign: 'justify',
     fontSize: 18,
     lineHeight: 25,

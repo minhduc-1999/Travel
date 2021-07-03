@@ -5,12 +5,11 @@ import noti from '../../../assets/data/noti';
 import NotificationItem from '../../components/NotificationItem';
 
 const NotificationScreen = ({navigation}) => {
-  console.log('Noti screen render');
   return (
-    <SafeAreaView style={{paddingTop: 20}}>
+    <SafeAreaView style={{paddingHorizontal: 20}}>
       <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
-      <View style={styles.container}>
-        <Text style={styles.title}>Notifications</Text>
+      <View style={{paddingTop: StatusBar.currentHeight}}>
+        <Text style={styles.title}>Thông báo</Text>
         <FlatList
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}

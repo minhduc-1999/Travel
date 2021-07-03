@@ -18,6 +18,12 @@ const styles = StyleSheet.create({
     width: windowWidth,
     height: 400,
   },
+  source: {
+    marginVertical: 10,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    color: '#f15454',
+  },
 });
 
 export default styles;
