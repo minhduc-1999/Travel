@@ -247,32 +247,44 @@ const HomeScreen = ({navigation}) => {
               <Text style={styles.covidContent}>
                 <FontAwesome name="virus" size={20} />
                 {'  '}Tổng số ca nhiễm:{' '}
-                <Text style={{fontWeight: 'bold'}}>{covidData.infected}</Text>
+                <Text style={{fontWeight: 'bold'}}>
+                  {covidData.infected ? covidData.infected : '...'}
+                </Text>
               </Text>
               <Text style={styles.covidContent}>
                 <FontAwesome name="head-side-mask" color="#34bced" size={20} />
                 {'  '}Số ca đang điều trị:{' '}
-                <Text style={{fontWeight: 'bold'}}>{covidData.treated}</Text>
+                <Text style={{fontWeight: 'bold'}}>
+                  {covidData.treated ? covidData.treated : '...'}
+                </Text>
               </Text>
               <Text style={styles.covidContent}>
                 <FontAwesome name="virus-slash" color="#24f27a" size={20} /> Số
                 ca khỏi bệnh:{' '}
-                <Text style={{fontWeight: 'bold'}}>{covidData.recovered}</Text>
+                <Text style={{fontWeight: 'bold'}}>
+                  {covidData.recovered ? covidData.recovered : '...'}
+                </Text>
               </Text>
               <Text style={styles.covidContent}>
                 <FontAwesome name="skull" color="#fa3939" size={20} />
                 {'  '}Số ca tử vong:{' '}
-                <Text style={{fontWeight: 'bold'}}>{covidData.deceased}</Text>
+                <Text style={{fontWeight: 'bold'}}>
+                  {covidData.deceased ? covidData.deceased : '...'}
+                </Text>
               </Text>
-              <Text style={styles.covidContent}>
+              <Text style={[styles.covidContent, {color: 'grey'}]}>
                 Cập nhật lần cuối:{' '}
-                {new Date(covidData.lastUpdatedAtSource).toLocaleDateString(
-                  'vi-VI',
-                )}
+                {covidData.lastUpdatedAtSource
+                  ? new Date(covidData.lastUpdatedAtSource).toLocaleDateString(
+                      'vi-VI',
+                    )
+                  : '...'}
               </Text>
               <View style={styles.sourceContainer}>
                 <Text style={styles.sourceCovidTitle}>Nguồn: </Text>
-                <Text style={styles.sourceCovid}>{covidData.sourceUrl}</Text>
+                <Text style={styles.sourceCovid}>
+                  {covidData.sourceUrl ? covidData.sourceUrl : '...'}
+                </Text>
               </View>
             </View>
           </View>

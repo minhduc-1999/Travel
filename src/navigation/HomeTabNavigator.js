@@ -5,8 +5,10 @@ import ExploreNavigator from '../navigation/ExploreNavigator';
 import SavedNavigator from '../navigation/SavedNavigator';
 import MenuScreen from '../screens/Menu';
 import Notification from '../screens/NotificationScreen';
+import Landscape from '../screens/Landscape';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 
 import Splash from '../screens/Splash'; //test
 
@@ -35,13 +37,23 @@ const HomeTabNavigator = props => {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name={'Plan'}
         component={Splash}
         options={{
           tabBarIcon: ({color}) => (
             <FontAwesome name="paper-plane-o" size={25} color={color} />
           ),
+        }}
+      /> */}
+      <Tab.Screen
+        name={'Plan'}
+        component={Landscape}
+        options={{
+          tabBarIcon: ({color}) => (
+            <Fontisto name="compass" size={25} color={color} />
+          ),
+          tabBarLabel: 'Giới thiệu',
         }}
       />
       <Tab.Screen
