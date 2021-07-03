@@ -32,7 +32,7 @@ const Landscape = () => {
           showsHorizontalScrollIndicator={false}
           data={[landscape]}
           renderItem={({item, index}) => <LandscapeItem landscape={item} />}
-          keyExtractor={item => item.name}
+          keyExtractor={item => item.capital}
           ListFooterComponent={() => (
             <Text style={styles.source}>Nguồn: Internet</Text>
           )}
