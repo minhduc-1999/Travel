@@ -71,17 +71,23 @@ const DetailedPostScreen = ({route, navigation}) => {
   });
 
   useEffect(() => {
+    let mounted = true;
     loadWishlists()
       .then(res => {
-        setWishlists(res);
-        res.forEach(wishlist => {
-          if (wishlist.destinations.includes(post.id)) {
-            setIsFavorite(true);
-            return;
-          }
-        });
+        if (mounted) {
+          setWishlists(res);
+          res.forEach(wishlist => {
+            if (wishlist.destinations.includes(post.id)) {
+              setIsFavorite(true);
+              return;
+            }
+          });
+        }
       })
       .catch(err => console.log(err));
+    return function cleanup() {
+      mounted = false;
+    };
   }, [isFavorite]);
 
   useEffect(() => {

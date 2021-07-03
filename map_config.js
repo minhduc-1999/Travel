@@ -1,6 +1,6 @@
 export const SEARCH_OPTION = {
   CountryRegion: 'VI',
-  SearchMaxResult: 2,
+  SearchMaxResult: 10,
 };
 
 export const API_CALL_CONFIG = {

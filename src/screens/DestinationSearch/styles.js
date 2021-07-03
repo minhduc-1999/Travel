@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   textInput: {
     backgroundColor: '#f0f0f0',
     fontSize: 20,
-    marginBottom: 20,
+    marginVertical: 20,
     height: 50,
     textAlign: 'left',
     paddingLeft: 20,

@@ -18,8 +18,6 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   interpolate,
-  interpolateColors,
-  Extrapolate,
   withSpring,
 } from 'react-native-reanimated';
 import SECRET from '../../../secret';
@@ -38,14 +36,15 @@ const SearchResultMap = ({navigation, route}) => {
   const {loadDestinations, registerEvent} = React.useContext(DbContext);
   const carouselRef = useRef();
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log('[LOAD DES BY COOR]');
+    setCurLocation(route.params.pos);
     setLoading(true);
     let mounted = true;
     loadDestinations(
       [
-        Number(curLocation.coordinates.lat),
-        Number(curLocation.coordinates.long),
+        Number(route.params.pos.coordinates.lat),
+        Number(route.params.pos.coordinates.long),
       ],
       MapConfig.SearchLimit,
       MapConfig.SearchRadiusOffset,
@@ -54,6 +53,7 @@ const SearchResultMap = ({navigation, route}) => {
         console.log('[QUERY]', res.length);
         if (res.length) {
           setPlaces(res);
+          setSelectedPlaceId(0);
         }
         setLoading(false);
       }
@@ -332,7 +332,7 @@ const SearchResultMap = ({navigation, route}) => {
             animatedPosition={bsScrollY}
             animateOnMount={true}>
             <BottomSheetFlatList
-              style={{marginTop: 50}}
+              style={{marginTop: 60}}
               data={places}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({item, index}) => (

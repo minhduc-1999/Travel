@@ -29,7 +29,7 @@ const DetailPost = ({post, navigation}) => {
         setLoading(false);
       }
     });
-    return function () {
+    return function cleanup() {
       mounted = false;
     };
   }, [post.rate.avg]);

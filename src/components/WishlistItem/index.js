@@ -3,7 +3,6 @@ import {View, Text, Pressable} from 'react-native';
 import {Image} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 import styles from './styles';
-import places from '../../../assets/data/feed';
 import {DbContext} from '../../Services/DbProvider';
 import {windowWidth} from '../../Utils/Dimention';
 
