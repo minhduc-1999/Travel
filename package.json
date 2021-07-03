@@ -28,6 +28,7 @@
     "react-event-observer": "^0.5.11",
     "react-native": "0.64.0",
     "react-native-bing-maps": "^0.1.1",
+    "react-native-bootsplash": "^3.2.4",
     "react-native-elements": "^3.4.1",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-image-picker": "^3.8.1",
