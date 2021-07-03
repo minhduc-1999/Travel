@@ -29,84 +29,50 @@ import Fonawesome from 'react-native-vector-icons/FontAwesome';
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {NotSelected, Selected} from '../../../assets/images/MapIcon/location';
 import CustomHeader from '../../components/CustomHeader';
-const places = [
-  {
-    id: 'gVu3kGiZAGv77FGU5HAV',
-    address:
-      'Nằm trên tỉnh lộ 15, ấp Phú Hiệp, xã Phú Mỹ Hưng, Huyện Củ Chi, Hồ Chí Minh',
-    coordinate: {
-      latitude: '106.46024511569824',
-      longitude: '11.142993359373607',
-    },
-    description:
-      'Trước đây, địa đạo Củ Chi là căn cứ kháng chiến, hệ thống phòng thủ trong lòng đất của quân và dân ta trong thời kỳ chiến tranh Đông Dương và chiến tranh Việt Nam. Củ Chỉ được nhiều người mệnh danh là “thành phố trong lòng đất” bởi không chỉ có hệ thống đường hầm như mê cung mà còn có rất nhiều phòng, kho chứa, nhà bếp, bệnh xá, phòng làm việc,… Ngày nay nó không chỉ là một di tích cấp quốc gia mà còn địa điểm du lịch Sài Gòn ban ngày nổi tiếng, thu hút khoảng 20 triệu lượt khách trong và ngoài nước mỗi năm.',
-    images: [
-      'https://firebasestorage.googleapis.com/v0/b/travelad-8b432.appspot.com/o/app%2Fdestination%2FDia%20Dao%20Cu%20Chi%2Fdia-dao-cu-chi-3.jpg?alt=media&token=256e0ce6-9bcd-4fb2-8e64-175f21731ca8',
-      'https://firebasestorage.googleapis.com/v0/b/travelad-8b432.appspot.com/o/app%2Fdestination%2FDia%20Dao%20Cu%20Chi%2Fkinh-nghiem-tham-quan-dia-dao-cu-chi-1.jpg?alt=media&token=3275c34c-6e4e-4187-9f34-0b8ea1b61730',
-      'https://firebasestorage.googleapis.com/v0/b/travelad-8b432.appspot.com/o/app%2Fdestination%2FDia%20Dao%20Cu%20Chi%2Fthuyet-minh-ve-di-tich-lich-su-dia-dao-cu-chi-1.jpg?alt=media&token=a97533d7-9183-4a2f-85c2-fe5f3b737abc',
-    ],
-    name: 'Địa đạo Củ Chi',
-    openTime: 'Giá vé: 20k/người Việt, 110k/người nước ngoài',
-    price: '',
-    tags: ['Di tích', 'Khám phá', 'Nghệ thuật'],
-  },
-  {
-    id: 'gVu3kGiZAGv77FGU5HAV',
-    address:
-      'Nằm trên tỉnh lộ 15, ấp Phú Hiệp, xã Phú Mỹ Hưng, Huyện Củ Chi, Hồ Chí Minh',
-    coordinate: {
-      latitude: '106.46024511569824',
-      longitude: '11.142993359373607',
-    },
-    description:
-      'Trước đây, địa đạo Củ Chi là căn cứ kháng chiến, hệ thống phòng thủ trong lòng đất của quân và dân ta trong thời kỳ chiến tranh Đông Dương và chiến tranh Việt Nam. Củ Chỉ được nhiều người mệnh danh là “thành phố trong lòng đất” bởi không chỉ có hệ thống đường hầm như mê cung mà còn có rất nhiều phòng, kho chứa, nhà bếp, bệnh xá, phòng làm việc,… Ngày nay nó không chỉ là một di tích cấp quốc gia mà còn địa điểm du lịch Sài Gòn ban ngày nổi tiếng, thu hút khoảng 20 triệu lượt khách trong và ngoài nước mỗi năm.',
-    images: [
-      'https://firebasestorage.googleapis.com/v0/b/travelad-8b432.appspot.com/o/app%2Fdestination%2FDia%20Dao%20Cu%20Chi%2Fdia-dao-cu-chi-3.jpg?alt=media&token=256e0ce6-9bcd-4fb2-8e64-175f21731ca8',
-      'https://firebasestorage.googleapis.com/v0/b/travelad-8b432.appspot.com/o/app%2Fdestination%2FDia%20Dao%20Cu%20Chi%2Fkinh-nghiem-tham-quan-dia-dao-cu-chi-1.jpg?alt=media&token=3275c34c-6e4e-4187-9f34-0b8ea1b61730',
-      'https://firebasestorage.googleapis.com/v0/b/travelad-8b432.appspot.com/o/app%2Fdestination%2FDia%20Dao%20Cu%20Chi%2Fthuyet-minh-ve-di-tich-lich-su-dia-dao-cu-chi-1.jpg?alt=media&token=a97533d7-9183-4a2f-85c2-fe5f3b737abc',
-    ],
-    name: 'Địa đạo Củ Chi',
-    openTime: 'Giá vé: 20k/người Việt, 110k/người nước ngoài',
-    price: '',
-    tags: ['Di tích', 'Khám phá', 'Nghệ thuật'],
-  },
-];
 
 const SearchResultMap = ({navigation, route}) => {
-  const [loading, setLoading] = useState(false);
-  // const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [places, setPlaces] = useState([]);
   const [curLocation, setCurLocation] = useState(route.params.pos);
   const [selectedPlaceId, setSelectedPlaceId] = useState(0);
-  const {loadDestinations} = React.useContext(DbContext);
+  const {loadDestinations, registerEvent} = React.useContext(DbContext);
   const carouselRef = useRef();
-  // const [bsOpen, setBsOpen] = useState(false);
 
-  // React.useEffect(() => {
-  //   console.log('[=====]');
-  //   setLoading(true);
-  //   let mounted = true;
-  //   loadDestinations(
-  //     [
-  //       Number(curLocation.coordinates.lat),
-  //       Number(curLocation.coordinates.long),
-  //     ],
-  //     MapConfig.SearchLimit,
-  //     MapConfig.SearchRadiusOffset,
-  //   ).then(res => {
-  //     if (mounted) {
-  //       console.log('[QUERY]', res.length);
-  //       if (res.length) {
-  //         // console.log('[RES]', res);
-  //         setPlaces(res);
-  //       }
-  //       setLoading(false);
-  //     }
-  //   });
-  //   return function cleanup() {
-  //     mounted = false;
-  //   };
-  // }, [route.params.pos.coordinates.lat, route.params.pos.coordinates.long]);
+  React.useEffect(() => {
+    console.log('[LOAD DES BY COOR]');
+    setLoading(true);
+    let mounted = true;
+    loadDestinations(
+      [
+        Number(curLocation.coordinates.lat),
+        Number(curLocation.coordinates.long),
+      ],
+      MapConfig.SearchLimit,
+      MapConfig.SearchRadiusOffset,
+    ).then(res => {
+      if (mounted) {
+        console.log('[QUERY]', res.length);
+        if (res.length) {
+          setPlaces(res);
+        }
+        setLoading(false);
+      }
+    });
+    return function cleanup() {
+      mounted = false;
+    };
+  }, [route.params.pos.coordinates.lat, route.params.pos.coordinates.long]);
 
+  useEffect(() => {
+    const unsub = registerEvent('onPostComment', upData => {
+      const newData = places.map(item => {
+        if (item.id === upData.desId) return {...item, rate: upData.rate};
+        return item;
+      });
+      setPlaces(newData);
+    });
+    return unsub;
+  });
   const sheetRef = useRef(null);
   const bsScrollY = useSharedValue(100);
 
@@ -224,7 +190,7 @@ const SearchResultMap = ({navigation, route}) => {
               alignItems: 'center',
             }}>
             {/* Map here */}
-            {/* <BingMapsView
+            <BingMapsView
               credentialsKey={SECRET.KEY}
               compassButtonVisible={true}
               mapLocation={{
@@ -240,7 +206,7 @@ const SearchResultMap = ({navigation, route}) => {
                   icon: index === selectedPlaceId ? Selected : NotSelected,
                 };
               })}
-            /> */}
+            />
 
             <View style={styles.carouselList}>
               <Carousel
@@ -364,9 +330,6 @@ const SearchResultMap = ({navigation, route}) => {
             snapPoints={[0, (windowHeight * 40) / 100, windowHeight]}
             index={0}
             animatedPosition={bsScrollY}
-            // onChange={index => {
-            //   index === 2 ? setBsOpen(true) : setBsOpen(false);
-            // }}
             animateOnMount={true}>
             <BottomSheetFlatList
               style={{marginTop: 50}}

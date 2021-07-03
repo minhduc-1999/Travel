@@ -18,7 +18,8 @@ class Post extends React.PureComponent {
         style={[styles.container, this.props.style]}>
         <Image style={styles.image} source={{uri: this.props.post.images[0]}} />
         <Text style={[styles.rate]} numberOfLines={2}>
-          <Icon name="star" size={22} color={'#f15454'} /> 5
+          <Icon name="star" size={22} color={'#f15454'} />{' '}
+          {this.props.post.rate.avg}
         </Text>
         <Text style={[styles.name, this.props.titleStyle]} numberOfLines={2}>
           {this.props.post.name}

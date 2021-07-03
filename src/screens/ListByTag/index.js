@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   View,
   FlatList,
@@ -137,9 +137,11 @@ const SearchResultScreen = ({route, navigation}) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const {loadDestinationsByTag, loadMoreDestinationsByTag} = React.useContext(
-    DbContext,
-  );
+  const {
+    loadDestinationsByTag,
+    loadMoreDestinationsByTag,
+    registerEvent,
+  } = React.useContext(DbContext);
 
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
@@ -172,7 +174,7 @@ const SearchResultScreen = ({route, navigation}) => {
     };
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     // console.log('[EFFECT LOAD]');
     let mounted = true;
     loadDestinationsByTag(
@@ -194,6 +196,18 @@ const SearchResultScreen = ({route, navigation}) => {
       mounted = false;
     };
   }, [curTagIndex]);
+
+  useEffect(() => {
+    const unsub = registerEvent('onPostComment', res => {
+      //console.log('[sub on post]', res);
+      const newData = data.map(item => {
+        if (item.id === res.desId) return {...item, rate: res.rate};
+        return item;
+      });
+      setData(newData);
+    });
+    return unsub;
+  });
   console.log('List By tag screen render');
   return (
     <SafeAreaView style={{height: '100%', width: '100%'}}>

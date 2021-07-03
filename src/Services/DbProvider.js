@@ -411,27 +411,29 @@ const DbProvider = ({children}) => {
               .then(() => {
                 return true;
               });
-            console.log('old', meta.report);
+            // console.log('old', meta.report);
             if (result && existed) {
               meta.report[existed.star - 1]--;
             }
             meta.report[star - 1]++;
-            console.log('new', meta.report);
+            // console.log('new', meta.report);
             const totalStar = meta.report.reduce(
               (acc, cur, index) => acc + cur * (index + 1),
               0,
             );
             const totalAmount = meta.report.reduce((acc, cur) => acc + cur);
+            const updateData = {
+              rate: {
+                avg: Math.round((totalStar / totalAmount) * 10) / 10,
+                report: [...meta.report],
+              },
+            };
             return firestore()
               .collection('destinations')
               .doc(desId)
-              .update({
-                rate: {
-                  avg: Math.round((totalStar / totalAmount) * 10) / 10,
-                  report: [...meta.report],
-                },
-              })
+              .update(updateData)
               .then(() => {
+                observer.publish('onPostComment', {...updateData, desId});
                 return true;
               })
               .catch(err => {
@@ -440,6 +442,10 @@ const DbProvider = ({children}) => {
           } catch {
             return false;
           }
+        },
+        registerEvent: (event, handler) => {
+          const listener = observer.subscribe(event, handler);
+          return listener.unsubscribe;
         },
       }}>
       {children}

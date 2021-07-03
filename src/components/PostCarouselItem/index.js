@@ -4,9 +4,8 @@ import {useNavigation} from '@react-navigation/native';
 import {windowWidth} from '../../Utils/Dimention';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const Post = props => {
+const Post = ({post}) => {
   const navigation = useNavigation();
-  const post = props.post;
   const width = windowWidth;
   return (
     <Pressable
@@ -16,7 +15,7 @@ const Post = props => {
         <Image style={styles.image} source={{uri: post.images[0]}} />
         <View style={styles.detailContainer}>
           <Text style={styles.rate}>
-            5 <Icon name="star" size={16} color={'#f15454'} />
+            {post.rate.avg} <Icon name="star" size={16} color={'#f15454'} />
           </Text>
           <Text style={styles.name} numberOfLines={2}>
             {post.name}

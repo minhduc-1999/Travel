@@ -7,7 +7,6 @@ import {
   View,
   Text,
   TextInput,
-  KeyboardAvoidingView,
   FlatList,
 } from 'react-native';
 import DetailPost from '../../components/DetailedPost';
@@ -21,7 +20,7 @@ import Animated, {
   interpolate,
   interpolateColor,
 } from 'react-native-reanimated';
-import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
+import BottomSheet from '@gorhom/bottom-sheet';
 import {Image, Divider} from 'react-native-elements';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {DbContext} from '../../Services/DbProvider';
@@ -31,8 +30,6 @@ import Toast from 'react-native-toast-message';
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const DetailedPostScreen = ({route, navigation}) => {
-  const {post} = route.params;
-  console.log('detail post screen render');
   const {
     loadWishlists,
     addDestinationToWishlist,
@@ -42,7 +39,10 @@ const DetailedPostScreen = ({route, navigation}) => {
   const sheetRef = useRef(null);
   const [wishlists, setWishlists] = useState([]);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [newWishlistName, setNewWishlistName] = useState(post.name);
+  const [newWishlistName, setNewWishlistName] = useState(
+    route.params.post.name,
+  );
+
   const [isFavorite, setIsFavorite] = useState(false);
   const scrollY = useSharedValue(0);
   const bsScrollY = useSharedValue(windowHeight);
@@ -66,7 +66,8 @@ const DetailedPostScreen = ({route, navigation}) => {
       ),
     };
   });
-
+  const {post} = route.params;
+  console.log('detail post screen render');
   useEffect(() => {
     loadWishlists()
       .then(res => {

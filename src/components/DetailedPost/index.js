@@ -110,7 +110,6 @@ const DetailPost = ({post, navigation}) => {
         ))
       : comments.map(item => <CommentItem comment={item} key={item.key} />);
   };
-
   console.log('detail post component render');
   return (
     <View style={{backgroundColor: '#fff'}}>
