@@ -1,31 +1,77 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {View, Text, FlatList, SafeAreaView, StatusBar, ActivityIndicator, Pressable} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  SafeAreaView,
+  StatusBar,
+  ActivityIndicator,
+  Pressable,
+} from 'react-native';
 import WishlistItem from '../../components/WishlistItem';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { DbContext } from '../../Services/DbProvider';
+import {DbContext} from '../../Services/DbProvider';
 import styles from './styles';
 
 const WishlistScreen = ({navigation}) => {
-  const {loadWishlists} = useContext(DbContext);
+  const {loadWishlists, registerEvent} = useContext(DbContext);
   const [wishlistsData, setWishlistsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(async () => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = registerEvent('onWishlistChange', () => {
       setLoading(true);
-      fetchWishlistsData();
-    })
+      loadWishlists()
+        .then(data => {
+          setWishlistsData(data);
+          setLoading(false);
+        })
+        .catch(err => console.error(err));
+    });
     return unsubscribe;
-  }, [navigation]);
+  });
 
-  const fetchWishlistsData = () => {
+  useEffect(async () => {
+    const unsubscribe = registerEvent('wishlistDesChange', () => {
+      setLoading(true);
+      loadWishlists()
+        .then(data => {
+          setWishlistsData(data);
+          setLoading(false);
+        })
+        .catch(err => console.error(err));
+    });
+    return unsubscribe;
+  });
+
+  useEffect(async () => {
+    const unsubscribe = registerEvent('wishlistNameChange', () => {
+      setLoading(true);
+      loadWishlists()
+        .then(data => {
+          setWishlistsData(data);
+          setLoading(false);
+        })
+        .catch(err => console.error(err));
+    });
+    return unsubscribe;
+  });
+
+  useEffect(async () => {
+    console.log('load wl data');
+    let mounted = true;
     loadWishlists()
       .then(data => {
-        setWishlistsData(data);
-        setLoading(false);
+        if (mounted) {
+          setWishlistsData(data);
+          setLoading(false);
+        }
       })
       .catch(err => console.error(err));
-  }
+    return function () {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <SafeAreaView style={{height: '100%'}}>
@@ -35,15 +81,15 @@ const WishlistScreen = ({navigation}) => {
           <ActivityIndicator color={'#f15454'} />
         </View>
       ) : (
-          <View>
-            <FlatList
-              showsHorizontalScrollIndicator={false}
-              showsVerticalScrollIndicator={false}
-              data={wishlistsData}
-              renderItem={({item}) => <WishlistItem item={item} />}
-              keyExtractor={item => item.createDate}
-            />
-          </View>
+        <View>
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            data={wishlistsData}
+            renderItem={({item}) => <WishlistItem item={item} />}
+            keyExtractor={item => item.createDate}
+          />
+        </View>
       )}
     </SafeAreaView>
   );

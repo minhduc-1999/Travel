@@ -133,16 +133,19 @@ const DetailedPostScreen = ({route, navigation}) => {
                 if (!isFavorite) {
                   sheetRef.current.snapTo(1, 500);
                 } else {
-                  removeDestinationFromWishlist(post.id, wishlists);
-                  setIsFavorite(false);
-                  Toast.show({
-                    type: 'success',
-                    position: 'bottom',
-                    text1: 'Xóa địa điểm thành công',
-                    visibilityTime: 2000,
-                    autoHide: true,
-                    bottomOffset: 40,
-                  });
+                  removeDestinationFromWishlist(post.id, wishlists)
+                    .then(res => {
+                      setIsFavorite(false);
+                      Toast.show({
+                        type: 'success',
+                        position: 'bottom',
+                        text1: 'Xóa địa điểm thành công',
+                        visibilityTime: 2000,
+                        autoHide: true,
+                        bottomOffset: 40,
+                      });
+                    })
+                    .catch(err => console.error('[ERR]', err));
                 }
               }}>
               <Icon

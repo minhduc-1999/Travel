@@ -13,13 +13,20 @@ const WishlistItem = ({item}) => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
+    console.log('reload wl item', item.id);
+    let mounted = true;
     loadDestinationsByRefId(item.destinations)
       .then(res => {
-        setDes(res);
-        const img = res.map(data => data.images[0]);
-        setImages(img);
+        if (mounted) {
+          setDes(res);
+          const img = res.map(data => data.images[0]);
+          setImages(img);
+        }
       })
       .catch(error => console.error(error));
+    return function () {
+      mounted = false;
+    };
   }, []);
 
   return (

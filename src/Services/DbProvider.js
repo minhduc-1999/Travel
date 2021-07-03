@@ -278,6 +278,7 @@ const DbProvider = ({children}) => {
               destinations: firestore.FieldValue.arrayUnion(desId),
             })
             .then(() => {
+              observer.publish('onWishlistChange');
               return true;
             })
             .catch(err => {
@@ -288,17 +289,18 @@ const DbProvider = ({children}) => {
           if (!desId || !wlName || !userAcc) {
             throw new Error('destination does not exist');
           }
+          const data = {
+            createDate: firebase.firestore.Timestamp.now(),
+            destinations: [desId],
+            name: wlName,
+            repImage: desImg,
+            userId: userAcc.uid,
+          };
           return firestore()
             .collection('wishlists')
-            .add({
-              createDate: firebase.firestore.Timestamp.now(),
-              destinations: [desId],
-              name: wlName,
-              repImage: desImg,
-              userId: userAcc.uid,
-            })
+            .add(data)
             .then(res => {
-              refId: res.id;
+              observer.publish('onWishlistChange');
             })
             .catch(err => {
               throw new Error(err);
@@ -308,21 +310,54 @@ const DbProvider = ({children}) => {
           if (!desId || listWl.length < 1) {
             throw new Error('destination does not exist');
           }
-          listWl.forEach(wishlist => {
-            firestore()
-              .collection('wishlists')
-              .doc(wishlist.id)
-              .update({
+          for (let index in listWl) {
+            const wishlist = listWl[index];
+            const {destinations} = wishlist;
+            if (destinations.includes(desId)) {
+              const updateData = {
                 destinations: firestore.FieldValue.arrayRemove(desId),
-              });
-          });
-          observer.publish('wishlistDesChange', desId);
+              };
+              if (destinations.indexOf(desId) === 0) {
+                if (destinations.length > 1) {
+                  firestore()
+                    .collection('destinations')
+                    .doc(destinations[1])
+                    .get()
+                    .then(res => {
+                      console.warn(res.name);
+                      updateData.repImage = res.images[0];
+                    })
+                    .catch(() => {
+                      updateData.repImage = '';
+                    });
+                } else {
+                  updateData.repImage = '';
+                }
+              }
+              return firestore()
+                .collection('wishlists')
+                .doc(wishlist.id)
+                .update(updateData)
+                .then(() => {
+                  observer.publish('wishlistDesChange', desId);
+                  return true;
+                })
+                .catch(err => false);
+            }
+          }
+          return false;
         },
         deleteWishlist: async wlId => {
           if (!wlId) {
             throw new Error('This wishlist does not exist');
           }
-          return firestore().collection('wishlists').doc(wlId).delete();
+          return firestore()
+            .collection('wishlists')
+            .doc(wlId)
+            .delete()
+            .then(() => {
+              observer.publish('onWishlistChange');
+            });
         },
         updateWishlistName: async (wishlist, wlName) => {
           if (!wishlist || wlName === '') {
