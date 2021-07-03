@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {AirbnbRating, Avatar} from 'react-native-elements';
+import {AirbnbRating, Avatar, Rating} from 'react-native-elements';
 import ContentLoader, {Rect, Circle} from 'react-content-loader/native';
 import {
   View,
@@ -8,69 +8,36 @@ import {
   FlatList,
   StatusBar,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
 import styles, {cmtStyle} from './style';
 import Fonawesome from 'react-native-vector-icons/FontAwesome';
 import {windowWidth} from '../../Utils/Dimention';
 import {DbContext} from '../../Services/DbProvider';
 
-// const comments = [
-//   {
-//     dateCreated: {seconds: 1625237898741},
-//     voter: 'Test',
-//     avatar: '',
-//     comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
-//     star: 3,
-//     key: 1,
-//   },
-//   {
-//     dateCreated: {seconds: 1625237898741},
-//     voter: 'Test 2',
-//     avatar: '',
-//     comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
-//     star: 4,
-//     key: 2,
-//   },
-//   {
-//     dateCreated: {seconds: 1625237898741},
-//     voter: 'Test 2',
-//     avatar: '',
-//     comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
-//     star: 4,
-//     key: 3,
-//   },
-//   {
-//     dateCreated: {seconds: 1625237898741},
-//     voter: 'Test 2',
-//     avatar: '',
-//     comment: 'lorem lorem iifd fdjal dkal jfkewkl fdlal a',
-//     star: 4,
-//     key: 4,
-//   },
-//   {
-//     dateCreated: {seconds: 1625237898741},
-//     voter: 'Test 2',
-//     avatar: '',
-//     comment:
-//       'lorem lorem iifd fdjal dkal jfkewkl fdlal a fda fda da fdajej kfdklaj fldajkj kflkl jdfakl ',
-//     star: 4,
-//     key: 5,
-//   },
-// ];
+const limit = 10;
 
 const comment = ({route, navigation}) => {
   const [selected, setSelected] = useState(0);
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
-  const {loadComments} = useContext(DbContext);
+  const {loadComments, loadMoreComments} = useContext(DbContext);
   const [metadata, setMetadata] = useState(route.params.metadata);
+  const [lastVisible, setLastVisible] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     let mounted = true;
-    loadComments(route.params.postId, 1)
+    loadComments(route.params.postId, limit)
       .then(res => {
         if (mounted) {
-          setComments(res);
+          if (res.length) {
+            setComments(res);
+            setLastVisible(res[res.length - 1].dateCreated);
+          } else {
+            setHasMore(false);
+          }
           setLoading(false);
         }
       })
@@ -84,18 +51,15 @@ const comment = ({route, navigation}) => {
   const renderOption = () => {
     // const report = [0, 0, 0, 1, 1];
     // const {report} = route.params;
-    return metadata.report
-      .slice(0)
-      .reverse()
-      .map((item, index) => (
-        <StarItem
-          key={index}
-          isSelected={index + 1 === selected}
-          star={index + 1}
-          amount={item}
-          onPress={() => setSelected(index + 1)}
-        />
-      ));
+    return metadata.report.map((item, index) => (
+      <StarItem
+        key={index}
+        isSelected={index + 1 === selected}
+        star={index + 1}
+        amount={item}
+        // onPress={() => setSelected(index + 1)}
+      />
+    ));
   };
   // const {metadata} = route.params;
   // const metadata = {avg: 4.5};
@@ -150,18 +114,52 @@ const comment = ({route, navigation}) => {
                   </Text>
                   /5
                 </Text>
-                <AirbnbRating
+                <Rating
+                  type="custom"
+                  ratingImage={require('../../../assets/images/star.png')}
+                  ratingBackgroundColor="#fff"
+                  ratingColor="#f15454"
+                  ratingCount={5}
+                  startingValue={metadata.avg}
+                  imageSize={22}
+                  readonly
+                  showRating={false}
+                  style={{paddingVertical: 10}}
+                />
+                {/* <AirbnbRating
                   selectedColor="#f15454"
                   count={5}
                   defaultRating={metadata.avg}
                   size={22}
                   isDisabled
                   showRating={false}
-                />
+                /> */}
               </View>
               <View style={styles.option}>{renderOption()}</View>
             </View>
           )}
+          ListFooterComponent={() =>
+            loading ? <ActivityIndicator color={'#f15454'} /> : null
+          }
+          refreshing={refreshing}
+          onEndReachedThreshold={0.3}
+          onEndReached={() => {
+            if (hasMore) {
+              setRefreshing(true);
+              loadMoreComments(route.params.postId, limit, lastVisible).then(
+                res => {
+                  console.log('load more comment', res.length);
+                  if (res.length) {
+                    setComments([...comments, ...res]);
+                    setLastVisible(res[res.length - 1].dateCreated);
+                    setRefreshing(false);
+                  } else {
+                    setHasMore(false);
+                  }
+                },
+              );
+            }
+          }}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           scrollEnabled={!loading}
@@ -275,7 +273,7 @@ const CommentItem = ({comment}) => {
               maxWidth: windowWidth * 0.4,
               lineHeight: 26,
             }}>
-            {new Date(comment.dateCreated.seconds).toLocaleDateString('vi-VI')}
+            {comment.dateCreated.toDate().toLocaleDateString('vi-VI')}
           </Text>
         </View>
         <View

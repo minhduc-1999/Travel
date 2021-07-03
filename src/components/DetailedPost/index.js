@@ -6,7 +6,7 @@ import Swiper from '../Swiper';
 import Divider from '../Divider';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import {windowWidth} from '../../Utils/Dimention';
-import {Avatar, AirbnbRating} from 'react-native-elements';
+import {Avatar, AirbnbRating, Rating} from 'react-native-elements';
 import ContentLoader, {Rect, Circle} from 'react-content-loader/native';
 import {DbContext} from '../../Services/DbProvider';
 
@@ -14,9 +14,15 @@ const DetailPost = ({post, navigation}) => {
   const [loading, setLoading] = useState(true);
   const [star, setStar] = useState(3);
   const [comments, setComments] = useState([]);
-  const {loadComments} = useContext(DbContext);
-  useEffect(async () => {
+  const {loadComments, loadOwnComment} = useContext(DbContext);
+  const [ownComment, setOwnComment] = useState(null);
+  useEffect(() => {
     let mounted = true;
+    loadOwnComment(post.id).then(res => {
+      if (res && mounted) {
+        setOwnComment(res);
+      }
+    });
     loadComments(post.id, 3).then(res => {
       if (mounted) {
         setComments(res);
@@ -26,9 +32,9 @@ const DetailPost = ({post, navigation}) => {
     return function () {
       mounted = false;
     };
-  }, []);
+  }, [post.rate.avg]);
   const renderVote = () => {
-    return (
+    return !ownComment ? (
       <View style={{marginBottom: 40}}>
         <View
           style={{
@@ -65,6 +71,8 @@ const DetailPost = ({post, navigation}) => {
                 desId: post.id,
                 star,
                 metadata: post.rate,
+                isEdition: false,
+                comment: '',
               });
             }}
             style={{
@@ -77,6 +85,61 @@ const DetailPost = ({post, navigation}) => {
                 textDecorationLine: 'underline',
               }}>
               Viết đánh giá
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+    ) : (
+      <View style={{marginBottom: 40}}>
+        <View
+          style={{
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+          }}>
+          <Text style={styles.descriptionTitle}>{'Đánh giá của bạn'}</Text>
+          <Text
+            style={{
+              fontSize: 16,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            {`Ngày thực hiện: ${ownComment.dateCreated
+              .toDate()
+              .toLocaleDateString('vi-VI')}`}
+          </Text>
+        </View>
+        <View style={{width: windowWidth - 40}}>
+          <AirbnbRating
+            selectedColor="#f15454"
+            reviewColor="#f15454"
+            count={5}
+            reviews={['Kinh khủng', 'Tệ', 'Bình thường', 'Tốt', 'Tuyệt vời']}
+            defaultRating={ownComment.star}
+            size={40}
+            isDisabled
+          />
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Rate', {
+                desName: post.name,
+                desId: post.id,
+                star: ownComment.star,
+                metadata: post.rate,
+                isEdition: true,
+                comment: ownComment.comment,
+              });
+            }}
+            style={{
+              marginTop: 10,
+            }}>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                textDecorationLine: 'underline',
+              }}>
+              Chỉnh sửa đánh giá
             </Text>
           </Pressable>
         </View>
@@ -135,7 +198,7 @@ const DetailPost = ({post, navigation}) => {
         <Text style={styles.descriptionTitle}>Giới thiệu</Text>
         <Text style={styles.description}>{post.description}</Text>
         <Divider style={styles.divider} />
-        {renderVote()}
+        {loading ? null : renderVote()}
         <Pressable
           onPress={() =>
             navigation.navigate('Comment', {
@@ -186,14 +249,26 @@ const DetailPost = ({post, navigation}) => {
                 </Text>
                 /5
               </Text>
-              <AirbnbRating
+              <Rating
+                type="custom"
+                ratingImage={require('../../../assets/images/star.png')}
+                ratingBackgroundColor="#fff"
+                ratingColor="#f15454"
+                ratingCount={5}
+                startingValue={post.rate.avg}
+                imageSize={20}
+                readonly
+                showRating={false}
+                style={{paddingVertical: 10}}
+              />
+              {/* <AirbnbRating
                 selectedColor="#f15454"
                 count={5}
                 defaultRating={post.rate.avg}
                 size={16}
                 isDisabled
                 showRating={false}
-              />
+              /> */}
             </View>
           </View>
           {renderComment()}

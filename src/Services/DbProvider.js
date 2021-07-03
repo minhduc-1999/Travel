@@ -354,7 +354,7 @@ const DbProvider = ({children}) => {
           const comments = await firestore()
             .collection('comments')
             .where('desId', '==', desId)
-            .orderBy('dateCreated', 'asc')
+            .orderBy('dateCreated', 'desc')
             .limit(limit)
             .get()
             .then(querySnapshot => {
@@ -387,6 +387,37 @@ const DbProvider = ({children}) => {
             );
           }
           return Promise.all(promises);
+        },
+        loadMoreComments: async (desId, limit, last) => {
+          console.log(' - Load More Comment - ');
+          return firestore()
+            .collection('comments')
+            .where('desId', '==', desId)
+            .orderBy('dateCreated', 'desc')
+            .startAfter(last)
+            .limit(limit)
+            .get()
+            .then(querySnapshot => {
+              return querySnapshot.docs.map(doc => {
+                return {...doc.data(), id: doc.ref.id};
+              });
+            })
+            .catch(err => {
+              throw new Error(err);
+            });
+        },
+        loadOwnComment: async desId => {
+          return firestore()
+            .collection('comments')
+            .doc(`${desId}_${userAcc.uid}`)
+            .get()
+            .then(doc => {
+              if (doc.exists) return {...doc.data(), id: doc.ref.id};
+              return null;
+            })
+            .catch(err => {
+              return null;
+            });
         },
         postComment: async rate => {
           const {meta, comment, star, desId} = rate;

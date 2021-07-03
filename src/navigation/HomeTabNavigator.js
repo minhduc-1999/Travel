@@ -26,6 +26,7 @@ const HomeTabNavigator = props => {
           tabBarIcon: ({color}) => (
             <FontAwesome name="globe" size={25} color={color} />
           ),
+          tabBarLabel: 'Khám phá',
         }}
       />
       <Tab.Screen
@@ -35,6 +36,7 @@ const HomeTabNavigator = props => {
           tabBarIcon: ({color}) => (
             <FontAwesome name="heart-o" size={25} color={color} />
           ),
+          tabBarLabel: 'Yêu thích',
         }}
       />
       {/* <Tab.Screen
@@ -44,6 +46,7 @@ const HomeTabNavigator = props => {
           tabBarIcon: ({color}) => (
             <FontAwesome name="paper-plane-o" size={25} color={color} />
           ),
+          tabBarLabel: 'Kế hoạch',
         }}
       /> */}
       <Tab.Screen
@@ -63,6 +66,7 @@ const HomeTabNavigator = props => {
           tabBarIcon: ({color}) => (
             <FontAwesome name="bell-o" size={25} color={color} />
           ),
+          tabBarLabel: 'Hộp thư',
         }}
       />
       <Tab.Screen
@@ -72,6 +76,7 @@ const HomeTabNavigator = props => {
           tabBarIcon: ({color}) => (
             <FontAwesome name="bars" size={25} color={color} />
           ),
+          tabBarLabel: 'Tài khoản',
         }}
       />
     </Tab.Navigator>

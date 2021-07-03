@@ -17,10 +17,11 @@ import {windowWidth} from '../../Utils/Dimention';
 import {Avatar} from 'react-native-elements';
 
 const index = ({route, navigation}) => {
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState(route.params.comment);
   const {postComment, loadUserData} = useContext(DbContext);
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
+  const [star, setStar] = useState(route.params.star);
   useEffect(async () => {
     let mounted = true;
     loadUserData().then(res => {
@@ -33,7 +34,7 @@ const index = ({route, navigation}) => {
       mounted = false;
     };
   }, []);
-  const {desId, star, desName, metadata} = route.params;
+  const {desId, desName, metadata} = route.params;
   const renderUser = () => {
     return (
       <View
@@ -146,7 +147,9 @@ const index = ({route, navigation}) => {
           defaultRating={star}
           size={40}
           showRating={false}
-          isDisabled
+          onFinishRating={value => {
+            setStar(value);
+          }}
         />
         <View style={{marginTop: 30}}>
           <TextInput
@@ -159,6 +162,7 @@ const index = ({route, navigation}) => {
             //   console.log('[comment ne]', input);
             //   setComment(input);
             // }}
+            defaultValue={comment}
             multiline
             placeholder="Mô tả trải nghiệm của bạn"
             style={{

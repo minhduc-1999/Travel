@@ -35,6 +35,7 @@ const DetailedPostScreen = ({route, navigation}) => {
     addDestinationToWishlist,
     addNewWishlist,
     removeDestinationFromWishlist,
+    registerEvent,
   } = useContext(DbContext);
   const sheetRef = useRef(null);
   const [wishlists, setWishlists] = useState([]);
@@ -42,6 +43,7 @@ const DetailedPostScreen = ({route, navigation}) => {
   const [newWishlistName, setNewWishlistName] = useState(
     route.params.post.name,
   );
+  const [post, setPost] = useState(route.params.post);
 
   const [isFavorite, setIsFavorite] = useState(false);
   const scrollY = useSharedValue(0);
@@ -50,6 +52,7 @@ const DetailedPostScreen = ({route, navigation}) => {
     const {y} = event.contentOffset;
     scrollY.value = y;
   });
+
   const headerStyle = useAnimatedStyle(() => {
     return {
       opacity: interpolate(scrollY.value, [0, windowHeight * 0.2], [0, 1]),
@@ -66,8 +69,7 @@ const DetailedPostScreen = ({route, navigation}) => {
       ),
     };
   });
-  const {post} = route.params;
-  console.log('detail post screen render');
+
   useEffect(() => {
     loadWishlists()
       .then(res => {
@@ -81,6 +83,16 @@ const DetailedPostScreen = ({route, navigation}) => {
       })
       .catch(err => console.log(err));
   }, [isFavorite]);
+
+  useEffect(() => {
+    const unsub = registerEvent('onPostComment', res => {
+      console.log('[onPost]', res);
+      setPost({...post, rate: res.rate});
+    });
+    return unsub;
+  });
+
+  console.log('detail post screen render');
 
   return (
     <SafeAreaView>
