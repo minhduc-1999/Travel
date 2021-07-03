@@ -227,7 +227,7 @@ const SearchResultScreen = ({route, navigation}) => {
             marginLeft: 10,
           }}
           onPress={() => navigation.goBack()}>
-          <Fonawesome name={'chevron-left'} color={'#000'} size={24} />
+          <Fonawesome name={'chevron-left'} color={'#000'} size={20} />
         </Pressable>
         <View style={{marginRight: 10, flex: 4}}>
           <Text numberOfLines={1} style={styles.title}>
