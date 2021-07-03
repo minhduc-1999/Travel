@@ -27,6 +27,7 @@ import Fonawesome from 'react-native-vector-icons/FontAwesome';
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {NotSelected, Selected} from '../../../assets/images/MapIcon/location';
 import CustomHeader from '../../components/CustomHeader';
+import Waiting from '../Splash';
 
 const SearchResultMap = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
@@ -135,7 +136,9 @@ const SearchResultMap = ({navigation, route}) => {
   });
 
   console.log('search result map screen render');
-  return (
+  return loading ? (
+    <Waiting />
+  ) : (
     <SafeAreaView style={{height: '100%'}}>
       <StatusBar
         translucent

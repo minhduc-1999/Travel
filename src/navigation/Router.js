@@ -4,6 +4,7 @@ import AppStack from './AppStack';
 import AuthStack from './AuthStack';
 import {AuthContext} from './AuthProvider';
 import auth from '@react-native-firebase/auth';
+import Wating from '../screens/Splash';
 
 const Router = props => {
   const {userAcc, setUserAcc} = useContext(AuthContext);
@@ -19,7 +20,7 @@ const Router = props => {
     return subcriber;
   }, []);
 
-  if (initializing) return null; //flash screen
+  if (initializing) return <Wating />; //flash screen
 
   return (
     <NavigationContainer>

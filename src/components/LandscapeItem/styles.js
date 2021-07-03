@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
   image: {
     borderRadius: 10,
     width: windowWidth - 40,
-    height: windowHeight / 2.8,
+    height: undefined,
+    aspectRatio: 4 / 3,
   },
   infoContainer: {
     marginBottom: 10,

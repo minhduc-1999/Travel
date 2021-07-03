@@ -4,7 +4,6 @@ import {windowWidth} from '../../Utils/Dimention';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSequence,
   withTiming,
   withRepeat,
   Easing,
@@ -12,28 +11,23 @@ import Animated, {
 
 const Splash = props => {
   const rotation = useSharedValue(0);
-  const zoom = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      // transform: [{rotateZ: `${rotation.value}deg`}],
-      transform: [{scale: zoom.value}],
+      transform: [{rotateZ: `${rotation.value}deg`}],
     };
   });
   useEffect(() => {
-    // rotation.value = withSequence(
-    //   withTiming(-5, {duration: 1000}),
-    //   withRepeat(withTiming(5, {duration: 1000}), -1, true),
-    //   withTiming(0, {duration: 1000}),
-    // );
-    // zoom.value = withTiming(
-    //   20,
-    //   {duration: 1500, easing: Easing.bezier(0.32, 0, 0.67, 0)},
-    //   isFinish => {
-    //     console.log(isFinish);
-    //   },
-    // );
+    rotation.value = withRepeat(
+      withTiming(220, {
+        duration: 1500,
+        easing: Easing.bezier(0.37, 0, 0.63, 1),
+      }),
+      -1,
+      false,
+    );
   }, []);
+
   return (
     <SafeAreaView
       style={{
@@ -51,20 +45,38 @@ const Splash = props => {
       <Animated.View
         style={[
           {
-            backgroundColor: '#fff',
             height: windowWidth * 0.35,
             width: windowWidth * 0.35,
             borderRadius: (windowWidth / 2) * 0.35,
             justifyContent: 'center',
             alignItems: 'center',
             overflow: 'hidden',
+            position: 'absolute',
+          },
+        ]}>
+        <Image
+          width={windowWidth * 0.18}
+          height={windowWidth * 0.18}
+          source={require('../../../assets/images/lent.png')}
+        />
+      </Animated.View>
+      <Animated.View
+        style={[
+          {
+            height: windowWidth,
+            width: windowWidth,
+            borderRadius: (windowWidth / 2) * 0.35,
+            justifyContent: 'center',
+            alignItems: 'center',
+            overflow: 'visible',
+            position: 'absolute',
           },
           animatedStyle,
         ]}>
-        <Animated.Image
+        <Image
           width={windowWidth * 0.18}
           height={windowWidth * 0.18}
-          source={require('../../../assets/images/Travelad.png')}
+          source={require('../../../assets/images/sun.png')}
         />
       </Animated.View>
     </SafeAreaView>
