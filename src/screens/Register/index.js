@@ -57,7 +57,7 @@ const RegisterScreen = ({navigation}) => {
               if (email && password && confirmPassword) {
                 if (password === confirmPassword)
                   register(email, password).then(res => {
-                    if (res) navigation.navigate('Login');
+                    if (res) navigation.goBack();
                   });
                 else {
                   Toast.show({

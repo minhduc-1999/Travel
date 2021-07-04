@@ -15,7 +15,8 @@ const Router = props => {
       if (user.emailVerified) {
         setUserAcc(user);
       } else {
-        logout().catch(console.log);
+        setTimeout(logout, 20);
+        setUserAcc(null);
       }
     } else setUserAcc(null);
     if (initializing) setInitializing(false);
