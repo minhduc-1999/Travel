@@ -55,7 +55,7 @@ const DbProvider = ({children}) => {
                   .collection('User')
                   .doc(userAcc.uid)
                   .set({
-                    firstName: 'Unknow',
+                    firstName: 'Unknown',
                     lastName: '',
                     sex: '',
                     dateOB: '',
@@ -67,7 +67,7 @@ const DbProvider = ({children}) => {
                     return {
                       refId: userAcc.uid,
                       info: {
-                        firstName: 'Unknow',
+                        firstName: 'Unknown',
                         lastName: '',
                         sex: '',
                         dateOB: '',

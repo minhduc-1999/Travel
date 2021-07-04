@@ -25,7 +25,7 @@ const AuthProvider = ({children}) => {
                 'Email của bạn chưa được xác nhận, vui lòng xác nhận email trước khi đăng nhập',
                 [
                   {
-                    text: 'Send email',
+                    text: 'Gửi email',
                     onPress: () => {
                       cre.user.sendEmailVerification();
                       Toast.show({
@@ -98,6 +98,7 @@ const AuthProvider = ({children}) => {
             .then(userCre => {
               if (userCre) {
                 console.log('[new] create account');
+                userCre.user.sendEmailVerification();
                 Toast.show({
                   type: 'success',
                   position: 'bottom',
@@ -107,8 +108,6 @@ const AuthProvider = ({children}) => {
                   autoHide: true,
                   bottomOffset: 40,
                 });
-
-                userCre.user.sendEmailVerification();
                 return true;
               }
             })
@@ -152,7 +151,7 @@ const AuthProvider = ({children}) => {
           try {
             await auth().signOut();
           } catch (error) {
-            console.error(error);
+            console.log(error);
           }
         },
         forgotPassword: async email => {
@@ -160,7 +159,16 @@ const AuthProvider = ({children}) => {
             console.log('forgot password ' + email);
             await auth()
               .sendPasswordResetEmail(email)
-              .then(() => alert('Please check your email...'));
+              .then(() => {
+                Toast.show({
+                  type: 'success',
+                  position: 'bottom',
+                  text1: 'Kiểm tra hộp thư để tạo lại mật khẩu',
+                  visibilityTime: 2000,
+                  autoHide: true,
+                  bottomOffset: 40,
+                });
+              });
           } catch (error) {
             console.error(error);
           }

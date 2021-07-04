@@ -169,7 +169,7 @@ const ProfileScreen = ({navigation, route}) => {
     } else if (res.errorMessage) {
       console.error('Image error = ', res.errorMessage);
     } else {
-      sheetRef.current.snapTo(0);
+      sheetRef.current.collapse();
       let source = {uri: res.uri.replace('file://', ''), isStatic: true};
       if (Platform.OS === 'android') {
         source = {uri: res.uri, isStatic: true};
