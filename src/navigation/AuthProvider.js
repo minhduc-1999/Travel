@@ -1,6 +1,7 @@
 import React, {createContext, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
+import {Alert} from 'react-native';
 
 export const AuthContext = createContext();
 
@@ -14,7 +15,37 @@ const AuthProvider = ({children}) => {
         setUserAcc,
         login: async (email, password) => {
           try {
-            await auth().signInWithEmailAndPassword(email, password);
+            const cre = await auth().signInWithEmailAndPassword(
+              email,
+              password,
+            );
+            if (!cre.user.emailVerified) {
+              Alert.alert(
+                'Lỗi đăng nhập',
+                'Email của bạn chưa được xác nhận, vui lòng xác nhận email trước khi đăng nhập',
+                [
+                  {
+                    text: 'Send email',
+                    onPress: () => {
+                      cre.user.sendEmailVerification();
+                      Toast.show({
+                        type: 'success',
+                        position: 'bottom',
+                        text1: 'Vui lòng kiểm tra hộp thư của bạn',
+                        visibilityTime: 2000,
+                        autoHide: true,
+                        bottomOffset: 40,
+                      });
+                    },
+                  },
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                ],
+              );
+            }
           } catch (error) {
             switch (error.code) {
               case 'auth/user-not-found':
@@ -62,27 +93,24 @@ const AuthProvider = ({children}) => {
         },
         register: async (email, password) => {
           console.log('create account');
-          auth()
+          return auth()
             .createUserWithEmailAndPassword(email, password)
             .then(userCre => {
               if (userCre) {
                 console.log('[new] create account');
-                setTimeout(() => {
-                  Toast.show({
-                    type: 'success',
-                    position: 'bottom',
-                    text1:
-                      'Tạo tài khoản thành công. Email xác thực đã được gửi đến hộp thư của bạn',
-                    visibilityTime: 2000,
-                    autoHide: true,
-                    bottomOffset: 40,
-                  });
-                }, 20);
+                Toast.show({
+                  type: 'success',
+                  position: 'bottom',
+                  text1:
+                    'Tạo tài khoản thành công. Email xác thực đã được gửi đến hộp thư của bạn',
+                  visibilityTime: 2000,
+                  autoHide: true,
+                  bottomOffset: 40,
+                });
 
-                userCre.user.sendEmailVerification({});
+                userCre.user.sendEmailVerification();
                 return true;
               }
-              throw new Error('Unknow error');
             })
             .catch(error => {
               switch (error.code) {
@@ -117,6 +145,7 @@ const AuthProvider = ({children}) => {
                   });
                   break;
               }
+              return false;
             });
         },
         logout: async () => {
