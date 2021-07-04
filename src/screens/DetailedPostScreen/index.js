@@ -26,6 +26,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {DbContext} from '../../Services/DbProvider';
 import {Dialog} from 'react-native-simple-dialogs';
 import Toast from 'react-native-toast-message';
+import SplashScreen from '../Splash';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -44,6 +45,7 @@ const DetailedPostScreen = ({route, navigation}) => {
     route.params.post.name,
   );
   const [post, setPost] = useState(route.params.post);
+  const [loading, setLoading] = useState(true);
 
   const [isFavorite, setIsFavorite] = useState(false);
   const scrollY = useSharedValue(0);
@@ -76,12 +78,14 @@ const DetailedPostScreen = ({route, navigation}) => {
       .then(res => {
         if (mounted) {
           setWishlists(res);
-          res.forEach(wishlist => {
+          res.some(wishlist => {
             if (wishlist.destinations.includes(post.id)) {
               setIsFavorite(true);
-              return;
+              return true;
             }
+            return false;
           });
+          setLoading(false);
         }
       })
       .catch(err => console.log(err));
@@ -100,7 +104,9 @@ const DetailedPostScreen = ({route, navigation}) => {
 
   console.log('detail post screen render');
 
-  return (
+  return loading ? (
+    <SplashScreen />
+  ) : (
     <SafeAreaView>
       <StatusBar
         translucent
@@ -270,7 +276,7 @@ const DetailedPostScreen = ({route, navigation}) => {
             disabled={newWishlistName === ''}
             style={styles.createButton}
             onPress={() => {
-              addNewWishlist(post.id, post.images[0], newWishlistName);
+              addNewWishlist(post.id, newWishlistName);
               setDialogVisible(false);
               sheetRef.current.close();
               setIsFavorite(true);

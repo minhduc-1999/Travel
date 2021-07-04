@@ -236,7 +236,6 @@ const DbProvider = ({children}) => {
             });
         },
         loadWishlists: async () => {
-          console.log('[Wishlists]: load');
           return firestore()
             .collection('wishlists')
             .where('userId', '==', userAcc.uid)
@@ -247,6 +246,26 @@ const DbProvider = ({children}) => {
               return querySnapshot.docs.map(doc => {
                 return {...doc.data(), id: doc.ref.id};
               });
+            })
+            .then(data => {
+              const res = [];
+              for (let i in data) {
+                res.push(
+                  firestore()
+                    .collection('destinations')
+                    .doc(data[i].destinations[0])
+                    .get()
+                    .then(res => {
+                      data[i].repImage = res.data().images[0];
+                      return data[i];
+                    })
+                    .catch(() => {
+                      data[i].repImage = '';
+                      return data[i];
+                    }),
+                );
+              }
+              return Promise.all(res);
             })
             .catch(error => {
               throw new Error(error);
@@ -285,7 +304,7 @@ const DbProvider = ({children}) => {
               throw new Error(err);
             });
         },
-        addNewWishlist: async (desId, desImg, wlName) => {
+        addNewWishlist: async (desId, wlName) => {
           if (!desId || !wlName || !userAcc) {
             throw new Error('destination does not exist');
           }
@@ -293,7 +312,6 @@ const DbProvider = ({children}) => {
             createDate: firebase.firestore.Timestamp.now(),
             destinations: [desId],
             name: wlName,
-            repImage: desImg,
             userId: userAcc.uid,
           };
           return firestore()
@@ -317,23 +335,23 @@ const DbProvider = ({children}) => {
               const updateData = {
                 destinations: firestore.FieldValue.arrayRemove(desId),
               };
-              if (destinations.indexOf(desId) === 0) {
-                if (destinations.length > 1) {
-                  firestore()
-                    .collection('destinations')
-                    .doc(destinations[1])
-                    .get()
-                    .then(res => {
-                      console.warn(res.name);
-                      updateData.repImage = res.images[0];
-                    })
-                    .catch(() => {
-                      updateData.repImage = '';
-                    });
-                } else {
-                  updateData.repImage = '';
-                }
-              }
+              // if (destinations.indexOf(desId) === 0) {
+              //   if (destinations.length > 1) {
+              //     firestore()
+              //       .collection('destinations')
+              //       .doc(destinations[1])
+              //       .get()
+              //       .then(res => {
+              //         console.warn(res.data().name);
+              //         updateData.repImage = res.data().images[0];
+              //       })
+              //       .catch(() => {
+              //         updateData.repImage = '';
+              //       });
+              //   } else {
+              //     updateData.repImage = '';
+              //   }
+              // }
               return firestore()
                 .collection('wishlists')
                 .doc(wishlist.id)

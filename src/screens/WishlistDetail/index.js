@@ -43,7 +43,9 @@ const WishlistDetail = ({route, navigation}) => {
     <SafeAreaView>
       <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
       <View style={styles.container}>
-        <Text style={styles.title}>{curWishlist.name}</Text>
+        <Text style={styles.title} numberOfLines={2}>
+          {curWishlist.name}
+        </Text>
         <Pressable
           onPress={() => {
             navigation.navigate('MenuWishlist', {detail: curWishlist});

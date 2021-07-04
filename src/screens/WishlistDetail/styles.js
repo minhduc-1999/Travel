@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-import { windowWidth } from '../../Utils/Dimention';
+import {StyleSheet} from 'react-native';
+import {windowWidth} from '../../Utils/Dimention';
 
 const styles = StyleSheet.create({
   container: {
@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginLeft: 25,
     marginBottom: 25,
+    width: windowWidth - 40 - 30,
   },
   separator: {
     height: 3,
