@@ -67,6 +67,19 @@ const AuthProvider = ({children}) => {
             .then(userCre => {
               if (userCre) {
                 console.log('[new] create account');
+                setTimeout(() => {
+                  Toast.show({
+                    type: 'success',
+                    position: 'bottom',
+                    text1:
+                      'Tạo tài khoản thành công. Email xác thực đã được gửi đến hộp thư của bạn',
+                    visibilityTime: 2000,
+                    autoHide: true,
+                    bottomOffset: 40,
+                  });
+                }, 20);
+
+                userCre.user.sendEmailVerification({});
                 return true;
               }
               throw new Error('Unknow error');
@@ -74,13 +87,34 @@ const AuthProvider = ({children}) => {
             .catch(error => {
               switch (error.code) {
                 case 'auth/email-already-in-use':
-                  alert('Email already in use');
+                  Toast.show({
+                    type: 'success',
+                    position: 'bottom',
+                    text1: 'Email đã được sử dụng',
+                    visibilityTime: 2000,
+                    autoHide: true,
+                    bottomOffset: 40,
+                  });
                   break;
                 case 'auth/weak-password':
-                  alert('This password is not strong enough');
+                  Toast.show({
+                    type: 'success',
+                    position: 'bottom',
+                    text1: 'Mật khẩu yếu. Vui lòng sử dụng mật khẩu mạnh hơn',
+                    visibilityTime: 2000,
+                    autoHide: true,
+                    bottomOffset: 40,
+                  });
                   break;
                 case 'auth/invalid-email':
-                  alert('Invalid email');
+                  Toast.show({
+                    type: 'success',
+                    position: 'bottom',
+                    text1: 'Email không hợp lệ',
+                    visibilityTime: 2000,
+                    autoHide: true,
+                    bottomOffset: 40,
+                  });
                   break;
               }
             });
@@ -114,7 +148,14 @@ const AuthProvider = ({children}) => {
               user
                 .updatePassword(newPassword)
                 .then(() => {
-                  alert('Password was changed. You need to sign in again.');
+                  Toast.show({
+                    type: 'success',
+                    position: 'bottom',
+                    text1: 'Đổi mật khẩu thành công. Vui lòng đăng nhập lại',
+                    visibilityTime: 2000,
+                    autoHide: true,
+                    bottomOffset: 40,
+                  });
                   auth().signOut();
                 })
                 .catch(error => console.log(error.message));
@@ -122,7 +163,14 @@ const AuthProvider = ({children}) => {
             .catch(error => {
               switch (error.code) {
                 case 'auth/wrong-password':
-                  alert('Current password is not correct');
+                  Toast.show({
+                    type: 'success',
+                    position: 'bottom',
+                    text1: 'Mật hiện tại không chính xác',
+                    visibilityTime: 2000,
+                    autoHide: true,
+                    bottomOffset: 40,
+                  });
                   break;
               }
             });

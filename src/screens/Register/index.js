@@ -10,6 +10,7 @@ import {
 import FormInput from '../../components/Utils/FormInput';
 import FormButton from '../../components/Utils/FormButton';
 import {AuthContext} from '../../navigation/AuthProvider';
+import Toast from 'react-native-toast-message';
 import styles from './styles';
 const RegisterScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -54,7 +55,10 @@ const RegisterScreen = ({navigation}) => {
             buttonTitle="Đăng ký"
             onPress={() => {
               if (email && password && confirmPassword) {
-                if (password === confirmPassword) register(email, password);
+                if (password === confirmPassword)
+                  register(email, password).then(() =>
+                    navigation.navigate('Login'),
+                  );
                 else {
                   Toast.show({
                     type: 'success',

@@ -149,7 +149,7 @@ const ProfileScreen = ({navigation, route}) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.panelButton}
-        onPress={() => sheetRef.current.snapTo(0)}>
+        onPress={() => sheetRef.current.collapse()}>
         <Text style={styles.panelButtonTitle}>Hủy</Text>
       </TouchableOpacity>
     </View>
