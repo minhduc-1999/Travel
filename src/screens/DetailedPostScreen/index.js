@@ -145,7 +145,8 @@ const DetailedPostScreen = ({route, navigation}) => {
                       Toast.show({
                         type: 'success',
                         position: 'bottom',
-                        text1: 'Xóa địa điểm thành công',
+                        text1:
+                          'Xóa địa điểm khỏi danh sách yêu thích thành công',
                         visibilityTime: 2000,
                         autoHide: true,
                         bottomOffset: 40,

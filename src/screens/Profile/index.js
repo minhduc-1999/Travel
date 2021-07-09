@@ -23,6 +23,7 @@ import Animated, {
   Extrapolate,
 } from 'react-native-reanimated';
 import BottomSheet from '@gorhom/bottom-sheet';
+import Toast from 'react-native-toast-message';
 
 const ProfileScreen = ({navigation, route}) => {
   const sheetRef = useRef(null);
@@ -83,11 +84,30 @@ const ProfileScreen = ({navigation, route}) => {
     });
   });
   const saveProfile = () => {
-    if (updateInfo === null) return;
+    if (updateInfo === null) {
+      Toast.show({
+        type: 'success',
+        position: 'bottom',
+        text1: 'Không có thông tin nào được thay đổi',
+        visibilityTime: 2000,
+        autoHide: true,
+        bottomOffset: 40,
+      });
+      setEditable(false);
+      return;
+    }
     updateUserProfile(updateInfo)
       .then(() => {
         setEditable(false);
         setUpdateInfo(null);
+        Toast.show({
+          type: 'success',
+          position: 'bottom',
+          text1: 'Cập nhật thông tin thành công',
+          visibilityTime: 2000,
+          autoHide: true,
+          bottomOffset: 40,
+        });
       })
       .catch(err => console.error(err));
   };
@@ -180,7 +200,14 @@ const ProfileScreen = ({navigation, route}) => {
         deletePhoto(user.info.imageUrl)
           .then(() => uploadPhoto(refPath, source.uri))
           .then(() => {
-            console.log('Upload avatar successfully');
+            Toast.show({
+              type: 'success',
+              position: 'bottom',
+              text1: 'Thay đổi ảnh đại diện thành công',
+              visibilityTime: 2000,
+              autoHide: true,
+              bottomOffset: 40,
+            });
             return getDownloadUrl(refPath);
           })
           .then(url => {
@@ -200,7 +227,14 @@ const ProfileScreen = ({navigation, route}) => {
       } else {
         uploadPhoto(refPath, source.uri)
           .then(() => {
-            console.log('Upload avatar successfully');
+            Toast.show({
+              type: 'success',
+              position: 'bottom',
+              text1: 'Thay đổi ảnh đại diện thành công',
+              visibilityTime: 2000,
+              autoHide: true,
+              bottomOffset: 40,
+            });
             return getDownloadUrl(refPath);
           })
           .then(url => {

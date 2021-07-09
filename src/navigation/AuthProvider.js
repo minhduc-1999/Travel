@@ -88,6 +88,8 @@ const AuthProvider = ({children}) => {
                   bottomOffset: 40,
                 });
                 break;
+              case 'auth/no-current-user':
+                break;
             }
           }
         },
